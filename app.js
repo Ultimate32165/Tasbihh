@@ -25,7 +25,7 @@ const dt=k=>S.logs[k]?Object.values(S.logs[k].c).reduce((a,b)=>a+b,0):0;
 const dp=k=>S.logs[k]?S.logs[k].p.reduce((a,b)=>a+b,0):0;
 const vib=p=>{if(S.set.haptic&&navigator.vibrate)navigator.vibrate(p)};
 function toast(m){const t=$('#toast');t.textContent=m;t.style.opacity=1;setTimeout(()=>t.style.opacity=0,1800)}
-function persist(){S.upd=Date.now();localStorage.setItem(KEY,JSON.stringify(S));clearTimeout(persist.t);persist.t=setTimeout(push,1500)}
+function persist(k){if(!k)S.upd=Date.now();localStorage.setItem(KEY,JSON.stringify(S));if(!k&&!persist.t)persist.t=setTimeout(()=>{persist.t=0;push()},2500)}
 function modal(h){const m=document.createElement('div');m.className='mo';m.id='mo';m.innerHTML='<div>'+h+'</div>';m.onclick=e=>{if(e.target==m)m.remove()};document.body.append(m)}
 const closeM=()=>$('#mo')&&$('#mo').remove();
 
@@ -76,11 +76,11 @@ p(){const l=day();let g='';for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.
 s(){const x=stats();return `<h2>Stats</h2><div class=g>${[['Today',dt(dk())],['Total tasbih',x.tot],['Streak',x.st+' d'],['Best day',x.best],['Prayers today',dp(dk())+'/5'],['Prayers total',x.ptot]].map(a=>`<div class="card st"><b>${a[1]}</b><span>${a[0]}</span></div>`).join('')}</div>
 <div class=card><div class=row style="justify-content:space-between"><span>${[['w','Week'],['m','Month'],['y','Year']].map(a=>`<button class="btn ${rg==a[0]?'on':''}" onclick="setR('${a[0]}')">${a[1]}</button>`).join(' ')}</span><span>${[['t','Tasbih'],['p','Prayer']].map(a=>`<button class="btn ${mt==a[0]?'on':''}" onclick="setM('${a[0]}')">${a[1]}</button>`).join(' ')}</span></div>${chart()}</div>
 <div class=card><div class=mu>By tasbih</div>${all().filter(t=>x.per[t.id]).map(t=>`<div class=pr><span>${t.n}</span><b>${x.per[t.id]}</b></div>`).join('')||'<div class=mu>Nothing yet</div>'}</div>`},
-g(){const s=S.set,chk=(k,l)=>`<div class=pr><span>${l}</span><input type=checkbox ${s[k]?'checked':''} onchange="S.set.${k}=this.checked;persist();render()"></div>`;
- return `<h2>Settings</h2><div class=card><div class=mu style="margin-bottom:8px">Theme</div>${THEMES.map(t=>`<span class=sw data-theme=${t} style="background:var(--ac);${s.theme==t?'outline:2px solid var(--ac)':''}" onclick="S.set.theme='${t}';persist();render()"></span>`).join('')}</div>
+g(){const s=S.set,chk=(k,l)=>`<div class=pr><span>${l}</span><input type=checkbox ${s[k]?'checked':''} onchange="S.set.${k}=this.checked;persist(1);render()"></div>`;
+ return `<h2>Settings</h2><div class=card><div class=mu style="margin-bottom:8px">Theme</div>${THEMES.map(t=>`<span class=sw data-theme=${t} style="background:var(--ac);${s.theme==t?'outline:2px solid var(--ac)':''}" onclick="S.set.theme='${t}';persist(1);render()"></span>`).join('')}</div>
 <div class=card>${chk('en','English translation')}${chk('bn','বাংলা translation')}${chk('tl','Transliteration (duas)')}${chk('haptic','Haptic vibration (phones)')}
-<div class=pr style="display:block"><div class=mu>App font</div><select onchange="S.set.uf=this.value;persist();render()">${Object.keys(UF).map(k=>`<option value=${k} ${(s.uf||'nunito')==k?'selected':''}>${UF[k].replace(/'/g,'')}</option>`).join('')}</select></div><div class=pr style="display:block"><div class=mu>Arabic font</div><select onchange="S.set.arf=this.value;persist();render()"><option value=amiri ${s.arf=='amiri'?'selected':''}>Amiri (Naskh)</option><option value=indo ${s.arf=='indo'?'selected':''}>Indo-Pak (Nastaliq)</option></select></div>
-<div class=pr style="display:block"><div class=mu>Text size</div><input type=range min=.8 max=1.6 step=.1 value=${s.size} oninput="S.set.size=+this.value;document.documentElement.style.setProperty('--sz',this.value)" onchange="persist()"></div></div>
+<div class=pr style="display:block"><div class=mu>App font</div><select onchange="S.set.uf=this.value;persist(1);render()">${Object.keys(UF).map(k=>`<option value=${k} ${(s.uf||'nunito')==k?'selected':''}>${UF[k].replace(/'/g,'')}</option>`).join('')}</select></div><div class=pr style="display:block"><div class=mu>Arabic font</div><select onchange="S.set.arf=this.value;persist(1);render()"><option value=amiri ${s.arf=='amiri'?'selected':''}>Amiri (Naskh)</option><option value=indo ${s.arf=='indo'?'selected':''}>Indo-Pak (Nastaliq)</option></select></div>
+<div class=pr style="display:block"><div class=mu>Text size</div><input type=range min=.8 max=1.6 step=.1 value=${s.size} oninput="S.set.size=+this.value;document.documentElement.style.setProperty('--sz',this.value)" onchange="persist(1)"></div></div>
 <div class=card><div class=mu style="margin-bottom:8px">Sync account</div><div id=acc>${acc()}</div></div>`}};
 IC.m=sv('<path d="M4 6h16M4 12h16M4 18h16"/>');
 function openSide(){const m=document.createElement('div'),L=(S.logs[dk()]||{c:{}}).c;m.className='sb';m.id='sb';
@@ -88,7 +88,7 @@ function openSide(){const m=document.createElement('div'),L=(S.logs[dk()]||{c:{}
  m.innerHTML=`<aside class=glass><div class=sh>My tasbih</div><div class=sl>${all().map(x=>`<button class="di si ${x.id==S.cur?'cur':''}" onclick="pickT('${x.id}')"><span class=sn>${x.n}</span><span class=mu>${L[x.id]||0}</span></button>`).join('')}</div><button class="btn p" onclick="closeSb();openAdd()">${IC.a} New tasbih</button></aside>`;
  document.body.append(m);requestAnimationFrame(()=>m.classList.add('in'))}
 function closeSb(){const m=$('#sb');if(m){m.classList.remove('in');setTimeout(()=>m.remove(),250)}}
-function pickT(id){S.cur=id;persist();closeSb();render()}
+function pickT(id){S.cur=id;persist(1);closeSb();render()}
 function loadD(){fetch('duas.json').then(r=>r.json()).then(j=>{D=j.duas||[];render()}).catch(()=>{D=[];render()})}
 function duaGo(n){duaI=(duaI+n+D.length)%D.length;render()}
 V.d=()=>{if(!D){loadD();return '<p class=mu>Loading…</p>'}
@@ -112,19 +112,20 @@ let fb=null,user=null,first=true;
 async function initFB(){if(FC.apiKey.startsWith('YOUR'))return;const B='https://www.gstatic.com/firebasejs/10.12.0/';
  try{const[A,Au,F]=await Promise.all(['app','auth','firestore'].map(m=>import(B+'firebase-'+m+'.js')));
  const app=A.initializeApp(FC);fb={Au,F,auth:Au.getAuth(app),db:F.initializeFirestore(app,{localCache:F.persistentLocalCache()})};
- Au.onAuthStateChanged(fb.auth,u=>{user=u;first=true;if(u)listen();tab=='g'&&render()});tab=='g'&&render()}catch(e){console.warn('Firebase offline',e)}}
-function listen(){fb.F.onSnapshot(fb.F.doc(fb.db,'users',user.uid),s=>{if(s.metadata.hasPendingWrites)return;
+ Au.onAuthStateChanged(fb.auth,u=>{user=u;first=true;if(u)listen();else if(unsub){unsub();unsub=0}tab=='g'&&render()});tab=='g'&&render()}catch(e){console.warn('Firebase offline',e)}}
+let unsub;function listen(){unsub&&unsub();unsub=fb.F.onSnapshot(fb.F.doc(fb.db,'users',user.uid),s=>{if(s.metadata.hasPendingWrites)return;
  if(s.exists())merge(JSON.parse(s.data().d));localStorage.setItem(KEY,JSON.stringify(S));render();if(first){first=false;push()}})}
 function merge(r){r.tl.forEach(x=>{if(!S.tl.find(y=>y.id==x.id))S.tl.push(x)});
  for(const d in r.logs){const a=day(d),b=r.logs[d];for(const k in b.c)a.c[k]=Math.max(a.c[k]||0,b.c[k]);b.p.forEach((v,i)=>a.p[i]=a.p[i]||v?1:0)}
- if(r.upd>S.upd){S.set=r.set;S.tt=r.tt;S.prog=r.prog;S.cur=r.cur}}
+ if(r.upd>S.upd){S.tt=r.tt;S.prog=r.prog;S.upd=r.upd}}
 async function push(){if(!user||!fb)return;const p={...S.pend},off=wasOff;
- try{await fb.F.setDoc(fb.F.doc(fb.db,'users',user.uid),{d:JSON.stringify(S)});
+ try{await fb.F.setDoc(fb.F.doc(fb.db,'users',user.uid),{d:JSON.stringify({tl:S.tl,tt:S.tt,logs:S.logs,prog:S.prog,upd:S.upd})});
   S.pend.c-=p.c;S.pend.p-=p.p;localStorage.setItem(KEY,JSON.stringify(S));
   if(off&&(p.c||p.p)){wasOff=false;modal(`<h2>Synced</h2><p>Your offline progress is saved to your account:</p><div class=g><div class="card st"><b>${p.c}</b><span>tasbih counts</span></div><div class="card st"><b>${p.p}</b><span>prayers marked</span></div></div><button class="btn p" onclick=closeM()>Done</button>`)}}catch(e){}}
 const typing=e=>/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName);
 addEventListener('keydown',e=>{if(e.code!=='Space'||typing(e)||$('#mo')||$('#sb')||tab!=='c')return;e.preventDefault();if(!e.repeat)tap()});
 addEventListener('keyup',e=>{if(e.code==='Space'&&!typing(e)&&tab==='c')e.preventDefault()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)push()});addEventListener('pagehide',push);
 addEventListener('offline',()=>wasOff=true);addEventListener('online',push);
 render();initFB();
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
