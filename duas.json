@@ -4,6 +4,7 @@
     {
       "name": "Rabbana Atina",
       "arabic": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+      "note":"Te\nst",
       "transliteration": "Rabbana atina fid-dunya hasanatan wa fil-akhirati hasanatan wa qina 'azaban-nar",
       "en": "Our Lord, give us good in this world and good in the Hereafter, and protect us from the punishment of the Fire.",
       "bn": "হে আমাদের রব, আমাদেরকে দুনিয়াতে কল্যাণ দিন, আখিরাতেও কল্যাণ দিন এবং আমাদেরকে জাহান্নামের আগুন থেকে রক্ষা করুন।"
@@ -21,6 +22,13 @@
       "transliteration": "Rabbi zidni 'ilma",
       "en": "My Lord, increase me in knowledge.",
       "bn": "হে আমার রব, আমার জ্ঞান বৃদ্ধি করে দিন।"
+    },
+    {
+      "name": "আমল কবুলের জন্য দুআ",
+      "arabic": "رَبَّنَا تَقَبَّلْ مِنَّا إِنَّكَ أَنْتَ السَّمِيْعُ الْعَلِيمُ وَتُبْ عَلَيْنَآ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيْمُ\n",
+      "transliteration": "Rabbi zidni 'ilma",
+      "en": "My Lord, increase me in knowledge.",
+      "bn": "হে আমাদের প্রতিপালক, আমাদের পক্ষ থেকে কবূল করুন। নিশ্চয় আপনি সর্বশ্রোতা, সর্বজ্ঞানী। \nআপনি আমাদেরকে ক্ষমা করুন। নিশ্চয় আপনি ক্ষমাশীল, পরম দয়ালু।\n\nসূরা আল বাকারাহ - ২:১২৭-১২৮"
     }
   ]
 }

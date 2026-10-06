@@ -1,13 +1,7 @@
 const $=s=>document.querySelector(s),KEY='tasbih_v1';
 const PN=['Fajr','Dhuhr','Asr','Maghrib','Isha'],PB=['ফজর','যোহর','আসর','মাগরিব','এশা'];
-const DEF=[
-{id:'sub',n:'SubhanAllah',ar:'سُبْحَانَ ٱللَّٰهِ',en:'Glory be to Allah',bn:'আল্লাহ পবিত্র',t:33},
-{id:'alh',n:'Alhamdulillah',ar:'ٱلْحَمْدُ لِلَّٰهِ',en:'All praise is for Allah',bn:'সকল প্রশংসা আল্লাহর',t:33},
-{id:'akb',n:'Allahu Akbar',ar:'ٱللَّٰهُ أَكْبَرُ',en:'Allah is the Greatest',bn:'আল্লাহ সর্বমহান',t:33},
-{id:'lai',n:'La ilaha illallah',ar:'لَا إِلَٰهَ إِلَّا ٱللَّٰهُ',en:'There is no god but Allah',bn:'আল্লাহ ছাড়া কোনো ইলাহ নেই',t:100},
-{id:'ast',n:'Astaghfirullah',ar:'أَسْتَغْفِرُ ٱللَّٰهَ',en:'I seek forgiveness from Allah',bn:'আমি আল্লাহর কাছে ক্ষমা চাই',t:100},
-{id:'dur',n:'Durood',ar:'ٱللَّٰهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ',en:'O Allah, send blessings upon Muhammad',bn:'হে আল্লাহ, মুহাম্মদের ওপর রহমত বর্ষণ করুন',t:100},
-{id:'subh',n:'Subhanallahi wa bihamdihi',ar:'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ',en:'Glory be to Allah and His is the praise.',bn:'আল্লাহর পবিত্রতা ও মহিমা ঘোষণা করছি এবং সমস্ত প্রশংসা তাঁরই',t:100}];
+let DEF=[{id:'sub',n:'SubhanAllah',ar:'سُبْحَانَ ٱللَّٰهِ',en:'Glory be to Allah',bn:'আল্লাহ পবিত্র',t:33}];// fallback only; the real list lives in tasbih.json
+
 const THEMES=['forest','night','rose','ocean','dusk','sand','lavender','mint','sunset','ember','midnight'];
 const UF={nunito:'Nunito',poppins:'Poppins',quicksand:'Quicksand',baloo:"'Baloo 2'",lora:'Lora',playfair:"'Playfair Display'"};
 const sv=p=>`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
@@ -230,5 +224,7 @@ addEventListener('keydown',e=>{if(e.code!=='Space'||typing(e)||$('#mo')||$('#sb'
 addEventListener('keyup',e=>{if(e.code==='Space'&&!typing(e)&&tab==='c')e.preventDefault()});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)push()});addEventListener('pagehide',push);
 addEventListener('offline',()=>{wasOff=true;setSS('Offline · saved on this device, will sync later')});addEventListener('online',push);
-migrate();render();initFB();
+const TJ=fetch('tasbih.json').then(r=>r.json()).then(j=>{const l=(j.tasbih||[]).filter(x=>x&&x.id&&x.name).map(x=>({id:String(x.id),n:x.name,ar:x.arabic||'',en:x.en||'',bn:x.bn||'',t:+x.target||33}));if(l.length)DEF=l}).catch(()=>{});
+let started=0;const go=()=>{if(started)return render();started=1;migrate();render();initFB()};
+TJ.then(go);setTimeout(()=>{if(!started)go()},1500);
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
