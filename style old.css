@@ -81,9 +81,3 @@ nav button{padding:8px 10px;flex:1;transition:.2s}nav button.on{background:color
 .si span:nth-child(1){flex:1;min-width:0}.si span:nth-child(2){flex:none}
 .sn{overflow-wrap:anywhere;line-height:1.35}
 .si.cur{background:color-mix(in srgb,var(--ac) 18%,transparent)}
-
-input{-webkit-user-select:text;user-select:text}
-input[type=checkbox]{width:22px;height:22px;accent-color:var(--ac)}
-.srch{margin-bottom:14px;border-radius:999px;padding:12px 18px;-webkit-appearance:none;appearance:none;border:1px solid color-mix(in srgb,#fff 40%,transparent);background:color-mix(in srgb,var(--cd) 55%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.fv{display:flex;padding:6px;margin:-6px 0;cursor:pointer}
-.fv.on svg{color:var(--ac)}
