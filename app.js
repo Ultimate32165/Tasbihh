@@ -58,8 +58,8 @@ function openAdd(){modal(`<h2>New tasbih</h2><input id=an placeholder="Name"><in
 function togP(i){const l=day();l.p[i]={v:l.p[i].v?0:1,t:Date.now()};S.pend.p+=l.p[i].v;if(!navigator.onLine)wasOff=true;vib(S.set.hms||35);persist();render()}
 
 function togX(k){const l=day();l.x=l.x||{};l.x[k]={v:(l.x[k]||{}).v?0:1,t:Date.now()};if(!navigator.onLine)wasOff=true;vib(S.set.hms||35);persist()}
-function extras(){const x=day().x||{},ck=(k,n,b)=>`<div class=pr><span><b>${n}</b> <span class="mu bn">${b}</span></span><input type=checkbox ${(x[k]||{}).v?'checked':''} onchange="togX('${k}')"></div>`;
- return `<div class=card><div class=mu style="margin-bottom:2px">Extras today</div>${ck('witr','Witr','বিতর')}${ck('sunnah','Sunnah','সুন্নাত')}</div>`}
+function extras(){const x=day().x||{},ck=(k,n,b,e)=>`<label class="pr xr"><span><span class=xe>${e}</span><b>${n}</b> <span class="mu bn">${b}</span></span><input type=checkbox class=cbi ${(x[k]||{}).v?'checked':''} onchange="togX('${k}')"><span class=cbx>${IC.k}</span></label>`;
+ return `<div class=card><div class=mu style="margin-bottom:2px">Extras today</div>${ck('tahajjud','Tahajjud','তাহাজ্জুদ','🌙')}${ck('sunnah','Sunnah','সুন্নাত','✨')}</div>`}
 function qazaCard(){return `<div class=card><div class=mu>Missed prayers (qaza)</div><div class=row style="align-items:center;gap:18px;margin:10px 0"><button class=btn onclick="qz(-1)" aria-label="Made up one">${IC.n}</button><b id=qn style="font-size:2.2rem;min-width:3ch;text-align:center;cursor:pointer" onclick="qzSet()">${S.qz.v}</b><button class=btn onclick="qz(1)" aria-label="Missed one">${IC.a}</button></div><div class=mu style="text-align:center">+ missed · − made up · tap the number to set it</div></div>`}
 function qz(n){S.qz={v:Math.max(0,S.qz.v+n),t:Date.now()};vib(S.set.hms||35);persist();$('#qn').textContent=S.qz.v}
 function qzSet(){const n=parseInt(prompt('Missed prayers owed',S.qz.v));if(isNaN(n)||n<0)return;S.qz={v:n,t:Date.now()};persist();render()}
@@ -136,6 +136,7 @@ function fbCopy(t){const a=document.createElement('textarea');a.value=t;a.style.
 function copyTxt(t){return navigator.clipboard&&window.isSecureContext?navigator.clipboard.writeText(t).then(()=>true).catch(()=>fbCopy(t)):fbCopy(t)}
 function copyDua(){const d=D[duaI],s=S.set;copyTxt([d.name,d.arabic,s.tl&&d.transliteration,s.en&&d.en,s.bn&&d.bn].filter(Boolean).join('\n\n')).then(ok=>toast(ok?'Copied':'Copy failed'))}
 function repT(n){const k=dkey(D[duaI]);S.dt[k]=n;DC[k]=0;persist(1);render()}
+function repC(){const k=dkey(D[duaI]),n=parseInt(prompt('Repeat how many times?',S.dt[k]||3));if(!n||n<1)return;repT(n)}
 function repReset(){DC[dkey(D[duaI])]=0;render()}
 function repTap(){const k=dkey(D[duaI]),T=S.dt[k]||3;let n=DC[k]||0;if(n>=T)n=0;n++;DC[k]=n;
  if(n>=T){vib([80,60,80,60,250]);toast('Done · '+T+'×')}else vib(S.set.hms||35);$('#rc').textContent=n+' / '+T}
@@ -145,7 +146,7 @@ V.d=()=>{if(!D){loadD();return '<p class=mu>Loading…</p>'}
  duaI=Math.min(duaI,D.length-1);const d=D[duaI],s=S.set,k=dkey(d),T=S.dt[k]||3,n=DC[k]||0,o=dord();
  return `<div class=row style="justify-content:space-between"><button class=btn onclick="duaO=0;render()">${IC.l} All duas</button><span class=row style="margin:0"><button class="btn ${isF(d)?'on':''}" onclick="favT(duaI)" aria-label=Favourite>${star(isF(d))}</button><button class=btn onclick=copyDua() aria-label=Copy>${IC.cp}</button></span></div>
 <div class="glass dua"><span class=orb></span><div class=dn>${d.name}</div><div class=orn>${ORN}</div><div class="ar big">${d.arabic}</div>${s.tl&&d.transliteration?`<div class=trl>${d.transliteration}</div>`:''}${s.en&&d.en?`<div class=tr>${d.en}</div>`:''}${s.bn&&d.bn?`<div class="tr bn">${d.bn}</div>`:''}</div>
-<div class=row style="align-items:center"><span class=mu>Repeat</span>${[3,7].map(m=>`<button class="btn ${T==m?'on':''}" onclick=repT(${m})>${m}×</button>`).join('')}<button class="btn p" id=rc onclick=repTap() style="min-width:84px">${n} / ${T}</button><button class=btn onclick=repReset() aria-label=Reset>${IC.r}</button></div>
+<div class=row style="align-items:center"><span class=mu>Repeat</span>${[3,7].map(m=>`<button class="btn ${T==m?'on':''}" onclick=repT(${m})>${m}×</button>`).join('')}<button class="btn ${T!=3&&T!=7?'on':''}" onclick=repC()>${T!=3&&T!=7?T+'×':'Custom'}</button><button class="btn p" id=rc onclick=repTap() style="min-width:84px">${n} / ${T}</button><button class=btn onclick=repReset() aria-label=Reset>${IC.r}</button></div>
 <div class=row style="align-items:center;gap:18px"><button class=btn onclick=duaGo(-1)>${IC.l}</button><span class=mu>${o.indexOf(duaI)+1} / ${D.length}</span><button class=btn onclick=duaGo(1)>${IC.rr}</button></div>`};
 function acc(){if(!fb)return FC.apiKey.startsWith('YOUR')?'<span class=mu>Add your Firebase config in index.html to enable sync. Data is saved on this device meanwhile.</span>':'<span class=mu>Loading…</span>';
  if(user)return `<p>Signed in: <b>${user.email.split('@')[0]}</b></p><button class=btn onclick="fb.Au.signOut(fb.auth)">Sign out</button>`;
