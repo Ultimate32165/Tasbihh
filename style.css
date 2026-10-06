@@ -97,3 +97,6 @@ input[type=checkbox]{width:22px;height:22px;accent-color:var(--ac)}
 .cbi:checked+.cbx{background:linear-gradient(135deg,var(--ac),color-mix(in srgb,var(--ac) 60%,#fff));border-color:transparent;box-shadow:0 4px 14px color-mix(in srgb,var(--ac) 40%,transparent)}
 .cbi:checked+.cbx svg{opacity:1;transform:none}
 .cbi:focus-visible+.cbx{outline:2px solid var(--ac);outline-offset:2px}
+
+.btn.dz{background:#d64545;color:#fff;box-shadow:0 3px 0 #d6454540}
+.btn:disabled{opacity:.4;pointer-events:none}
