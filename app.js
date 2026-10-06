@@ -38,7 +38,7 @@ const dt=k=>S.logs[k]?Object.values(S.logs[k].c).reduce((a,b)=>a+cn(b),0):0;
 const dp=k=>S.logs[k]?S.logs[k].p.reduce((a,b)=>a+(b.v?1:0),0):0;
 const vib=p=>{if(S.set.haptic&&navigator.vibrate)navigator.vibrate(p)};
 function toast(m){const t=$('#toast');t.textContent=m;t.style.opacity=1;setTimeout(()=>t.style.opacity=0,1800)}
-function persist(k){localStorage.setItem(KEY,JSON.stringify(S));if(!k&&!persist.t)persist.t=setTimeout(()=>{persist.t=0;push()},2500)}
+function persist(k){localStorage.setItem(KEY,JSON.stringify(S));if(!k&&!persist.t)persist.t=setTimeout(()=>{persist.t=0;push()},400)}
 function modal(h){const m=document.createElement('div');m.className='mo';m.id='mo';m.innerHTML='<div>'+h+'</div>';m.onclick=e=>{if(e.target==m)m.remove()};document.body.append(m)}
 const closeM=()=>$('#mo')&&$('#mo').remove();
 
@@ -81,7 +81,7 @@ c(){const t=cur(),T=tg(t),p=pg(t);return `<div class=card><button class=pick onc
 <div class=ring onclick=tap()><svg viewBox="0 0 200 200"><circle class=rb r=90 cx=100 cy=100 /><circle id=rg r=90 cx=100 cy=100 stroke-dasharray=565.5 stroke-dashoffset="${565.5*(1-p/T)}"/></svg><div><span id=cn>${p}</span><span class=mu>of ${T}</span></div></div>
 <div class=row>${[33,100].map(n=>`<button class="btn ${T==n?'on':''}" onclick=setT(${n})>${n}</button>`).join('')}<button class="btn ${T!=33&&T!=100?'on':''}" onclick=setT(0)>${T!=33&&T!=100?T:'Custom'}</button></div>
 <div class=row><button class=btn onclick=reset()>${IC.r} Reset</button><button class=btn onclick=openAdd()>${IC.a} New tasbih</button></div>
-<p class="mu" style="text-align:center">Today's total: <b id=td>${dt(dk())}</b></p>`},
+<p class="mu" style="text-align:center">Today's total: <b id=td>${dt(dk())}</b></p><p class=mu id=ss style="text-align:center;margin-top:-6px;font-size:.75rem">${user?SS:'Not signed in · saved on this device only'}</p>`},
 p(){const l=day();let g='';for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=dk(d);
  g+=`<div style="text-align:center"><div class=mu>${d.toLocaleString('en',{weekday:'short'}).slice(0,2)}</div>${[0,1,2,3,4].map(j=>`<div style="width:14px;height:14px;margin:3px auto;border-radius:50%;background:${S.logs[k]&&S.logs[k].p[j].v?'var(--ac)':'var(--bg)'}"></div>`).join('')}</div>`}
  return `<h2>Daily prayers · ${dp(dk())}/5</h2><div class=card>${PN.map((n,i)=>`<div class=pr><span><b>${n}</b> <span class="mu bn">${PB[i]}</span></span><button class="btn ${l.p[i].v?'p':''}" onclick=togP(${i})>${l.p[i].v?IC.k+' Prayed':'Mark'}</button></div>`).join('')}</div>
@@ -124,26 +124,47 @@ function render(){document.body.dataset.theme=S.set.theme;const r=document.docum
 let fb=null,user=null,first=true;
 async function initFB(){if(FC.apiKey.startsWith('YOUR'))return;const B='https://www.gstatic.com/firebasejs/10.12.0/';
  try{const[A,Au,F]=await Promise.all(['app','auth','firestore'].map(m=>import(B+'firebase-'+m+'.js')));
- const app=A.initializeApp(FC);fb={Au,F,auth:Au.getAuth(app),db:F.initializeFirestore(app,{localCache:F.persistentLocalCache()})};
+ const app=A.initializeApp(FC);fb={Au,F,auth:Au.getAuth(app),db:F.initializeFirestore(app,{localCache:F.persistentLocalCache({tabManager:F.persistentMultipleTabManager()})})};
  Au.onAuthStateChanged(fb.auth,u=>{user=u;first=true;if(u)listen();else if(unsub){unsub();unsub=0}tab=='g'&&render()});tab=='g'&&render()}catch(e){console.warn('Firebase offline',e)}}
-let unsub;function listen(){unsub&&unsub();unsub=fb.F.onSnapshot(fb.F.doc(fb.db,'users',user.uid),s=>{if(s.metadata.hasPendingWrites)return;
- let r=null;if(s.exists()){r=norm(JSON.parse(s.data().d));merge(r)}
- localStorage.setItem(KEY,JSON.stringify(S));render();
- if(first||!r||canon(out())!==canon({tl:[...r.tl].sort((a,b)=>a.id<b.id?-1:1),tt:r.tt,logs:r.logs,bs:r.bs}))push();first=false})}
-function merge(r){norm(r);r.tl.forEach(x=>{if(!S.tl.find(y=>y.id==x.id))S.tl.push(x)});
- for(const d in r.logs){const a=day(d),b=r.logs[d];
+let R=norm({}),SS='';
+function setSS(t){SS=t;const e=$('#ss');if(e)e.textContent=t}
+function mergeInto(T,r){norm(r);r.tl.forEach(x=>{if(!T.tl.find(y=>y.id==x.id))T.tl.push(x)});
+ for(const d in r.logs){const a=T.logs[d]=T.logs[d]||{c:{},p:[0,0,0,0,0].map(()=>({v:0,t:0}))},b=r.logs[d];
   for(const k in b.c){const ao=a.c[k]=cobj(a.c[k]);for(const v in b.c[k])ao[v]=Math.max(ao[v]||0,b.c[k][v])}
-  b.p.forEach((x,i)=>{if(x.t>a.p[i].t)a.p[i]=x})}
- for(const k in r.tt)if(!S.tt[k]||r.tt[k].t>S.tt[k].t)S.tt[k]=r.tt[k];
- for(const k in r.bs)if(!S.bs[k]||r.bs[k].t>S.bs[k].t)S.bs[k]=r.bs[k]}
-async function push(){if(!user||!fb)return;const p={...S.pend},off=wasOff;
- try{await fb.F.setDoc(fb.F.doc(fb.db,'users',user.uid),{d:JSON.stringify(out())});
-  S.pend.c-=p.c;S.pend.p-=p.p;localStorage.setItem(KEY,JSON.stringify(S));
-  if(off&&(p.c||p.p)){wasOff=false;modal(`<h2>Synced</h2><p>Your offline progress is saved to your account:</p><div class=g><div class="card st"><b>${p.c}</b><span>tasbih counts</span></div><div class="card st"><b>${p.p}</b><span>prayers marked</span></div></div><button class="btn p" onclick=closeM()>Done</button>`)}}catch(e){}}
+  b.p.forEach((x,i)=>{if(x.t>a.p[i].t||(x.t==a.p[i].t&&x.v>a.p[i].v))a.p[i]=x})}
+ for(const k in r.tt)if(!T.tt[k]||r.tt[k].t>T.tt[k].t)T.tt[k]=r.tt[k];
+ for(const k in r.bs)if(!T.bs[k]||r.bs[k].t>T.bs[k].t)T.bs[k]=r.bs[k]}
+function merge(r){mergeInto(S,r)}
+function fromWire(x){const T=norm({});if(x.d)mergeInto(T,norm(JSON.parse(x.d)));
+ const o=norm({tl:Object.values(x.tl||{}),tt:x.tt||{},bs:x.bs||{},logs:{}});
+ for(const d in x.logs||{}){const w=x.logs[d];o.logs[d]={c:w.c||{},p:[0,1,2,3,4].map(i=>(w.p&&w.p[i])||{v:0,t:0})}}
+ mergeInto(T,norm(o));return T}
+function delta(Rm){const o={logs:{},tt:{},bs:{},tl:{}};let n=0;
+ for(const d in S.logs){const l=S.logs[d],r=Rm.logs[d]||{c:{},p:[]},od={c:{},p:{}};let h=0;
+  for(const k in l.c)for(const v in l.c[k])if(l.c[k][v]>(((r.c[k]||{})[v])||0)){(od.c[k]=od.c[k]||{})[v]=l.c[k][v];h=1}
+  l.p.forEach((x,i)=>{const y=r.p[i]||{v:0,t:0};if(x.t>y.t||(x.t==y.t&&x.v>y.v)){od.p[i]=x;h=1}});
+  if(h){if(!Object.keys(od.c).length)delete od.c;if(!Object.keys(od.p).length)delete od.p;o.logs[d]=od;n++}}
+ for(const k in S.tt)if(S.tt[k].t>(Rm.tt[k]||{t:-1}).t){o.tt[k]=S.tt[k];n++}
+ for(const k in S.bs)if(S.bs[k].t>(Rm.bs[k]||{t:-1}).t){o.bs[k]=S.bs[k];n++}
+ S.tl.forEach(x=>{if(!Rm.tl.find(y=>y.id==x.id)){o.tl[x.id]=x;n++}});
+ for(const k of['logs','tt','bs','tl'])if(!Object.keys(o[k]).length)delete o[k];
+ return n?o:null}
+function refresh(){const a=JSON.stringify([S.tl,S.tt,S.bs]),b=JSON.stringify(S.logs);
+ if(a!=refresh.a)render();else if(b!=refresh.b)tab=='c'&&$('#cn')?upd():render();refresh.a=a;refresh.b=b}
+let unsub;function listen(){unsub&&unsub();unsub=fb.F.onSnapshot(fb.F.doc(fb.db,'users',user.uid),s=>{
+ R=fromWire(s.exists()?s.data():{});merge(R);localStorage.setItem(KEY,JSON.stringify(S));refresh();
+ if(!s.metadata.hasPendingWrites&&!s.metadata.fromCache)setSS('Synced');push()})}
+async function push(){if(!user||!fb)return;
+ if(!navigator.onLine){wasOff=true;return setSS('Offline · saved on this device, will sync later')}
+ const o=delta(R);if(!o)return;const off=wasOff,p={...S.pend};setSS('Saving…');
+ try{await fb.F.setDoc(fb.F.doc(fb.db,'users',user.uid),o,{merge:true});setSS('Synced');
+  if(off&&(S.pend.c||S.pend.p)){const q=S.pend;S.pend={c:0,p:0};wasOff=false;modal(`<h2>Synced</h2><p>Your offline progress is saved to your account:</p><div class=g><div class="card st"><b>${q.c}</b><span>tasbih counts</span></div><div class="card st"><b>${q.p}</b><span>prayers marked</span></div></div><button class="btn p" onclick=closeM()>Done</button>`)}
+  else{S.pend.c=Math.max(0,S.pend.c-p.c);S.pend.p=Math.max(0,S.pend.p-p.p)}
+  localStorage.setItem(KEY,JSON.stringify(S))}catch(e){setSS('Sync failed · saved on this device')}}
 const typing=e=>/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName);
 addEventListener('keydown',e=>{if(e.code!=='Space'||typing(e)||$('#mo')||$('#sb')||tab!=='c')return;e.preventDefault();if(!e.repeat)tap()});
 addEventListener('keyup',e=>{if(e.code==='Space'&&!typing(e)&&tab==='c')e.preventDefault()});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)push()});addEventListener('pagehide',push);
-addEventListener('offline',()=>wasOff=true);addEventListener('online',push);
+addEventListener('offline',()=>{wasOff=true;setSS('Offline · saved on this device, will sync later')});addEventListener('online',push);
 migrate();render();initFB();
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
