@@ -7,7 +7,9 @@ const DEF=[
 {id:'lai',n:'La ilaha illallah',ar:'لَا إِلَٰهَ إِلَّا ٱللَّٰهُ',en:'There is no god but Allah',bn:'আল্লাহ ছাড়া কোনো ইলাহ নেই',t:100},
 {id:'ast',n:'Astaghfirullah',ar:'أَسْتَغْفِرُ ٱللَّٰهَ',en:'I seek forgiveness from Allah',bn:'আমি আল্লাহর কাছে ক্ষমা চাই',t:100},
 {id:'dur',n:'Durood',ar:'ٱللَّٰهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ',en:'O Allah, send blessings upon Muhammad',bn:'হে আল্লাহ, মুহাম্মদের ওপর রহমত বর্ষণ করুন',t:100},
-{id:'subh',n:'Subhanallahi wa bihamdihi',ar:'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ',en:'Glory be to Allah and His is the praise.',bn:'আল্লাহর পবিত্রতা ও মহিমা ঘোষণা করছি এবং সমস্ত প্রশংসা তাঁরই',t:100}];
+{id:'subh',n:'Subhanallahi wa bihamdihi',ar:'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ',en:'Glory be to Allah and His is the praise.',bn:'আল্লাহর পবিত্রতা ও মহিমা ঘোষণা করছি এবং সমস্ত প্রশংসা তাঁরই',t:100},
+{id:'hawqala',n:'Hawqala',tr:'La hawla wa la quwwata illa billah',ar:'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ',en:'There is no power and no strength except with Allah',bn:'আল্লাহর সাহায্য ছাড়া পাপ থেকে বাঁচার কোনো উপায় নেই এবং নেক কাজ করার কোনো শক্তি নেই',t:100},
+];
 const THEMES=['forest','night','rose','ocean','dusk','sand','lavender','mint','sunset','ember','midnight'];
 const UF={nunito:'Nunito',poppins:'Poppins',quicksand:'Quicksand',baloo:"'Baloo 2'",lora:'Lora',playfair:"'Playfair Display'"};
 const sv=p=>`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
