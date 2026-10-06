@@ -1,0 +1,33 @@
+{
+  "_help": "Add your own duas inside the \"duas\" list below. Keep the commas between items. 'transliteration' is optional (how to read the Arabic in English letters); en/bn are the translations.",
+  "duas": [
+    {
+      "name": "Rabbana Atina",
+      "arabic": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+      "transliteration": "Rabbana atina fid-dunya hasanatan wa fil-akhirati hasanatan wa qina 'azaban-nar",
+      "en": "Our Lord, give us good in this world and good in the Hereafter, and protect us from the punishment of the Fire.",
+      "bn": "হে আমাদের রব, আমাদেরকে দুনিয়াতে কল্যাণ দিন, আখিরাতেও কল্যাণ দিন এবং আমাদেরকে জাহান্নামের আগুন থেকে রক্ষা করুন।"
+    },
+    {
+      "name": "Dua of Yunus",
+      "arabic": "لَا إِلَٰهَ إِلَّا أَنتَ سُبْحَانَكَ إِنِّي كُنتُ مِنَ الظَّالِمِينَ",
+      "transliteration": "La ilaha illa anta subhanaka inni kuntu minaz-zalimin",
+      "en": "There is no god but You; glory be to You. Indeed, I have been among the wrongdoers.",
+      "bn": "আপনি ছাড়া কোনো ইলাহ নেই, আপনি পবিত্র। নিশ্চয়ই আমি জালিমদের অন্তর্ভুক্ত ছিলাম।"
+    },
+    {
+      "name": "Increase in Knowledge",
+      "arabic": "رَبِّ زِدْنِي عِلْمًا",
+      "transliteration": "Rabbi zidni 'ilma",
+      "en": "My Lord, increase me in knowledge.",
+      "bn": "হে আমার রব, আমার জ্ঞান বৃদ্ধি করে দিন।"
+    },
+    {
+      "name": "Increase in Knowledge",
+      "arabic": "رَبِّ زِدْنِي عِلْمًا",
+      "transliteration": "Rabbi zidni 'ilma",
+      "en": "My Lord, increase me in knowledge.",
+      "bn": "হে আমার রব, আমার জ্ঞান বৃদ্ধি করে দিন।"
+    }
+  ]
+}
