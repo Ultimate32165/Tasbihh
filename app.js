@@ -6,7 +6,8 @@ const DEF=[
 {id:'akb',n:'Allahu Akbar',ar:'ٱللَّٰهُ أَكْبَرُ',en:'Allah is the Greatest',bn:'আল্লাহ সর্বমহান',t:33},
 {id:'lai',n:'La ilaha illallah',ar:'لَا إِلَٰهَ إِلَّا ٱللَّٰهُ',en:'There is no god but Allah',bn:'আল্লাহ ছাড়া কোনো ইলাহ নেই',t:100},
 {id:'ast',n:'Astaghfirullah',ar:'أَسْتَغْفِرُ ٱللَّٰهَ',en:'I seek forgiveness from Allah',bn:'আমি আল্লাহর কাছে ক্ষমা চাই',t:100},
-{id:'dur',n:'Durood',ar:'ٱللَّٰهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ',en:'O Allah, send blessings upon Muhammad',bn:'হে আল্লাহ, মুহাম্মদের ওপর রহমত বর্ষণ করুন',t:100}];
+{id:'dur',n:'Durood',ar:'ٱللَّٰهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ',en:'O Allah, send blessings upon Muhammad',bn:'হে আল্লাহ, মুহাম্মদের ওপর রহমত বর্ষণ করুন',t:100},
+{id:'subh',n:'Subhanallahi wa bihamdihi',ar:'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ',en:'Glory be to Allah and His is the praise.',bn:'আল্লাহর পবিত্রতা ও মহিমা ঘোষণা করছি এবং সমস্ত প্রশংসা তাঁরই',t:100}];
 const THEMES=['forest','night','rose','ocean','dusk','sand','lavender','mint','sunset','ember','midnight'];
 const UF={nunito:'Nunito',poppins:'Poppins',quicksand:'Quicksand',baloo:"'Baloo 2'",lora:'Lora',playfair:"'Playfair Display'"};
 const sv=p=>`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
@@ -62,7 +63,7 @@ function setR(r){rg=r;render()}function setM(m){mt=m;render()}
 
 // ===== views =====
 const V={
-c(){const t=cur(),T=tg(t),p=S.prog[t.id]||0;return `<div class=card><select onchange="S.cur=this.value;persist();render()">${all().map(x=>`<option value=${x.id} ${x.id==t.id?'selected':''}>${x.n}</option>`).join('')}</select>
+c(){const t=cur(),T=tg(t),p=S.prog[t.id]||0;return `<div class=card><button class=pick onclick=openSide()><span>${t.n}</span>${IC.m}</button>
 <div class=ar>${t.ar}</div>${S.set.en&&t.en?`<div class=tr>${t.en}</div>`:''}${S.set.bn&&t.bn?`<div class="tr bn">${t.bn}</div>`:''}</div>
 <div class=ring onclick=tap()><svg viewBox="0 0 200 200"><circle class=rb r=90 cx=100 cy=100 /><circle id=rg r=90 cx=100 cy=100 stroke-dasharray=565.5 stroke-dashoffset="${565.5*(1-p/T)}"/></svg><div><span id=cn>${p}</span><span class=mu>of ${T}</span></div></div>
 <div class=row>${[33,100].map(n=>`<button class="btn ${T==n?'on':''}" onclick=setT(${n})>${n}</button>`).join('')}<button class="btn ${T!=33&&T!=100?'on':''}" onclick=setT(0)>${T!=33&&T!=100?T:'Custom'}</button></div>
@@ -81,6 +82,13 @@ g(){const s=S.set,chk=(k,l)=>`<div class=pr><span>${l}</span><input type=checkbo
 <div class=pr style="display:block"><div class=mu>App font</div><select onchange="S.set.uf=this.value;persist();render()">${Object.keys(UF).map(k=>`<option value=${k} ${(s.uf||'nunito')==k?'selected':''}>${UF[k].replace(/'/g,'')}</option>`).join('')}</select></div><div class=pr style="display:block"><div class=mu>Arabic font</div><select onchange="S.set.arf=this.value;persist();render()"><option value=amiri ${s.arf=='amiri'?'selected':''}>Amiri (Naskh)</option><option value=indo ${s.arf=='indo'?'selected':''}>Indo-Pak (Nastaliq)</option></select></div>
 <div class=pr style="display:block"><div class=mu>Text size</div><input type=range min=.8 max=1.6 step=.1 value=${s.size} oninput="S.set.size=+this.value;document.documentElement.style.setProperty('--sz',this.value)" onchange="persist()"></div></div>
 <div class=card><div class=mu style="margin-bottom:8px">Sync account</div><div id=acc>${acc()}</div></div>`}};
+IC.m=sv('<path d="M4 6h16M4 12h16M4 18h16"/>');
+function openSide(){const m=document.createElement('div'),L=(S.logs[dk()]||{c:{}}).c;m.className='sb';m.id='sb';
+ m.onclick=e=>{if(e.target==m)closeSb()};
+ m.innerHTML=`<aside class=glass><div class=sh>My tasbih</div><div class=sl>${all().map(x=>`<button class="di si ${x.id==S.cur?'cur':''}" onclick="pickT('${x.id}')"><span class=sn>${x.n}</span><span class=mu>${L[x.id]||0}</span></button>`).join('')}</div><button class="btn p" onclick="closeSb();openAdd()">${IC.a} New tasbih</button></aside>`;
+ document.body.append(m);requestAnimationFrame(()=>m.classList.add('in'))}
+function closeSb(){const m=$('#sb');if(m){m.classList.remove('in');setTimeout(()=>m.remove(),250)}}
+function pickT(id){S.cur=id;persist();closeSb();render()}
 function loadD(){fetch('duas.json').then(r=>r.json()).then(j=>{D=j.duas||[];render()}).catch(()=>{D=[];render()})}
 function duaGo(n){duaI=(duaI+n+D.length)%D.length;render()}
 V.d=()=>{if(!D){loadD();return '<p class=mu>Loading…</p>'}
@@ -115,7 +123,7 @@ async function push(){if(!user||!fb)return;const p={...S.pend},off=wasOff;
   S.pend.c-=p.c;S.pend.p-=p.p;localStorage.setItem(KEY,JSON.stringify(S));
   if(off&&(p.c||p.p)){wasOff=false;modal(`<h2>Synced</h2><p>Your offline progress is saved to your account:</p><div class=g><div class="card st"><b>${p.c}</b><span>tasbih counts</span></div><div class="card st"><b>${p.p}</b><span>prayers marked</span></div></div><button class="btn p" onclick=closeM()>Done</button>`)}}catch(e){}}
 const typing=e=>/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName);
-addEventListener('keydown',e=>{if(e.code!=='Space'||typing(e)||$('#mo')||tab!=='c')return;e.preventDefault();if(!e.repeat)tap()});
+addEventListener('keydown',e=>{if(e.code!=='Space'||typing(e)||$('#mo')||$('#sb')||tab!=='c')return;e.preventDefault();if(!e.repeat)tap()});
 addEventListener('keyup',e=>{if(e.code==='Space'&&!typing(e)&&tab==='c')e.preventDefault()});
 addEventListener('offline',()=>wasOff=true);addEventListener('online',push);
 render();initFB();
