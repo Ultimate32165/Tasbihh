@@ -1,5 +1,5 @@
 {
-  "_help": "Add your own duas inside the \"duas\" list below. Keep the commas between items. 'transliteration' is optional (how to read the Arabic in English letters); en/bn are the translations.",
+  "_help": "Add your own duas inside the \"duas\" list below. Keep the commas between items. 'transliteration' is optional (how to read the Arabic in English letters); en/bn are the translations. Optional: add a \"note\" (for example the hadith or significance of the dua) and a note icon appears on that dua; use \\n for line breaks. Duas without a note show no icon.",
   "duas": [
     {
       "name": "Rabbana Atina",

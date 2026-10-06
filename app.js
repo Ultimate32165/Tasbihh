@@ -7,9 +7,7 @@ const DEF=[
 {id:'lai',n:'La ilaha illallah',ar:'لَا إِلَٰهَ إِلَّا ٱللَّٰهُ',en:'There is no god but Allah',bn:'আল্লাহ ছাড়া কোনো ইলাহ নেই',t:100},
 {id:'ast',n:'Astaghfirullah',ar:'أَسْتَغْفِرُ ٱللَّٰهَ',en:'I seek forgiveness from Allah',bn:'আমি আল্লাহর কাছে ক্ষমা চাই',t:100},
 {id:'dur',n:'Durood',ar:'ٱللَّٰهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ',en:'O Allah, send blessings upon Muhammad',bn:'হে আল্লাহ, মুহাম্মদের ওপর রহমত বর্ষণ করুন',t:100},
-{id:'subh',n:'Subhanallahi wa bihamdihi',ar:'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ',en:'Glory be to Allah and His is the praise.',bn:'আল্লাহর পবিত্রতা ও মহিমা ঘোষণা করছি এবং সমস্ত প্রশংসা তাঁরই',t:100},
-{id:'hawqala',n:'Hawqala',tr:'La hawla wa la quwwata illa billah',ar:'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ',en:'There is no power and no strength except with Allah',bn:'আল্লাহর সাহায্য ছাড়া পাপ থেকে বাঁচার কোনো উপায় নেই এবং নেক কাজ করার কোনো শক্তি নেই',t:100},
-];
+{id:'subh',n:'Subhanallahi wa bihamdihi',ar:'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ',en:'Glory be to Allah and His is the praise.',bn:'আল্লাহর পবিত্রতা ও মহিমা ঘোষণা করছি এবং সমস্ত প্রশংসা তাঁরই',t:100}];
 const THEMES=['forest','night','rose','ocean','dusk','sand','lavender','mint','sunset','ember','midnight'];
 const UF={nunito:'Nunito',poppins:'Poppins',quicksand:'Quicksand',baloo:"'Baloo 2'",lora:'Lora',playfair:"'Playfair Display'"};
 const sv=p=>`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
@@ -134,6 +132,7 @@ g(){const s=S.set,chk=(k,l)=>`<div class=pr><span>${l}</span><input type=checkbo
 <div class=card><div class=mu style="margin-bottom:8px">Backup</div><div class=row style="justify-content:flex-start"><button class=btn onclick=expData()>Export</button><button class=btn onclick="$('#bf').click()">Import</button></div><input id=bf type=file accept=".json,application/json" hidden onchange="impData(this)"><div class=mu style="margin-top:6px">${S.lb?'Last export: '+new Date(S.lb).toLocaleString():'Never exported'} · import merges into your current data</div></div>
 <div class=card><div class=mu style="margin-bottom:8px">Danger zone</div><button class="btn dz" onclick=openReset()>Reset stats…</button></div>`}};
 IC.m=sv('<path d="M4 6h16M4 12h16M4 18h16"/>');IC.n=sv('<path d="M5 12h14"/>');IC.cp=sv('<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>');
+IC.nt=sv('<path d="M15.5 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5z"/><path d="M15 3v6h6"/><path d="M8 13h8M8 17h5"/>');
 const star=on=>sv('<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>').replace('fill="none"',on?'fill="currentColor"':'fill="none"');
 function openSide(){const m=document.createElement('div'),L=S.logs[dk()]||{c:{}};m.className='sb';m.id='sb';
  m.onclick=e=>{if(e.target==m)closeSb()};
@@ -141,7 +140,7 @@ function openSide(){const m=document.createElement('div'),L=S.logs[dk()]||{c:{}}
  document.body.append(m);requestAnimationFrame(()=>m.classList.add('in'))}
 function closeSb(){const m=$('#sb');if(m){m.classList.remove('in');setTimeout(()=>m.remove(),250)}}
 function pickT(id){S.cur=id;persist(1);closeSb();render()}
-const SEARCH_MIN=8,DC={};let duaQ='';
+const SEARCH_MIN=8,DC={};let duaQ='',duaN=-1;
 const dkey=x=>x.id||((x.name||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'d'+[...(x.arabic||'')].reduce((h,c)=>(h*31+c.charCodeAt(0))>>>0,7));
 const isF=x=>!!(S.fv[dkey(x)]||{}).v;
 const dnorm=s=>(s||'').toLowerCase().replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g,'');
@@ -150,6 +149,7 @@ function loadD(){fetch('duas.json').then(r=>r.json()).then(j=>{D=j.duas||[];rend
 function duaGo(n){const o=dord(),p=o.indexOf(duaI);duaI=o[(p+n+o.length)%o.length];render()}
 function dList(){const q=dnorm(duaQ.trim());let o=dord();if(q)o=o.filter(i=>{const x=D[i];return dnorm([x.name,x.arabic,x.transliteration,x.en,x.bn].join(' ')).includes(q)});
  return o.length?o.map((i,n)=>{const x=D[i];return `<button class=di onclick="duaI=${i};duaO=1;render()"><span class=dnum>${n+1}</span><span>${x.name}</span><span class="fv ${isF(x)?'on':''}" onclick="event.stopPropagation();favT(${i})">${star(isF(x))}</span>${IC.rr}</button>`}).join(''):'<div class=mu style="padding:16px;text-align:center">No matches</div>'}
+function noteT(){duaN=duaN==duaI?-1:duaI;render()}
 function drawList(){const e=$('#dlist');if(e)e.innerHTML=dList()}
 function favT(i){const k=dkey(D[i]);S.fv[k]={v:isF(D[i])?0:1,t:Date.now()};persist();duaO?render():drawList()}
 function fbCopy(t){const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0;user-select:text;-webkit-user-select:text';document.body.append(a);a.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}a.remove();return Promise.resolve(ok)}
@@ -164,8 +164,9 @@ V.d=()=>{if(!D){loadD();return '<p class=mu>Loading…</p>'}
  if(!D.length)return '<h2>Duas</h2><div class=card>No duas yet. Add some in duas.json</div>';
  if(!duaO){const sr=D.length>=SEARCH_MIN;if(!sr)duaQ='';return `<h2>Duas</h2>${sr?`<input id=dq class=srch type=search placeholder="Search duas…" value="${duaQ.replace(/"/g,'&quot;')}" oninput="duaQ=this.value;drawList()">`:''}<div class="glass dl" id=dlist>${dList()}</div>`}
  duaI=Math.min(duaI,D.length-1);const d=D[duaI],s=S.set,k=dkey(d),T=S.dt[k]||3,n=DC[k]||0,o=dord();
- return `<div class=row style="justify-content:space-between"><button class=btn onclick="duaO=0;render()">${IC.l} All duas</button><span class=row style="margin:0"><button class="btn ${isF(d)?'on':''}" onclick="favT(duaI)" aria-label=Favourite>${star(isF(d))}</button><button class=btn onclick=copyDua() aria-label=Copy>${IC.cp}</button></span></div>
-<div class="glass dua"><span class=orb></span><div class=dn>${d.name}</div><div class=orn>${ORN}</div><div class="ar big">${d.arabic}</div>${s.tl&&d.transliteration?`<div class=trl>${d.transliteration}</div>`:''}${s.en&&d.en?`<div class=tr>${d.en}</div>`:''}${s.bn&&d.bn?`<div class="tr bn">${d.bn}</div>`:''}</div>
+ return `<div class=row style="justify-content:space-between"><button class=btn onclick="duaO=0;duaN=-1;render()">${IC.l} All duas</button><span class=row style="margin:0"><button class="btn ${isF(d)?'on':''}" onclick="favT(duaI)" aria-label=Favourite>${star(isF(d))}</button><button class=btn onclick=copyDua() aria-label=Copy>${IC.cp}</button></span></div>
+<div class="glass dua"><span class=orb></span>${d.note?`<button class="nbtn ${duaN==duaI?'on':''}" onclick=noteT() aria-label=Note>${IC.nt}</button>`:''}<div class=dn>${d.name}</div><div class=orn>${ORN}</div><div class="ar big">${d.arabic}</div>${s.tl&&d.transliteration?`<div class=trl>${d.transliteration}</div>`:''}${s.en&&d.en?`<div class=tr>${d.en}</div>`:''}${s.bn&&d.bn?`<div class="tr bn">${d.bn}</div>`:''}</div>
+${d.note&&duaN==duaI?`<div class="glass note"><div class=dn style="font-size:.9rem">Note</div><div class="nt bn">${d.note}</div></div>`:''}
 <div class=row style="align-items:center"><span class=mu>Repeat</span>${[3,7].map(m=>`<button class="btn ${T==m?'on':''}" onclick=repT(${m})>${m}×</button>`).join('')}<button class="btn ${T!=3&&T!=7?'on':''}" onclick=repC()>${T!=3&&T!=7?T+'×':'Custom'}</button><button class="btn p" id=rc onclick=repTap() style="min-width:84px">${n} / ${T}</button><button class=btn onclick=repReset() aria-label=Reset>${IC.r}</button></div>
 <div class=row style="align-items:center;gap:18px"><button class=btn onclick=duaGo(-1)>${IC.l}</button><span class=mu>${o.indexOf(duaI)+1} / ${D.length}</span><button class=btn onclick=duaGo(1)>${IC.rr}</button></div>`};
 function acc(){if(!fb)return FC.apiKey.startsWith('YOUR')?'<span class=mu>Add your Firebase config in index.html to enable sync. Data is saved on this device meanwhile.</span>':'<span class=mu>Loading…</span>';

@@ -100,3 +100,10 @@ input[type=checkbox]{width:22px;height:22px;accent-color:var(--ac)}
 
 .btn.dz{background:#d64545;color:#fff;box-shadow:0 3px 0 #d6454540}
 .btn:disabled{opacity:.4;pointer-events:none}
+
+.nbtn{position:absolute;top:14px;right:14px;z-index:2;width:38px;height:38px;border-radius:50%;border:0;display:flex;align-items:center;justify-content:center;cursor:pointer;background:color-mix(in srgb,var(--ac) 16%,transparent);color:var(--ac);transition:.15s}
+.nbtn svg{width:20px;height:20px}
+.nbtn.on{background:var(--ac);color:var(--on,#fff)}
+.nbtn:active{transform:scale(.92)}
+.note{padding:18px 20px;margin-bottom:14px;user-select:text;-webkit-user-select:text;text-align:left}
+.nt{white-space:pre-line;line-height:1.85;margin-top:8px;font-size:calc(1rem*var(--sz))}
