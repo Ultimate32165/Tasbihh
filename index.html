@@ -1,0 +1,150 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1f7a5c"><meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg"><link rel="apple-touch-icon" href="icon.svg">
+<title>Tasbih</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Nastaliq+Urdu&family=Hind+Siliguri:wght@400;600&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+[data-theme=forest]{--bg:#eef5f0;--cd:#fff;--ac:#1f7a5c;--tx:#173a2f;--mu:#6b8a7e}
+[data-theme=night]{--bg:#0f1720;--cd:#18232f;--ac:#4fd1a5;--tx:#e6f1ee;--mu:#7f95a3}
+[data-theme=rose]{--bg:#fbf0f2;--cd:#fff;--ac:#c2576f;--tx:#4a1f2a;--mu:#a37b85}
+[data-theme=ocean]{--bg:#eaf3f9;--cd:#fff;--ac:#2e7bb5;--tx:#16324a;--mu:#6f8ba3}
+[data-theme=dusk]{--bg:#17141f;--cd:#231f31;--ac:#b69cff;--tx:#ece8f7;--mu:#8f88a8}
+*{box-sizing:border-box}
+body{margin:0;font-family:Nunito,'Hind Siliguri',sans-serif;background:var(--bg);color:var(--tx);-webkit-tap-highlight-color:transparent;user-select:none}
+main{max-width:520px;margin:auto;padding:max(env(safe-area-inset-top),14px) 16px 100px}
+h2{margin:6px 0 14px;font-size:1.3rem}
+.card{background:var(--cd);border-radius:22px;padding:16px;margin-bottom:14px;box-shadow:0 4px 18px #0000000d}
+.ar{font-family:var(--arf);font-size:calc(2rem*var(--sz));line-height:2.1;text-align:center}
+.tr{text-align:center;color:var(--mu);font-size:calc(.95rem*var(--sz))}
+.bn{font-family:'Hind Siliguri',sans-serif}
+.ring{position:relative;width:min(70vw,260px);margin:10px auto;aspect-ratio:1;cursor:pointer}
+.ring svg{width:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:12;stroke-linecap:round}
+.rb{stroke:var(--bg)}#rg{stroke:var(--ac);transition:stroke-dashoffset .15s}
+.ring>div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+#cn{font-size:3.6rem;font-weight:800}.ring:active{transform:scale(.97)}
+.row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}
+.btn,select,input{font:inherit;color:var(--tx);background:var(--bg);border:0;border-radius:14px;padding:10px 14px}
+.btn{cursor:pointer;font-weight:600}.btn.on,.btn.p{background:var(--ac);color:#fff}
+select,input{width:100%}input[type=checkbox]{width:auto}input[type=range]{padding:0}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.st b{display:block;font-size:1.5rem}.st span,.mu{color:var(--mu);font-size:.8rem}
+.pr{display:flex;justify-content:space-between;align-items:center;padding:12px 4px;border-bottom:1px solid var(--bg)}
+.pr:last-child{border:0}.sw{width:34px;height:34px;border-radius:50%;border:3px solid var(--cd);cursor:pointer;display:inline-block;margin-right:6px}
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--cd);display:flex;justify-content:space-around;padding:8px 8px max(env(safe-area-inset-bottom),8px);box-shadow:0 -4px 18px #0000000d}
+nav button{background:none;border:0;color:var(--mu);font:inherit;font-size:.72rem;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 12px;border-radius:14px}
+nav button.on{color:var(--ac);font-weight:800}nav i{font-style:normal;font-size:1.3rem}
+.mo{position:fixed;inset:0;background:#0007;display:flex;align-items:center;justify-content:center;padding:20px;z-index:9}
+.mo>div{background:var(--cd);border-radius:22px;padding:20px;width:100%;max-width:400px;display:grid;gap:10px}
+#toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--ac);color:#fff;padding:10px 18px;border-radius:30px;opacity:0;transition:.3s;z-index:10;pointer-events:none}
+</style></head><body><main id="v"></main><nav id="nav"></nav><div id="toast"></div>
+<script>
+// ===== PASTE YOUR FIREBASE WEB CONFIG HERE =====
+const FC={apiKey:'YOUR_API_KEY',authDomain:'',projectId:'',appId:''};
+// ===============================================
+const $=s=>document.querySelector(s),KEY='tasbih_v1';
+const PN=['Fajr','Dhuhr','Asr','Maghrib','Isha'],PB=['ফজর','যোহর','আসর','মাগরিব','এশা'];
+const DEF=[
+{id:'sub',n:'SubhanAllah',ar:'سُبْحَانَ ٱللَّٰهِ',en:'Glory be to Allah',bn:'আল্লাহ পবিত্র',t:33},
+{id:'alh',n:'Alhamdulillah',ar:'ٱلْحَمْدُ لِلَّٰهِ',en:'All praise is for Allah',bn:'সকল প্রশংসা আল্লাহর',t:33},
+{id:'akb',n:'Allahu Akbar',ar:'ٱللَّٰهُ أَكْبَرُ',en:'Allah is the Greatest',bn:'আল্লাহ সর্বমহান',t:33},
+{id:'lai',n:'La ilaha illallah',ar:'لَا إِلَٰهَ إِلَّا ٱللَّٰهُ',en:'There is no god but Allah',bn:'আল্লাহ ছাড়া কোনো ইলাহ নেই',t:100},
+{id:'ast',n:'Astaghfirullah',ar:'أَسْتَغْفِرُ ٱللَّٰهَ',en:'I seek forgiveness from Allah',bn:'আমি আল্লাহর কাছে ক্ষমা চাই',t:100},
+{id:'dur',n:'Durood',ar:'ٱللَّٰهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ',en:'O Allah, send blessings upon Muhammad',bn:'হে আল্লাহ, মুহাম্মদের ওপর রহমত বর্ষণ করুন',t:100}];
+const AF={amiri:"Amiri,serif",indo:"'Noto Nastaliq Urdu',serif"};
+let S=JSON.parse(localStorage.getItem(KEY)||'null')||{tl:[],tt:{},logs:{},prog:{},cur:'sub',pend:{c:0,p:0},upd:0,
+ set:{theme:'forest',arf:'amiri',size:1,en:true,bn:true,haptic:true}};
+let tab='c',rg='w',mt='t',wasOff=!navigator.onLine;
+const all=()=>DEF.concat(S.tl),cur=()=>all().find(x=>x.id==S.cur)||DEF[0],tg=t=>S.tt[t.id]||t.t;
+const dk=d=>{d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const day=k=>S.logs[k=k||dk()]=S.logs[k]||{c:{},p:[0,0,0,0,0]};
+const dt=k=>S.logs[k]?Object.values(S.logs[k].c).reduce((a,b)=>a+b,0):0;
+const dp=k=>S.logs[k]?S.logs[k].p.reduce((a,b)=>a+b,0):0;
+const vib=p=>{if(S.set.haptic&&navigator.vibrate)navigator.vibrate(p)};
+function toast(m){const t=$('#toast');t.textContent=m;t.style.opacity=1;setTimeout(()=>t.style.opacity=0,1800)}
+function persist(){S.upd=Date.now();localStorage.setItem(KEY,JSON.stringify(S));clearTimeout(persist.t);persist.t=setTimeout(push,1500)}
+function modal(h){const m=document.createElement('div');m.className='mo';m.id='mo';m.innerHTML='<div>'+h+'</div>';m.onclick=e=>{if(e.target==m)m.remove()};document.body.append(m)}
+const closeM=()=>$('#mo')&&$('#mo').remove();
+
+// ===== counter =====
+function tap(){const t=cur(),l=day();S.prog[t.id]=(S.prog[t.id]||0)+1;l.c[t.id]=(l.c[t.id]||0)+1;S.pend.c++;
+ if(!navigator.onLine)wasOff=true;
+ if(S.prog[t.id]>=tg(t)){S.prog[t.id]=0;vib([80,60,80,60,250]);toast('Target complete ✨')}else vib(12);
+ persist();upd()}
+function upd(){const t=cur(),p=S.prog[t.id]||0;$('#cn').textContent=p;$('#rg').style.strokeDashoffset=565.5*(1-p/tg(t));$('#td').textContent=dt(dk())}
+function setT(n){if(!n){n=parseInt(prompt('Custom target',tg(cur())));if(!n||n<1)return}S.tt[S.cur]=n;persist();render()}
+function reset(){S.prog[S.cur]=0;persist();render()}
+function addT(){const g=i=>$('#'+i).value.trim();if(!g('an')&&!g('aa'))return;
+ const id='c'+Date.now();S.tl.push({id,n:g('an')||g('aa'),ar:g('aa'),en:g('ae'),bn:g('ab'),t:parseInt(g('at'))||33});S.cur=id;closeM();persist();render()}
+function openAdd(){modal(`<h2>New tasbih</h2><input id=an placeholder="Name"><input id=aa dir=rtl placeholder="Arabic text"><input id=ae placeholder="English translation"><input id=ab placeholder="বাংলা অনুবাদ"><input id=at type=number placeholder="Target (default 33)"><button class="btn p" onclick=addT()>Add</button>`)}
+
+// ===== prayers =====
+function togP(i){const l=day();l.p[i]=l.p[i]?0:1;S.pend.p+=l.p[i]?1:0;if(!navigator.onLine)wasOff=true;vib(20);persist();render()}
+
+// ===== stats =====
+function series(){const n=new Date(),o=[];const f=mt=='t'?dt:dp;
+ if(rg=='y'){for(let i=11;i>=0;i--){const d=new Date(n.getFullYear(),n.getMonth()-i,1);let v=0;
+  for(const k in S.logs){const x=new Date(k);if(x.getFullYear()==d.getFullYear()&&x.getMonth()==d.getMonth())v+=f(k)}
+  o.push({l:d.toLocaleString('en',{month:'short'})[0],v})}}
+ else{const c=rg=='w'?7:30;for(let i=c-1;i>=0;i--){const d=new Date(n.getFullYear(),n.getMonth(),n.getDate()-i);
+  o.push({l:rg=='w'?d.toLocaleString('en',{weekday:'short'}).slice(0,2):(i%5==0?d.getDate():''),v:f(dk(d))})}}return o}
+function chart(){const d=series(),m=Math.max(1,...d.map(x=>x.v)),w=320/d.length;
+ return `<svg viewBox="0 0 320 150" width=100%>${d.map((x,i)=>{const h=x.v/m*105;return `<rect x="${i*w+w*.15}" y="${115-h}" width="${w*.7}" height="${Math.max(h,2)}" rx="${Math.min(6,w*.3)}" fill="var(--ac)" opacity="${x.v?1:.25}"/><text x="${i*w+w/2}" y="136" font-size="10" text-anchor="middle" fill="var(--mu)">${x.l}</text>`}).join('')}</svg><div class=mu>Total: ${d.reduce((a,b)=>a+b.v,0)} · Peak: ${m>1||d.some(x=>x.v)?m:0}</div>`}
+function stats(){const ks=Object.keys(S.logs).sort(),tot=ks.reduce((a,k)=>a+dt(k),0),ptot=ks.reduce((a,k)=>a+dp(k),0);
+ let st=0,d=new Date();if(!dt(dk(d))&&!dp(dk(d)))d.setDate(d.getDate()-1);
+ while(dt(dk(d))||dp(dk(d))){st++;d.setDate(d.getDate()-1)}
+ const best=Math.max(0,...ks.map(dt));
+ const per={};ks.forEach(k=>{for(const i in S.logs[k].c)per[i]=(per[i]||0)+S.logs[k].c[i]});
+ return{tot,ptot,st,best,per}}
+function setR(r){rg=r;render()}function setM(m){mt=m;render()}
+
+// ===== views =====
+const V={
+c(){const t=cur(),T=tg(t),p=S.prog[t.id]||0;return `<div class=card><select onchange="S.cur=this.value;persist();render()">${all().map(x=>`<option value=${x.id} ${x.id==t.id?'selected':''}>${x.n}</option>`).join('')}</select>
+<div class=ar>${t.ar}</div>${S.set.en&&t.en?`<div class=tr>${t.en}</div>`:''}${S.set.bn&&t.bn?`<div class="tr bn">${t.bn}</div>`:''}</div>
+<div class=ring onclick=tap()><svg viewBox="0 0 200 200"><circle class=rb r=90 cx=100 cy=100 /><circle id=rg r=90 cx=100 cy=100 stroke-dasharray=565.5 stroke-dashoffset="${565.5*(1-p/T)}"/></svg><div><span id=cn>${p}</span><span class=mu>of ${T}</span></div></div>
+<div class=row>${[33,100].map(n=>`<button class="btn ${T==n?'on':''}" onclick=setT(${n})>${n}</button>`).join('')}<button class="btn ${T!=33&&T!=100?'on':''}" onclick=setT(0)>${T!=33&&T!=100?T:'Custom'}</button></div>
+<div class=row><button class=btn onclick=reset()>↺ Reset</button><button class=btn onclick=openAdd()>＋ New tasbih</button></div>
+<p class="mu" style="text-align:center">Today's total: <b id=td>${dt(dk())}</b></p>`},
+p(){const l=day();let g='';for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=dk(d);
+ g+=`<div style="text-align:center"><div class=mu>${d.toLocaleString('en',{weekday:'short'}).slice(0,2)}</div>${[0,1,2,3,4].map(j=>`<div style="width:14px;height:14px;margin:3px auto;border-radius:50%;background:${S.logs[k]&&S.logs[k].p[j]?'var(--ac)':'var(--bg)'}"></div>`).join('')}</div>`}
+ return `<h2>Daily prayers · ${dp(dk())}/5</h2><div class=card>${PN.map((n,i)=>`<div class=pr><span><b>${n}</b> <span class="mu bn">${PB[i]}</span></span><button class="btn ${l.p[i]?'p':''}" onclick=togP(${i})>${l.p[i]?'✓ Prayed':'Mark'}</button></div>`).join('')}</div>
+<div class=card><div class=mu style="margin-bottom:6px">Last 7 days</div><div style="display:flex;justify-content:space-around">${g}</div></div>`},
+s(){const x=stats();return `<h2>Stats</h2><div class=g>${[['Today',dt(dk())],['Total tasbih',x.tot],['Streak',x.st+' d'],['Best day',x.best],['Prayers today',dp(dk())+'/5'],['Prayers total',x.ptot]].map(a=>`<div class="card st"><b>${a[1]}</b><span>${a[0]}</span></div>`).join('')}</div>
+<div class=card><div class=row style="justify-content:space-between"><span>${[['w','Week'],['m','Month'],['y','Year']].map(a=>`<button class="btn ${rg==a[0]?'on':''}" onclick="setR('${a[0]}')">${a[1]}</button>`).join(' ')}</span><span>${[['t','Tasbih'],['p','Prayer']].map(a=>`<button class="btn ${mt==a[0]?'on':''}" onclick="setM('${a[0]}')">${a[1]}</button>`).join(' ')}</span></div>${chart()}</div>
+<div class=card><div class=mu>By tasbih</div>${all().filter(t=>x.per[t.id]).map(t=>`<div class=pr><span>${t.n}</span><b>${x.per[t.id]}</b></div>`).join('')||'<div class=mu>Nothing yet</div>'}</div>`},
+g(){const s=S.set,chk=(k,l)=>`<div class=pr><span>${l}</span><input type=checkbox ${s[k]?'checked':''} onchange="S.set.${k}=this.checked;persist();render()"></div>`;
+ return `<h2>Settings</h2><div class=card><div class=mu style="margin-bottom:8px">Theme</div>${['forest','night','rose','ocean','dusk'].map(t=>`<span class=sw data-theme=${t} style="background:var(--ac);${s.theme==t?'outline:2px solid var(--ac)':''}" onclick="S.set.theme='${t}';persist();render()"></span>`).join('')}</div>
+<div class=card>${chk('en','English translation')}${chk('bn','বাংলা translation')}${chk('haptic','Haptic vibration (phones)')}
+<div class=pr style="display:block"><div class=mu>Arabic font</div><select onchange="S.set.arf=this.value;persist();render()"><option value=amiri ${s.arf=='amiri'?'selected':''}>Amiri (Naskh)</option><option value=indo ${s.arf=='indo'?'selected':''}>Indo-Pak (Nastaliq)</option></select></div>
+<div class=pr style="display:block"><div class=mu>Text size</div><input type=range min=.8 max=1.6 step=.1 value=${s.size} oninput="S.set.size=+this.value;document.documentElement.style.setProperty('--sz',this.value)" onchange="persist()"></div></div>
+<div class=card><div class=mu style="margin-bottom:8px">Sync account</div><div id=acc>${acc()}</div></div>`}};
+function acc(){if(!fb)return FC.apiKey.startsWith('YOUR')?'<span class=mu>Add your Firebase config in index.html to enable sync. Data is saved on this device meanwhile.</span>':'<span class=mu>Loading…</span>';
+ if(user)return `<p>Signed in: <b>${user.email}</b></p><button class=btn onclick="fb.Au.signOut(fb.auth)">Sign out</button>`;
+ return `<div style="display:grid;gap:8px"><input id=em type=email placeholder=Email><input id=pw type=password placeholder=Password><div class=row><button class="btn p" onclick="auth(0)">Sign in</button><button class=btn onclick="auth(1)">Sign up</button></div></div>`}
+function auth(n){const a=fb.Au,e=$('#em').value,p=$('#pw').value;(n?a.createUserWithEmailAndPassword:a.signInWithEmailAndPassword)(fb.auth,e,p).catch(x=>alert(x.message))}
+
+function render(){document.body.dataset.theme=S.set.theme;const r=document.documentElement.style;r.setProperty('--sz',S.set.size);r.setProperty('--arf',AF[S.set.arf]);
+ $('#v').innerHTML=V[tab]();
+ $('#nav').innerHTML=[['c','📿','Count'],['p','🕌','Prayers'],['s','📊','Stats'],['g','⚙️','Settings']].map(a=>`<button class="${tab==a[0]?'on':''}" onclick="tab='${a[0]}';render()"><i>${a[1]}</i>${a[2]}</button>`).join('')}
+
+// ===== firebase sync =====
+let fb=null,user=null,first=true;
+async function initFB(){if(FC.apiKey.startsWith('YOUR'))return;const B='https://www.gstatic.com/firebasejs/10.12.0/';
+ try{const[A,Au,F]=await Promise.all(['app','auth','firestore'].map(m=>import(B+'firebase-'+m+'.js')));
+ const app=A.initializeApp(FC);fb={Au,F,auth:Au.getAuth(app),db:F.initializeFirestore(app,{localCache:F.persistentLocalCache()})};
+ Au.onAuthStateChanged(fb.auth,u=>{user=u;first=true;if(u)listen();tab=='g'&&render()});tab=='g'&&render()}catch(e){console.warn('Firebase offline',e)}}
+function listen(){fb.F.onSnapshot(fb.F.doc(fb.db,'users',user.uid),s=>{if(s.metadata.hasPendingWrites)return;
+ if(s.exists())merge(JSON.parse(s.data().d));localStorage.setItem(KEY,JSON.stringify(S));render();if(first){first=false;push()}})}
+function merge(r){r.tl.forEach(x=>{if(!S.tl.find(y=>y.id==x.id))S.tl.push(x)});
+ for(const d in r.logs){const a=day(d),b=r.logs[d];for(const k in b.c)a.c[k]=Math.max(a.c[k]||0,b.c[k]);b.p.forEach((v,i)=>a.p[i]=a.p[i]||v?1:0)}
+ if(r.upd>S.upd){S.set=r.set;S.tt=r.tt;S.prog=r.prog;S.cur=r.cur}}
+async function push(){if(!user||!fb)return;const p={...S.pend},off=wasOff;
+ try{await fb.F.setDoc(fb.F.doc(fb.db,'users',user.uid),{d:JSON.stringify(S)});
+  S.pend.c-=p.c;S.pend.p-=p.p;localStorage.setItem(KEY,JSON.stringify(S));
+  if(off&&(p.c||p.p)){wasOff=false;modal(`<h2>☁️ Synced</h2><p>Your offline progress is saved to your account:</p><div class=g><div class="card st"><b>${p.c}</b><span>tasbih counts</span></div><div class="card st"><b>${p.p}</b><span>prayers marked</span></div></div><button class="btn p" onclick=closeM()>Done</button>`)}}catch(e){}}
+addEventListener('offline',()=>wasOff=true);addEventListener('online',push);
+render();initFB();
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script></body></html>
