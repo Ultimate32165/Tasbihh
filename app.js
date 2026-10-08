@@ -2,7 +2,7 @@ const $=s=>document.querySelector(s),KEY='tasbih_v1';
 const PN=['Fajr','Dhuhr','Asr','Maghrib','Isha'],PB=['ফজর','যোহর','আসর','মাগরিব','এশা'];
 let DEF=[{id:'sub',n:'SubhanAllah',ar:'سُبْحَانَ ٱللَّٰهِ',en:'Glory be to Allah',bn:'আল্লাহ পবিত্র',t:33}];// fallback only; the real list lives in tasbih.json
 
-const THEMES=['forest','night','rose','ocean','dusk','sand','lavender','mint','sunset','ember','midnight'];
+const THEMES=['forest','night','rose','ocean','dusk','sand','lavender','mint','sunset','ember','midnight','sage','coral','aqua','orchid','gold','stone','emerald','plum','crimson','slate','abyss','obsidian'];
 const UF={nunito:'Nunito',poppins:'Poppins',quicksand:'Quicksand',baloo:"'Baloo 2'",lora:'Lora',playfair:"'Playfair Display'"};
 const sv=p=>`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
 const IC={c:sv('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/>'),p:sv('<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>'),s:sv('<path d="M18 20V10M12 20V4M6 20v-6"/>'),d:sv('<path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2zM22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/>'),g:sv('<path d="M4 6h8M18 6h2M4 12h2M12 12h8M4 18h10M20 18h0"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>'),r:sv('<path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/>'),a:sv('<path d="M12 5v14M5 12h14"/>'),k:sv('<path d="M5 12l5 5L20 7"/>'),l:sv('<path d="M15 6l-6 6 6 6"/>'),rr:sv('<path d="M9 6l6 6-6 6"/>')};
@@ -47,8 +47,8 @@ function upd(){const t=cur(),p=pg(t);$('#cn').textContent=p;$('#rg').style.strok
 function setT(n){if(!n){n=parseInt(prompt('Custom target',tg(cur())));if(!n||n<1)return}S.tt[S.cur]={v:n,t:Date.now()};persist();render()}
 function reset(){S.bs[S.cur]={v:lf(S.cur),t:Date.now()};persist();render()}
 function addT(){const g=i=>$('#'+i).value.trim();if(!g('an')&&!g('aa'))return;
- const id='c'+Date.now();S.tl.push({id,n:g('an')||g('aa'),ar:g('aa'),en:g('ae'),bn:g('ab'),t:parseInt(g('at'))||33});S.cur=id;closeM();persist();render()}
-function openAdd(){modal(`<h2>New tasbih</h2><input id=an placeholder="Name"><input id=aa dir=rtl placeholder="Arabic text"><input id=ae placeholder="English translation"><input id=ab placeholder="বাংলা অনুবাদ"><input id=at type=number placeholder="Target (default 33)"><button class="btn p" onclick=addT()>Add</button>`)}
+ const id='c'+Date.now();S.tl.push({id,n:g('an')||g('aa'),ar:g('aa'),en:g('ae'),bn:g('ab'),t:parseInt(g('at'))||33,note:g('anote')});S.cur=id;closeM();persist();render()}
+function openAdd(){modal(`<h2>New tasbih</h2><input id=an placeholder="Name"><input id=aa dir=rtl placeholder="Arabic text"><input id=ae placeholder="English translation"><input id=ab placeholder="বাংলা অনুবাদ"><input id=at type=number placeholder="Target (default 33)"><textarea id=anote rows=3 placeholder="Note (optional) - hadith or significance"></textarea><button class="btn p" onclick=addT()>Add</button>`)}
 
 // ===== prayers =====
 function togP(i){const l=day();l.p[i]={v:l.p[i].v?0:1,t:Date.now()};S.pend.p+=l.p[i].v;if(!navigator.onLine)wasOff=true;vib(S.set.hms||35);persist();render()}
@@ -104,12 +104,13 @@ function setR(r){rg=r;render()}function setM(m){mt=m;render()}
 
 // ===== views =====
 const V={
-c(){const t=cur(),T=tg(t),p=pg(t);return `<div class=card><button class=pick onclick=openSide()><span>${t.n}</span>${IC.m}</button>
+c(){const t=cur(),T=tg(t),p=pg(t);return `<div class=card><div style="display:flex;gap:8px;align-items:flex-start"><button class=pick onclick=openSide()><span>${t.n}</span>${IC.m}</button>${t.note?`<button class="nbtn in ${tnO==t.id?'on':''}" onclick=noteTT() aria-label=Note>${IC.nt}</button>`:''}</div>
 <div class=ar>${t.ar}</div>${S.set.en&&t.en?`<div class=tr>${t.en}</div>`:''}${S.set.bn&&t.bn?`<div class="tr bn">${t.bn}</div>`:''}</div>
 <div class=ring onclick=tap()><svg viewBox="0 0 200 200"><circle class=rb r=90 cx=100 cy=100 /><circle id=rg r=90 cx=100 cy=100 stroke-dasharray=565.5 stroke-dashoffset="${565.5*(1-p/T)}"/></svg><div><span id=cn>${p}</span><span class=mu>of ${T}</span></div></div>
+${t.note&&tnO==t.id?`<div class="glass note"><div class=dn style="font-size:.9rem">Note</div><div class="nt bn">${t.note}</div></div>`:''}
 <div class=row>${[33,100].map(n=>`<button class="btn ${T==n?'on':''}" onclick=setT(${n})>${n}</button>`).join('')}<button class="btn ${T!=33&&T!=100?'on':''}" onclick=setT(0)>${T!=33&&T!=100?T:'Custom'}</button></div>
 <div class=row><button class=btn onclick=reset()>${IC.r} Reset</button><button class=btn onclick=openAdd()>${IC.a} New tasbih</button></div>
-<p class="mu" style="text-align:center">Today's total: <b id=td>${dt(dk())}</b></p><p class=mu id=ss style="text-align:center;margin-top:-6px;font-size:.75rem">${user?SS:'Not signed in · saved on this device only'}</p>`},
+<p class="mu" style="text-align:center">Today's total: <b id=td>${dt(dk())}</b></p><p class=mu id=ss style="text-align:center;margin-top:-6px;font-size:.75rem">${user?SS:'Not signed in · saved on this device only'}</p>${user?`<div class=row style="margin:0 0 6px"><button class="btn sm syb" onclick=syncNow()>${IC.sy} Sync now</button></div>`:''}`},
 p(){const l=day();let g='';for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=dk(d);
  g+=`<div style="text-align:center"><div class=mu>${d.toLocaleString('en',{weekday:'short'}).slice(0,2)}</div>${[0,1,2,3,4].map(j=>`<div style="width:14px;height:14px;margin:3px auto;border-radius:50%;background:${S.logs[k]&&S.logs[k].p[j].v?'var(--ac)':'var(--bg)'}"></div>`).join('')}${['tahajjud','sunnah'].map((e,j)=>`<div style="width:14px;height:14px;margin:${j?'3px':'10px'} auto 3px;border-radius:5px;background:${((S.logs[k]&&S.logs[k].x||{})[e]||{}).v?'var(--ac)':'var(--bg)'}"></div>`).join('')}</div>`}
  return `<h2>Daily prayers · ${dp(dk())}/5</h2><div class=card>${PN.map((n,i)=>`<div class=pr><span><b>${n}</b> <span class="mu bn">${PB[i]}</span></span><button class="btn ${l.p[i].v?'p':''}" onclick=togP(${i})>${l.p[i].v?IC.k+' Prayed':'Mark'}</button></div>`).join('')}</div>
@@ -118,7 +119,7 @@ s(){const x=stats();return `<h2>Stats</h2><div class=g>${[['Today',dt(dk())],['T
 <div class=card><div class=row style="justify-content:space-between"><span>${[['w','Week'],['m','Month'],['y','Year']].map(a=>`<button class="btn ${rg==a[0]?'on':''}" onclick="setR('${a[0]}')">${a[1]}</button>`).join(' ')}</span><span>${[['t','Tasbih'],['p','Prayer'],['x','Extras']].map(a=>`<button class="btn ${mt==a[0]?'on':''}" onclick="setM('${a[0]}')">${a[1]}</button>`).join(' ')}</span></div>${chart()}</div>
 <div class=card><div class=mu>By tasbih</div>${all().filter(t=>x.per[t.id]).map(t=>`<div class=pr><span>${t.n}</span><b>${x.per[t.id]}</b></div>`).join('')||'<div class=mu>Nothing yet</div>'}</div>`},
 g(){const s=S.set,chk=(k,l)=>`<div class=pr><span>${l}</span><input type=checkbox ${s[k]?'checked':''} onchange="S.set.${k}=this.checked;persist(1);render()"></div>`;
- return `<h2>Settings</h2><div class=card><div class=mu style="margin-bottom:8px">Theme</div>${THEMES.map(t=>`<span class=sw data-theme=${t} style="background:var(--ac);${s.theme==t?'outline:2px solid var(--ac)':''}" onclick="S.set.theme='${t}';persist(1);render()"></span>`).join('')}</div>
+ return `<h2>Settings</h2><div class=card><div class=mu style="margin-bottom:8px">Theme</div>${THEMES.map(t=>`<span class=sw data-theme=${t} title=${t} style="background:linear-gradient(135deg,var(--bg) 50%,var(--ac) 50%);${s.theme==t?'outline:2px solid var(--ac)':''}" onclick="S.set.theme='${t}';persist(1);render()"></span>`).join('')}</div>
 <div class=card>${chk('en','English translation')}${chk('bn','বাংলা translation')}${chk('tl','Transliteration (duas)')}${chk('haptic','Haptic vibration (phones)')}<div class=pr style="display:block"><div class=mu>Tap vibration length · ${s.hms} ms</div><input type=range min=10 max=100 step=5 value=${s.hms} oninput="S.set.hms=+this.value;this.previousElementSibling.textContent='Tap vibration length · '+this.value+' ms'" onchange="persist(1);vib(S.set.hms)"></div>
 <div class=pr style="display:block"><div class=mu>App font</div><select onchange="S.set.uf=this.value;persist(1);render()">${Object.keys(UF).map(k=>`<option value=${k} ${(s.uf||'nunito')==k?'selected':''}>${UF[k].replace(/'/g,'')}</option>`).join('')}</select></div><div class=pr style="display:block"><div class=mu>Arabic font</div><select onchange="S.set.arf=this.value;persist(1);render()"><option value=amiri ${s.arf=='amiri'?'selected':''}>Amiri (Naskh)</option><option value=indo ${s.arf=='indo'?'selected':''}>Indo-Pak (Nastaliq)</option></select></div>
 <div class=pr style="display:block"><div class=mu>Text size</div><input type=range min=.8 max=1.6 step=.1 value=${s.size} oninput="S.set.size=+this.value;document.documentElement.style.setProperty('--sz',this.value)" onchange="persist(1)"></div></div>
@@ -126,6 +127,7 @@ g(){const s=S.set,chk=(k,l)=>`<div class=pr><span>${l}</span><input type=checkbo
 <div class=card><div class=mu style="margin-bottom:8px">Backup</div><div class=row style="justify-content:flex-start"><button class=btn onclick=expData()>Export</button><button class=btn onclick="$('#bf').click()">Import</button></div><input id=bf type=file accept=".json,application/json" hidden onchange="impData(this)"><div class=mu style="margin-top:6px">${S.lb?'Last export: '+new Date(S.lb).toLocaleString():'Never exported'} · import merges into your current data</div></div>
 <div class=card><div class=mu style="margin-bottom:8px">Danger zone</div><button class="btn dz" onclick=openReset()>Reset stats…</button></div>`}};
 IC.m=sv('<path d="M4 6h16M4 12h16M4 18h16"/>');IC.n=sv('<path d="M5 12h14"/>');IC.cp=sv('<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>');
+IC.sy=sv('<path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/>');
 IC.nt=sv('<path d="M15.5 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5z"/><path d="M15 3v6h6"/><path d="M8 13h8M8 17h5"/>');
 const star=on=>sv('<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>').replace('fill="none"',on?'fill="currentColor"':'fill="none"');
 function openSide(){const m=document.createElement('div'),L=S.logs[dk()]||{c:{}};m.className='sb';m.id='sb';
@@ -133,7 +135,9 @@ function openSide(){const m=document.createElement('div'),L=S.logs[dk()]||{c:{}}
  m.innerHTML=`<aside class=glass><div class=sh>My tasbih</div><div class=sl>${all().map(x=>`<button class="di si ${x.id==S.cur?'cur':''}" onclick="pickT('${x.id}')"><span class=sn>${x.n}</span><span class=mu>${cc(L,x.id)}</span></button>`).join('')}</div><button class="btn p" onclick="closeSb();openAdd()">${IC.a} New tasbih</button></aside>`;
  document.body.append(m);requestAnimationFrame(()=>m.classList.add('in'))}
 function closeSb(){const m=$('#sb');if(m){m.classList.remove('in');setTimeout(()=>m.remove(),250)}}
-function pickT(id){S.cur=id;persist(1);closeSb();render()}
+let tnO='';
+function noteTT(){tnO=tnO==S.cur?'':S.cur;render()}
+function pickT(id){tnO='';S.cur=id;persist(1);closeSb();render()}
 const SEARCH_MIN=8,DC={};let duaQ='',duaN=-1;
 const dkey=x=>x.id||((x.name||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'d'+[...(x.arabic||'')].reduce((h,c)=>(h*31+c.charCodeAt(0))>>>0,7));
 const isF=x=>!!(S.fv[dkey(x)]||{}).v;
@@ -164,7 +168,7 @@ ${d.note&&duaN==duaI?`<div class="glass note"><div class=dn style="font-size:.9r
 <div class=row style="align-items:center"><span class=mu>Repeat</span>${[3,7].map(m=>`<button class="btn ${T==m?'on':''}" onclick=repT(${m})>${m}×</button>`).join('')}<button class="btn ${T!=3&&T!=7?'on':''}" onclick=repC()>${T!=3&&T!=7?T+'×':'Custom'}</button><button class="btn p" id=rc onclick=repTap() style="min-width:84px">${n} / ${T}</button><button class=btn onclick=repReset() aria-label=Reset>${IC.r}</button></div>
 <div class=row style="align-items:center;gap:18px"><button class=btn onclick=duaGo(-1)>${IC.l}</button><span class=mu>${o.indexOf(duaI)+1} / ${D.length}</span><button class=btn onclick=duaGo(1)>${IC.rr}</button></div>`};
 function acc(){if(!fb)return FC.apiKey.startsWith('YOUR')?'<span class=mu>Add your Firebase config in index.html to enable sync. Data is saved on this device meanwhile.</span>':'<span class=mu>Loading…</span>';
- if(user)return `<p>Signed in: <b>${user.email.split('@')[0]}</b></p><button class=btn onclick="fb.Au.signOut(fb.auth)">Sign out</button>`;
+ if(user)return `<p>Signed in: <b>${user.email.split('@')[0]}</b></p><div class=mu style="margin:-6px 0 10px">${S.ls?'Last synced: '+new Date(S.ls).toLocaleString():'Not synced yet'}</div><div class=row style="justify-content:flex-start"><button class="btn p syb" onclick=syncNow()>${IC.sy} Sync now</button><button class=btn onclick="fb.Au.signOut(fb.auth)">Sign out</button></div>`;
  return `<div style="display:grid;gap:8px"><input id=em placeholder=Username autocapitalize=none autocomplete=username><input id=pw type=password placeholder=Password><div class=row><button class="btn p" onclick="auth(0)">Sign in</button><button class=btn onclick="auth(1)">Sign up</button></div></div>`}
 function auth(n){const a=fb.Au,e=$('#em').value.trim().toLowerCase().replace(/\s+/g,'')+'@tasbih-app.com',p=$('#pw').value;(n?a.createUserWithEmailAndPassword:a.signInWithEmailAndPassword)(fb.auth,e,p).catch(x=>alert(x.message))}
 
@@ -173,6 +177,12 @@ function render(){document.body.dataset.theme=S.set.theme;const r=document.docum
  $('#nav').innerHTML=[['c','','Count'],['p','','Prayers'],['s','','Stats'],['d','','Duas'],['g','','Settings']].map(a=>`<button class="${tab==a[0]?'on':''}" onclick="tab='${a[0]}';render()">${IC[a[0]]}${a[2]}</button>`).join('')}
 
 // ===== firebase sync =====
+async function syncNow(){if(syncNow.b)return;if(!user||!fb)return toast('Sign in to sync');if(!navigator.onLine)return toast('You are offline');
+ syncNow.b=1;const sp=on=>document.querySelectorAll('.syb').forEach(b=>b.classList.toggle('syncing',on));sp(1);setSS('Syncing…');
+ try{const s=await fb.F.getDocFromServer(fb.F.doc(fb.db,'users',user.uid));R=fromWire(s.exists()?s.data():{});merge(R);await push();if(/failed/i.test(SS))throw 0;
+  S.ls=Date.now();localStorage.setItem(KEY,JSON.stringify(S));refresh();setSS('Synced');toast('Synced ✓')}
+ catch(e){setSS('Sync failed · saved on this device');toast('Sync failed')}
+ syncNow.b=0;sp(0);if(tab=='g')render()}
 let fb=null,user=null,first=true;
 async function initFB(){if(FC.apiKey.startsWith('YOUR'))return;const B='https://www.gstatic.com/firebasejs/10.12.0/';
  try{const[A,Au,F]=await Promise.all(['app','auth','firestore'].map(m=>import(B+'firebase-'+m+'.js')));
@@ -215,7 +225,7 @@ let unsub;function listen(){unsub&&unsub();unsub=fb.F.onSnapshot(fb.F.doc(fb.db,
 async function push(){if(!user||!fb)return;
  if(!navigator.onLine){wasOff=true;return setSS('Offline · saved on this device, will sync later')}
  const o=delta(R);if(!o)return;const off=wasOff,p={...S.pend};setSS('Saving…');
- try{await fb.F.setDoc(fb.F.doc(fb.db,'users',user.uid),o,{merge:true});setSS('Synced');
+ try{await fb.F.setDoc(fb.F.doc(fb.db,'users',user.uid),o,{merge:true});setSS('Synced');S.ls=Date.now();
   if(off&&(S.pend.c||S.pend.p)){const q=S.pend;S.pend={c:0,p:0};wasOff=false;modal(`<h2>Synced</h2><p>Your offline progress is saved to your account:</p><div class=g><div class="card st"><b>${q.c}</b><span>tasbih counts</span></div><div class="card st"><b>${q.p}</b><span>prayers marked</span></div></div><button class="btn p" onclick=closeM()>Done</button>`)}
   else{S.pend.c=Math.max(0,S.pend.c-p.c);S.pend.p=Math.max(0,S.pend.p-p.p)}
   localStorage.setItem(KEY,JSON.stringify(S))}catch(e){setSS('Sync failed · saved on this device')}}
@@ -224,7 +234,7 @@ addEventListener('keydown',e=>{if(e.code!=='Space'||typing(e)||$('#mo')||$('#sb'
 addEventListener('keyup',e=>{if(e.code==='Space'&&!typing(e)&&tab==='c')e.preventDefault()});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)push()});addEventListener('pagehide',push);
 addEventListener('offline',()=>{wasOff=true;setSS('Offline · saved on this device, will sync later')});addEventListener('online',push);
-const TJ=fetch('tasbih.json').then(r=>r.json()).then(j=>{const l=(j.tasbih||[]).filter(x=>x&&x.id&&x.name).map(x=>({id:String(x.id),n:x.name,ar:x.arabic||'',en:x.en||'',bn:x.bn||'',t:+x.target||33}));if(l.length)DEF=l}).catch(()=>{});
+const TJ=fetch('tasbih.json').then(r=>r.json()).then(j=>{const l=(j.tasbih||[]).filter(x=>x&&x.id&&x.name).map(x=>({id:String(x.id),n:x.name,ar:x.arabic||'',en:x.en||'',bn:x.bn||'',t:+x.target||33,note:x.note||''}));if(l.length)DEF=l}).catch(()=>{});
 let started=0;const go=()=>{if(started)return render();started=1;migrate();render();initFB()};
 TJ.then(go);setTimeout(()=>{if(!started)go()},1500);
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});

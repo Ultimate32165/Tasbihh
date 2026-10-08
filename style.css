@@ -107,3 +107,25 @@ input[type=checkbox]{width:22px;height:22px;accent-color:var(--ac)}
 .nbtn:active{transform:scale(.92)}
 .note{padding:18px 20px;margin-bottom:14px;user-select:text;-webkit-user-select:text;text-align:left}
 .nt{white-space:pre-line;line-height:1.85;margin-top:8px;font-size:calc(1rem*var(--sz))}
+
+/* more themes */
+[data-theme=sage]{--bg:#eef1e8;--cd:#fff;--ac:#5a7d3e;--tx:#26331c;--mu:#82927a}
+[data-theme=coral]{--bg:#fff1f0;--cd:#fff;--ac:#e5484d;--tx:#4a1c1c;--mu:#b58383}
+[data-theme=aqua]{--bg:#e6f9fd;--cd:#fff;--ac:#0891b2;--tx:#0d3a46;--mu:#6aa5b3}
+[data-theme=orchid]{--bg:#fbeefa;--cd:#fff;--ac:#b44fb5;--tx:#43183f;--mu:#a67aa3}
+[data-theme=gold]{--bg:#fdf8e4;--cd:#fffdf3;--ac:#d4a62a;--tx:#3b3210;--mu:#9c9159;--on:#2e2606}
+[data-theme=stone]{--bg:#f0f0ee;--cd:#fff;--ac:#5f6b73;--tx:#20262b;--mu:#868e93}
+[data-theme=emerald]{--bg:#08150f;--cd:#11251b;--ac:#34d399;--tx:#e4f7ee;--mu:#6f9a87;--on:#06130d}
+[data-theme=plum]{--bg:#1b1020;--cd:#2a1a31;--ac:#e879f9;--tx:#f6e8f9;--mu:#a583ab;--on:#1b1020}
+[data-theme=crimson]{--bg:#1c1012;--cd:#2b1a1d;--ac:#ff5d73;--tx:#fbe9ec;--mu:#a98189;--on:#1c1012}
+[data-theme=slate]{--bg:#12161c;--cd:#1d232b;--ac:#94a3b8;--tx:#e6eaf0;--mu:#8390a0;--on:#12161c}
+[data-theme=abyss]{--bg:#061a1f;--cd:#0d2a31;--ac:#22d3ee;--tx:#e0f7fa;--mu:#6aa0aa;--on:#061a1f}
+[data-theme=obsidian]{--bg:#000;--cd:#131313;--ac:#f5c542;--tx:#f2f2f2;--mu:#8a8a8a;--on:#1a1400}
+.sw{box-shadow:0 0 0 1px #00000026}
+/* tasbih note button, textarea, sync */
+.nbtn.in{position:static;flex:none;width:48px;height:48px;border-radius:18px;margin-bottom:16px}
+textarea{font:inherit;color:var(--tx);background:var(--bg);border:0;border-radius:14px;padding:10px 14px;width:100%;resize:vertical;-webkit-user-select:text;user-select:text}
+.btn.sm{padding:6px 14px;font-size:.8rem}
+.btn.sm svg{width:15px;height:15px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.syncing svg{animation:sp .8s linear infinite}

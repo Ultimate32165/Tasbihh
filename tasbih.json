@@ -1,5 +1,5 @@
 {
-  "_help": "Your tasbih list. Each item needs a unique \"id\" and a \"name\"; \"arabic\", \"en\", \"bn\" and \"target\" (default 33) are optional. Keep the commas between items. IMPORTANT: never change or reuse an existing \"id\" - your saved counts and stats are tied to it. Tasbih you add inside the app are saved separately and show up after these.",
+  "_help": "Your tasbih list. Each item needs a unique \"id\" and a \"name\"; \"arabic\", \"en\", \"bn\" and \"target\" (default 33) and \"note\" are optional. Keep the commas between items. IMPORTANT: never change or reuse an existing \"id\" - your saved counts and stats are tied to it. Tasbih you add inside the app are saved separately and show up after these.",
   "tasbih": [
     {
       "id": "sub",
