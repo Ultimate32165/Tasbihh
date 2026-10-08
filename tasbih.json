@@ -56,6 +56,16 @@
       "en": "Glory be to Allah and His is the praise.",
       "bn": "আল্লাহর পবিত্রতা ও মহিমা ঘোষণা করছি এবং সমস্ত প্রশংসা তাঁরই",
       "target": 100
-    }
+    },
+    {
+  "id": "yun",
+  "name": "দোয়া ইউনুস",
+  "note": "",
+  "arabic": "لَا إِلَٰهَ إِلَّا أَنتَ سُبْحَانَكَ إِنِّي كُنتُ مِنَ الظَّالِمِينَ",
+  "en": "There is no god but You; glory be to You. Indeed, I have been among the wrongdoers.",
+  "bn": "আপনি ছাড়া কোনো ইলাহ নেই, আপনি পবিত্র। নিশ্চয়ই আমি জালিমদের অন্তর্ভুক্ত ছিলাম।",
+  "target": 100
+},
+
   ]
 }
