@@ -104,7 +104,7 @@ function setR(r){rg=r;render()}function setM(m){mt=m;render()}
 
 // ===== views =====
 const V={
-c(){const t=cur(),T=tg(t),p=pg(t);return `<div class=card><div style="display:flex;gap:8px;align-items:flex-start"><button class=pick onclick=openSide()><span>${t.n}</span>${IC.m}</button>${t.note?`<button class="nbtn in ${tnO==t.id?'on':''}" onclick=noteTT() aria-label=Note>${IC.nt}</button>`:''}</div>
+c(){const t=cur(),T=tg(t),p=pg(t);return `${dateBar()}<div class=card><div style="display:flex;gap:8px;align-items:flex-start"><button class=pick onclick=openSide()><span>${t.n}</span>${IC.m}</button>${t.note?`<button class="nbtn in ${tnO==t.id?'on':''}" onclick=noteTT() aria-label=Note>${IC.nt}</button>`:''}</div>
 <div class=ar>${t.ar}</div>${S.set.en&&t.en?`<div class=tr>${t.en}</div>`:''}${S.set.bn&&t.bn?`<div class="tr bn">${t.bn}</div>`:''}</div>
 <div class=ring onclick=tap()><svg viewBox="0 0 200 200"><circle class=rb r=90 cx=100 cy=100 /><circle id=rg r=90 cx=100 cy=100 stroke-dasharray=565.5 stroke-dashoffset="${565.5*(1-p/T)}"/></svg><div><span id=cn>${p}</span><span class=mu>of ${T}</span></div></div>
 ${t.note&&tnO==t.id?`<div class="glass note"><div class=dn style="font-size:.9rem">Note</div><div class="nt bn">${nHTML(t.note)}</div></div>`:''}
@@ -117,7 +117,7 @@ p(){const l=day();let g='';for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.
 ${extras()}${qazaCard()}<div class=card><div class=mu style="margin-bottom:6px">Last 7 days</div><div style="display:flex;justify-content:space-around">${g}</div><div class=mu style="margin-top:8px;font-size:.72rem;text-align:center">● five prayers · ▢ Tahajjud, Sunnah</div></div>`},
 s(){const x=stats();return `<div class=row style="justify-content:space-between;margin:0"><h2>Stats</h2><button class=btn onclick=cardS() aria-label=Share>${IC.sh}</button></div><div class=g>${[['Today',dt(dk())],['Total tasbih',x.tot],['Streak',x.st+' d'],['Best day',x.best],['Prayers today',dp(dk())+'/5'],['Prayers total',x.ptot],['Tahajjud nights',x.tj],['Sunnah days',x.sn]].map(a=>`<div class="card st"><b>${a[1]}</b><span>${a[0]}</span></div>`).join('')}</div>
 <div class=card><div class=row style="justify-content:space-between"><span>${[['w','Week'],['m','Month'],['y','Year']].map(a=>`<button class="btn ${rg==a[0]?'on':''}" onclick="setR('${a[0]}')">${a[1]}</button>`).join(' ')}</span><span>${[['t','Tasbih'],['p','Prayer'],['x','Extras']].map(a=>`<button class="btn ${mt==a[0]?'on':''}" onclick="setM('${a[0]}')">${a[1]}</button>`).join(' ')}</span></div>${chart()}</div>
-<div class=card><div class=mu>By tasbih</div>${all().filter(t=>x.per[t.id]).map(t=>`<div class=pr><span>${t.n}</span><b>${x.per[t.id]}</b></div>`).join('')||'<div class=mu>Nothing yet</div>'}</div>`},
+${heat()}<div class=card><div class=mu>By tasbih</div>${all().filter(t=>x.per[t.id]).map(t=>`<div class=pr><span>${t.n}</span><b>${x.per[t.id]}</b></div>`).join('')||'<div class=mu>Nothing yet</div>'}</div>`},
 g(){const s=S.set,chk=(k,l)=>`<div class=pr><span>${l}</span><input type=checkbox ${s[k]?'checked':''} onchange="S.set.${k}=this.checked;persist(1);render()"></div>`;
  return `<h2>Settings</h2><div class=card><div class=mu style="margin-bottom:8px">Theme</div>${THEMES.map(t=>`<span class=sw data-theme=${t} title=${t} style="background:linear-gradient(135deg,var(--bg) 50%,var(--ac) 50%);${s.theme==t?'outline:2px solid var(--ac)':''}" onclick="S.set.theme='${t}';persist(1);render()"></span>`).join('')}</div>
 <div class=card>${chk('en','English translation')}${chk('bn','বাংলা translation')}${chk('tl','Transliteration (duas)')}${chk('haptic','Haptic vibration (phones)')}<div class=pr style="display:block"><div class=mu>Tap vibration length · ${s.hms} ms</div><input type=range min=10 max=100 step=5 value=${s.hms} oninput="S.set.hms=+this.value;this.previousElementSibling.textContent='Tap vibration length · '+this.value+' ms'" onchange="persist(1);vib(S.set.hms)"></div>
@@ -315,6 +315,18 @@ function cardS(){const x0=stats(),d=series(),m=Math.max(1,...d.map(v=>v.v)),tot=
   const w=800/d.length,base=o.y+700;
   d.forEach((v,i)=>{const h=Math.max(v.v/m*300,4),a=140+i*w+w*.15;x.globalAlpha=v.v?1:.25;x.fillStyle=o.ac;rrect(x,a,base-h,w*.7,h,Math.min(8,w*.3));x.fill();x.globalAlpha=1;x.fillStyle=o.mu;x.font=`600 22px ${o.uf2}`;x.fillText(v.l,a+w*.35,base+30)});
   x.font=`600 28px ${o.uf2}`;x.fillStyle=o.mu;x.fillText('Total: '+tot+' · Peak: '+(tot?m:0),o.W/2,base+95)}})}
+// ===== heatmap + date bar =====
+function heat(){const f=mt=='t'?dt:mt=='p'?dp:dx,t=new Date(),s=new Date(t.getFullYear(),t.getMonth(),t.getDate()-t.getDay()-25*7),cs=[];let m=1,o='';
+ for(let i=0;i<182;i++){const d=new Date(s.getFullYear(),s.getMonth(),s.getDate()+i);if(d>t)break;const v=f(dk(d));m=Math.max(m,v);cs.push([i,d,v])}
+ const op=[.13,.35,.55,.78,1];
+ cs.forEach(([i,d,v])=>{const c=Math.floor(i/7),r=i%7,l=v?Math.min(4,Math.ceil(v/m*4)):0;
+  o+=`<rect x="${c*14}" y="${16+r*14}" width="11" height="11" rx="3" fill="var(--ac)" opacity="${op[l]}"/>`;
+  if(r==0&&d.getDate()<=7)o+=`<text x="${c*14}" y="9" font-size="9" fill="var(--mu)">${d.toLocaleString('en',{month:'short'})}</text>`});
+ o+=`<text x="266" y="124" font-size="9" text-anchor="end" fill="var(--mu)">Less</text>${op.map((q,j)=>`<rect x="${270+j*14}" y="116" width="11" height="11" rx="3" fill="var(--ac)" opacity="${q}"/>`).join('')}<text x="340" y="124" font-size="9" fill="var(--mu)">More</text>`;
+ return `<div class=card><div class=mu style="margin-bottom:6px">Activity · last 26 weeks</div><svg viewBox="0 0 364 130" width=100%>${o}</svg></div>`}
+const dbT=()=>new Date().toLocaleTimeString('en',{hour:'numeric',minute:'2-digit'}),dbD=()=>new Date().toLocaleDateString('en',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+function dateBar(){return `<div class=glass style="padding:12px 18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center"><span id=dbd class=mu style="font-size:.85rem">${dbD()}</span><b id=dbt style="color:var(--ac)">${dbT()}</b></div>`}
+setInterval(()=>{const a=$('#dbt'),b=$('#dbd');if(a&&b){a.textContent=dbT();b.textContent=dbD()}},15000);
 const typing=e=>/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName);
 addEventListener('keydown',e=>{if(e.code!=='Space'||typing(e)||$('#mo')||$('#sb')||tab!=='c')return;e.preventDefault();if(!e.repeat)tap()});
 addEventListener('keyup',e=>{if(e.code==='Space'&&!typing(e)&&tab==='c')e.preventDefault()});
