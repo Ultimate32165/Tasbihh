@@ -129,3 +129,6 @@ textarea{font:inherit;color:var(--tx);background:var(--bg);border:0;border-radiu
 .btn.sm svg{width:15px;height:15px}
 @keyframes sp{to{transform:rotate(360deg)}}
 .syncing svg{animation:sp .8s linear infinite}
+
+/* keep line breaks (\n in the json files, Enter in the add form) */
+.ar,.tr,.trl,.dn{white-space:pre-line}

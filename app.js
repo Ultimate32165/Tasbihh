@@ -48,7 +48,7 @@ function setT(n){if(!n){n=parseInt(prompt('Custom target',tg(cur())));if(!n||n<1
 function reset(){S.bs[S.cur]={v:lf(S.cur),t:Date.now()};persist();render()}
 function addT(){const g=i=>$('#'+i).value.trim();if(!g('an')&&!g('aa'))return;
  const id='c'+Date.now();S.tl.push({id,n:g('an')||g('aa'),ar:g('aa'),en:g('ae'),bn:g('ab'),t:parseInt(g('at'))||33,note:g('anote')});S.cur=id;closeM();persist();render()}
-function openAdd(){modal(`<h2>New tasbih</h2><input id=an placeholder="Name"><input id=aa dir=rtl placeholder="Arabic text"><input id=ae placeholder="English translation"><input id=ab placeholder="বাংলা অনুবাদ"><input id=at type=number placeholder="Target (default 33)"><textarea id=anote rows=3 placeholder="Note (optional) - hadith or significance"></textarea><button class="btn p" onclick=addT()>Add</button>`)}
+function openAdd(){modal(`<h2>New tasbih</h2><input id=an placeholder="Name"><textarea id=aa dir=rtl rows=2 placeholder="Arabic text"></textarea><textarea id=ae rows=2 placeholder="English translation"></textarea><textarea id=ab rows=2 placeholder="বাংলা অনুবাদ"></textarea><input id=at type=number placeholder="Target (default 33)"><textarea id=anote rows=3 placeholder="Note (optional) - hadith or significance"></textarea><button class="btn p" onclick=addT()>Add</button>`)}
 
 // ===== prayers =====
 function togP(i){const l=day();l.p[i]={v:l.p[i].v?0:1,t:Date.now()};S.pend.p+=l.p[i].v;if(!navigator.onLine)wasOff=true;vib(S.set.hms||35);persist();render()}
