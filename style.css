@@ -136,3 +136,8 @@ textarea{font:inherit;color:var(--tx);background:var(--bg);border:0;border-radiu
 /* Arabic inside notes */
 .ara{font-family:var(--arf);font-size:1.35em;line-height:2;white-space:normal}
 .ara.blk{display:block;text-align:center;font-size:calc(1.6rem*var(--sz));line-height:2.3;margin:6px 0}
+
+/* 99 names */
+.nra{flex:none;font-family:var(--arf);font-size:calc(1.4rem*var(--sz));line-height:1.7}
+.di small{display:block;font-weight:400;font-size:.78rem}
+nav button{padding:8px 2px;min-width:0;font-size:.68rem}

@@ -1,0 +1,705 @@
+{
+    "_help": "The 99 Names of Allah. Each item: \"n\" (number), \"name\" (transliteration), \"arabic\", \"en\", \"bn\". Optional \"note\" (benefit or explanation, use \\n for line breaks) adds a note icon on that name. Please double-check the Arabic spelling and the Bangla meanings against a source you trust, and edit anything you like.",
+    "names": [
+        {
+            "n": 0,
+            "name": "Allah",
+            "arabic": "ٱللَّٰهُ",
+            "en": "God, the One True God",
+            "bn": "আল্লাহ"
+        },
+        {
+            "n": 1,
+            "name": "Ar-Rahman",
+            "arabic": "الرَّحْمَٰنُ",
+            "en": "The Most Gracious",
+            "bn": "পরম করুণাময়"
+        },
+        {
+            "n": 2,
+            "name": "Ar-Rahim",
+            "arabic": "الرَّحِيمُ",
+            "en": "The Most Merciful",
+            "bn": "অতিশয় দয়ালু"
+        },
+        {
+            "n": 3,
+            "name": "Al-Malik",
+            "arabic": "الْمَلِكُ",
+            "en": "The King, the Sovereign",
+            "bn": "মহান অধিপতি"
+        },
+        {
+            "n": 4,
+            "name": "Al-Quddus",
+            "arabic": "الْقُدُّوسُ",
+            "en": "The Most Holy",
+            "bn": "অতি পবিত্র"
+        },
+        {
+            "n": 5,
+            "name": "As-Salam",
+            "arabic": "السَّلَامُ",
+            "en": "The Source of Peace",
+            "bn": "শান্তিদাতা"
+        },
+        {
+            "n": 6,
+            "name": "Al-Mu'min",
+            "arabic": "الْمُؤْمِنُ",
+            "en": "The Giver of Security",
+            "bn": "নিরাপত্তাদানকারী"
+        },
+        {
+            "n": 7,
+            "name": "Al-Muhaymin",
+            "arabic": "الْمُهَيْمِنُ",
+            "en": "The Guardian, the Protector",
+            "bn": "রক্ষক ও তত্ত্বাবধায়ক"
+        },
+        {
+            "n": 8,
+            "name": "Al-'Aziz",
+            "arabic": "الْعَزِيزُ",
+            "en": "The Almighty",
+            "bn": "মহাপরাক্রমশালী"
+        },
+        {
+            "n": 9,
+            "name": "Al-Jabbar",
+            "arabic": "الْجَبَّارُ",
+            "en": "The Compeller, the Irresistible",
+            "bn": "মহা প্রতাপশালী"
+        },
+        {
+            "n": 10,
+            "name": "Al-Mutakabbir",
+            "arabic": "الْمُتَكَبِّرُ",
+            "en": "The Supreme in Greatness",
+            "bn": "মহিমান্বিত ও শ্রেষ্ঠত্বের অধিকারী"
+        },
+        {
+            "n": 11,
+            "name": "Al-Khaliq",
+            "arabic": "الْخَالِقُ",
+            "en": "The Creator",
+            "bn": "স্রষ্টা"
+        },
+        {
+            "n": 12,
+            "name": "Al-Bari'",
+            "arabic": "الْبَارِئُ",
+            "en": "The Originator",
+            "bn": "উদ্ভাবক ও সৃজনকর্তা"
+        },
+        {
+            "n": 13,
+            "name": "Al-Musawwir",
+            "arabic": "الْمُصَوِّرُ",
+            "en": "The Fashioner of Forms",
+            "bn": "আকৃতিদানকারী"
+        },
+        {
+            "n": 14,
+            "name": "Al-Ghaffar",
+            "arabic": "الْغَفَّارُ",
+            "en": "The Constant Forgiver",
+            "bn": "পরম ক্ষমাশীল"
+        },
+        {
+            "n": 15,
+            "name": "Al-Qahhar",
+            "arabic": "الْقَهَّارُ",
+            "en": "The All-Subduer",
+            "bn": "মহাপ্রতাপশালী, সবকিছুর উপর বিজয়ী"
+        },
+        {
+            "n": 16,
+            "name": "Al-Wahhab",
+            "arabic": "الْوَهَّابُ",
+            "en": "The Bestower",
+            "bn": "মহাদাতা"
+        },
+        {
+            "n": 17,
+            "name": "Ar-Razzaq",
+            "arabic": "الرَّزَّاقُ",
+            "en": "The Provider",
+            "bn": "রিযিকদাতা"
+        },
+        {
+            "n": 18,
+            "name": "Al-Fattah",
+            "arabic": "الْفَتَّاحُ",
+            "en": "The Opener, the Judge",
+            "bn": "মীমাংসাকারী ও দুয়ার উন্মোচনকারী"
+        },
+        {
+            "n": 19,
+            "name": "Al-'Alim",
+            "arabic": "الْعَلِيمُ",
+            "en": "The All-Knowing",
+            "bn": "সর্বজ্ঞ"
+        },
+        {
+            "n": 20,
+            "name": "Al-Qabid",
+            "arabic": "الْقَابِضُ",
+            "en": "The Withholder",
+            "bn": "সংকুচিতকারী"
+        },
+        {
+            "n": 21,
+            "name": "Al-Basit",
+            "arabic": "الْبَاسِطُ",
+            "en": "The Expander",
+            "bn": "প্রসারণকারী"
+        },
+        {
+            "n": 22,
+            "name": "Al-Khafid",
+            "arabic": "الْخَافِضُ",
+            "en": "The Abaser",
+            "bn": "অবনতকারী"
+        },
+        {
+            "n": 23,
+            "name": "Ar-Rafi'",
+            "arabic": "الرَّافِعُ",
+            "en": "The Exalter",
+            "bn": "উন্নতকারী"
+        },
+        {
+            "n": 24,
+            "name": "Al-Mu'izz",
+            "arabic": "الْمُعِزُّ",
+            "en": "The Giver of Honour",
+            "bn": "সম্মানদাতা"
+        },
+        {
+            "n": 25,
+            "name": "Al-Mudhill",
+            "arabic": "الْمُذِلُّ",
+            "en": "The Giver of Dishonour",
+            "bn": "লাঞ্ছনাদাতা"
+        },
+        {
+            "n": 26,
+            "name": "As-Sami'",
+            "arabic": "السَّمِيعُ",
+            "en": "The All-Hearing",
+            "bn": "সর্বশ্রোতা"
+        },
+        {
+            "n": 27,
+            "name": "Al-Basir",
+            "arabic": "الْبَصِيرُ",
+            "en": "The All-Seeing",
+            "bn": "সর্বদ্রষ্টা"
+        },
+        {
+            "n": 28,
+            "name": "Al-Hakam",
+            "arabic": "الْحَكَمُ",
+            "en": "The Judge",
+            "bn": "চূড়ান্ত বিচারক"
+        },
+        {
+            "n": 29,
+            "name": "Al-'Adl",
+            "arabic": "الْعَدْلُ",
+            "en": "The Utterly Just",
+            "bn": "পরম ন্যায়পরায়ণ"
+        },
+        {
+            "n": 30,
+            "name": "Al-Latif",
+            "arabic": "اللَّطِيفُ",
+            "en": "The Subtle, the Most Gentle",
+            "bn": "সূক্ষ্মদর্শী ও অতি দয়ালু"
+        },
+        {
+            "n": 31,
+            "name": "Al-Khabir",
+            "arabic": "الْخَبِيرُ",
+            "en": "The All-Aware",
+            "bn": "সর্বজ্ঞাত"
+        },
+        {
+            "n": 32,
+            "name": "Al-Halim",
+            "arabic": "الْحَلِيمُ",
+            "en": "The Forbearing",
+            "bn": "পরম সহনশীল"
+        },
+        {
+            "n": 33,
+            "name": "Al-'Azim",
+            "arabic": "الْعَظِيمُ",
+            "en": "The Magnificent",
+            "bn": "মহান"
+        },
+        {
+            "n": 34,
+            "name": "Al-Ghafur",
+            "arabic": "الْغَفُورُ",
+            "en": "The Great Forgiver",
+            "bn": "মহাক্ষমাশীল"
+        },
+        {
+            "n": 35,
+            "name": "Ash-Shakur",
+            "arabic": "الشَّكُورُ",
+            "en": "The Most Appreciative",
+            "bn": "গুণগ্রাহী"
+        },
+        {
+            "n": 36,
+            "name": "Al-'Aliyy",
+            "arabic": "الْعَلِيُّ",
+            "en": "The Most High",
+            "bn": "সর্বোচ্চ"
+        },
+        {
+            "n": 37,
+            "name": "Al-Kabir",
+            "arabic": "الْكَبِيرُ",
+            "en": "The Most Great",
+            "bn": "সর্বশ্রেষ্ঠ ও মহান"
+        },
+        {
+            "n": 38,
+            "name": "Al-Hafiz",
+            "arabic": "الْحَفِيظُ",
+            "en": "The Preserver",
+            "bn": "সংরক্ষণকারী"
+        },
+        {
+            "n": 39,
+            "name": "Al-Muqit",
+            "arabic": "الْمُقِيتُ",
+            "en": "The Sustainer, the Nourisher",
+            "bn": "জীবিকা ও শক্তিদাতা"
+        },
+        {
+            "n": 40,
+            "name": "Al-Hasib",
+            "arabic": "الْحَسِيبُ",
+            "en": "The Reckoner",
+            "bn": "হিসাব গ্রহণকারী"
+        },
+        {
+            "n": 41,
+            "name": "Al-Jalil",
+            "arabic": "الْجَلِيلُ",
+            "en": "The Majestic",
+            "bn": "মহিমাময়"
+        },
+        {
+            "n": 42,
+            "name": "Al-Karim",
+            "arabic": "الْكَرِيمُ",
+            "en": "The Most Generous",
+            "bn": "মহানুভব"
+        },
+        {
+            "n": 43,
+            "name": "Ar-Raqib",
+            "arabic": "الرَّقِيبُ",
+            "en": "The Ever-Watchful",
+            "bn": "সদা পর্যবেক্ষক"
+        },
+        {
+            "n": 44,
+            "name": "Al-Mujib",
+            "arabic": "الْمُجِيبُ",
+            "en": "The Responsive One",
+            "bn": "দোয়া কবুলকারী"
+        },
+        {
+            "n": 45,
+            "name": "Al-Wasi'",
+            "arabic": "الْوَاسِعُ",
+            "en": "The All-Encompassing",
+            "bn": "সর্বব্যাপী ও অসীম প্রাচুর্যময়"
+        },
+        {
+            "n": 46,
+            "name": "Al-Hakim",
+            "arabic": "الْحَكِيمُ",
+            "en": "The All-Wise",
+            "bn": "প্রজ্ঞাময়"
+        },
+        {
+            "n": 47,
+            "name": "Al-Wadud",
+            "arabic": "الْوَدُودُ",
+            "en": "The Most Loving",
+            "bn": "অতি স্নেহময়"
+        },
+        {
+            "n": 48,
+            "name": "Al-Majid",
+            "arabic": "الْمَجِيدُ",
+            "en": "The Glorious",
+            "bn": "গৌরবময়"
+        },
+        {
+            "n": 49,
+            "name": "Al-Ba'ith",
+            "arabic": "الْبَاعِثُ",
+            "en": "The Resurrector",
+            "bn": "পুনরুত্থানকারী"
+        },
+        {
+            "n": 50,
+            "name": "Ash-Shahid",
+            "arabic": "الشَّهِيدُ",
+            "en": "The Witness",
+            "bn": "সর্বদ্রষ্টা সাক্ষী"
+        },
+        {
+            "n": 51,
+            "name": "Al-Haqq",
+            "arabic": "الْحَقُّ",
+            "en": "The Absolute Truth",
+            "bn": "পরম সত্য"
+        },
+        {
+            "n": 52,
+            "name": "Al-Wakil",
+            "arabic": "الْوَكِيلُ",
+            "en": "The Trustee, Disposer of Affairs",
+            "bn": "কর্মবিধায়ক"
+        },
+        {
+            "n": 53,
+            "name": "Al-Qawiyy",
+            "arabic": "الْقَوِيُّ",
+            "en": "The All-Strong",
+            "bn": "মহাশক্তিমান"
+        },
+        {
+            "n": 54,
+            "name": "Al-Matin",
+            "arabic": "الْمَتِينُ",
+            "en": "The Firm One",
+            "bn": "সুদৃঢ়"
+        },
+        {
+            "n": 55,
+            "name": "Al-Waliyy",
+            "arabic": "الْوَلِيُّ",
+            "en": "The Protecting Friend",
+            "bn": "অভিভাবক ও বন্ধু"
+        },
+        {
+            "n": 56,
+            "name": "Al-Hamid",
+            "arabic": "الْحَمِيدُ",
+            "en": "The Praiseworthy",
+            "bn": "প্রশংসিত"
+        },
+        {
+            "n": 57,
+            "name": "Al-Muhsi",
+            "arabic": "الْمُحْصِي",
+            "en": "The All-Enumerating",
+            "bn": "সবকিছুর গণনাকারী"
+        },
+        {
+            "n": 58,
+            "name": "Al-Mubdi'",
+            "arabic": "الْمُبْدِئُ",
+            "en": "The Originator, the Starter",
+            "bn": "প্রথমবার সৃষ্টিকারী"
+        },
+        {
+            "n": 59,
+            "name": "Al-Mu'id",
+            "arabic": "الْمُعِيدُ",
+            "en": "The Restorer",
+            "bn": "পুনরায় সৃষ্টিকারী"
+        },
+        {
+            "n": 60,
+            "name": "Al-Muhyi",
+            "arabic": "الْمُحْيِي",
+            "en": "The Giver of Life",
+            "bn": "জীবনদাতা"
+        },
+        {
+            "n": 61,
+            "name": "Al-Mumit",
+            "arabic": "الْمُمِيتُ",
+            "en": "The Bringer of Death",
+            "bn": "মৃত্যুদাতা"
+        },
+        {
+            "n": 62,
+            "name": "Al-Hayy",
+            "arabic": "الْحَيُّ",
+            "en": "The Ever-Living",
+            "bn": "চিরঞ্জীব"
+        },
+        {
+            "n": 63,
+            "name": "Al-Qayyum",
+            "arabic": "الْقَيُّومُ",
+            "en": "The Self-Subsisting, Sustainer of All",
+            "bn": "চিরস্থায়ী ও সবকিছুর ধারক"
+        },
+        {
+            "n": 64,
+            "name": "Al-Wajid",
+            "arabic": "الْوَاجِدُ",
+            "en": "The Finder, the Self-Sufficient",
+            "bn": "অভাবমুক্ত, সবকিছুর অধিকারী"
+        },
+        {
+            "n": 65,
+            "name": "Al-Maajid",
+            "arabic": "الْمَاجِدُ",
+            "en": "The Illustrious, the Noble",
+            "bn": "সম্মানিত ও মহিমান্বিত"
+        },
+        {
+            "n": 66,
+            "name": "Al-Wahid",
+            "arabic": "الْوَاحِدُ",
+            "en": "The One",
+            "bn": "এক"
+        },
+        {
+            "n": 67,
+            "name": "Al-Ahad",
+            "arabic": "الْأَحَدُ",
+            "en": "The Unique, the Only One",
+            "bn": "অদ্বিতীয়"
+        },
+        {
+            "n": 68,
+            "name": "As-Samad",
+            "arabic": "الصَّمَدُ",
+            "en": "The Eternal, the Self-Sufficient",
+            "bn": "অমুখাপেক্ষী"
+        },
+        {
+            "n": 69,
+            "name": "Al-Qadir",
+            "arabic": "الْقَادِرُ",
+            "en": "The Able",
+            "bn": "সর্বশক্তিমান"
+        },
+        {
+            "n": 70,
+            "name": "Al-Muqtadir",
+            "arabic": "الْمُقْتَدِرُ",
+            "en": "The All-Powerful",
+            "bn": "পরম ক্ষমতাধর"
+        },
+        {
+            "n": 71,
+            "name": "Al-Muqaddim",
+            "arabic": "الْمُقَدِّمُ",
+            "en": "The Bringer Forward",
+            "bn": "অগ্রবর্তীকারী"
+        },
+        {
+            "n": 72,
+            "name": "Al-Mu'akhkhir",
+            "arabic": "الْمُؤَخِّرُ",
+            "en": "The Delayer",
+            "bn": "পশ্চাদবর্তীকারী"
+        },
+        {
+            "n": 73,
+            "name": "Al-Awwal",
+            "arabic": "الْأَوَّلُ",
+            "en": "The First",
+            "bn": "সর্বপ্রথম"
+        },
+        {
+            "n": 74,
+            "name": "Al-Akhir",
+            "arabic": "الْآخِرُ",
+            "en": "The Last",
+            "bn": "সর্বশেষ"
+        },
+        {
+            "n": 75,
+            "name": "Az-Zahir",
+            "arabic": "الظَّاهِرُ",
+            "en": "The Manifest",
+            "bn": "প্রকাশ্য"
+        },
+        {
+            "n": 76,
+            "name": "Al-Batin",
+            "arabic": "الْبَاطِنُ",
+            "en": "The Hidden",
+            "bn": "গোপন"
+        },
+        {
+            "n": 77,
+            "name": "Al-Wali",
+            "arabic": "الْوَالِي",
+            "en": "The Governor, the Patron",
+            "bn": "অভিভাবক"
+        },
+        {
+            "n": 78,
+            "name": "Al-Muta'ali",
+            "arabic": "الْمُتَعَالِي",
+            "en": "The Self-Exalted",
+            "bn": "সুমহান"
+        },
+        {
+            "n": 79,
+            "name": "Al-Barr",
+            "arabic": "الْبَرُّ",
+            "en": "The Source of All Goodness",
+            "bn": "পরম হিতৈষী"
+        },
+        {
+            "n": 80,
+            "name": "At-Tawwab",
+            "arabic": "التَّوَّابُ",
+            "en": "The Ever-Accepting of Repentance",
+            "bn": "তওবা কবুলকারী"
+        },
+        {
+            "n": 81,
+            "name": "Al-Muntaqim",
+            "arabic": "الْمُنْتَقِمُ",
+            "en": "The Avenger, the Just Punisher",
+            "bn": "ন্যায্য শাস্তিদাতা"
+        },
+        {
+            "n": 82,
+            "name": "Al-'Afuww",
+            "arabic": "الْعَفُوُّ",
+            "en": "The Pardoner",
+            "bn": "মার্জনাকারী"
+        },
+        {
+            "n": 83,
+            "name": "Ar-Ra'uf",
+            "arabic": "الرَّءُوفُ",
+            "en": "The Most Kind",
+            "bn": "অতি স্নেহশীল"
+        },
+        {
+            "n": 84,
+            "name": "Malik-ul-Mulk",
+            "arabic": "مَالِكُ الْمُلْكِ",
+            "en": "Owner of All Sovereignty",
+            "bn": "সমস্ত রাজত্বের মালিক"
+        },
+        {
+            "n": 85,
+            "name": "Dhul-Jalali wal-Ikram",
+            "arabic": "ذُو الْجَلَالِ وَالْإِكْرَامِ",
+            "en": "Lord of Majesty and Generosity",
+            "bn": "মহিমা ও সম্মানের অধিকারী"
+        },
+        {
+            "n": 86,
+            "name": "Al-Muqsit",
+            "arabic": "الْمُقْسِطُ",
+            "en": "The Equitable",
+            "bn": "ন্যায়বিচারকারী"
+        },
+        {
+            "n": 87,
+            "name": "Al-Jami'",
+            "arabic": "الْجَامِعُ",
+            "en": "The Gatherer",
+            "bn": "একত্রকারী"
+        },
+        {
+            "n": 88,
+            "name": "Al-Ghaniyy",
+            "arabic": "الْغَنِيُّ",
+            "en": "The Self-Sufficient, the Rich",
+            "bn": "অভাবমুক্ত"
+        },
+        {
+            "n": 89,
+            "name": "Al-Mughni",
+            "arabic": "الْمُغْنِي",
+            "en": "The Enricher",
+            "bn": "অভাব দূরকারী"
+        },
+        {
+            "n": 90,
+            "name": "Al-Mani'",
+            "arabic": "الْمَانِعُ",
+            "en": "The Withholder, the Defender",
+            "bn": "প্রতিরোধকারী"
+        },
+        {
+            "n": 91,
+            "name": "Ad-Darr",
+            "arabic": "الضَّارُّ",
+            "en": "The Distresser",
+            "bn": "ক্ষতিসাধনের ক্ষমতাধর"
+        },
+        {
+            "n": 92,
+            "name": "An-Nafi'",
+            "arabic": "النَّافِعُ",
+            "en": "The Benefactor",
+            "bn": "উপকারদাতা"
+        },
+        {
+            "n": 93,
+            "name": "An-Nur",
+            "arabic": "النُّورُ",
+            "en": "The Light",
+            "bn": "জ্যোতি"
+        },
+        {
+            "n": 94,
+            "name": "Al-Hadi",
+            "arabic": "الْهَادِي",
+            "en": "The Guide",
+            "bn": "পথপ্রদর্শক"
+        },
+        {
+            "n": 95,
+            "name": "Al-Badi'",
+            "arabic": "الْبَدِيعُ",
+            "en": "The Incomparable Originator",
+            "bn": "অনুপম সৃষ্টিকর্তা"
+        },
+        {
+            "n": 96,
+            "name": "Al-Baqi",
+            "arabic": "الْبَاقِي",
+            "en": "The Everlasting",
+            "bn": "চিরস্থায়ী"
+        },
+        {
+            "n": 97,
+            "name": "Al-Warith",
+            "arabic": "الْوَارِثُ",
+            "en": "The Inheritor of All",
+            "bn": "চূড়ান্ত উত্তরাধিকারী"
+        },
+        {
+            "n": 98,
+            "name": "Ar-Rashid",
+            "arabic": "الرَّشِيدُ",
+            "en": "The Guide to the Right Path",
+            "bn": "সঠিক পথের নির্দেশক"
+        },
+        {
+            "n": 99,
+            "name": "As-Sabur",
+            "arabic": "الصَّبُورُ",
+            "en": "The Patient",
+            "bn": "পরম ধৈর্যশীল"
+        }
+    ]
+}

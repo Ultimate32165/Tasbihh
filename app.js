@@ -127,6 +127,7 @@ g(){const s=S.set,chk=(k,l)=>`<div class=pr><span>${l}</span><input type=checkbo
 <div class=card><div class=mu style="margin-bottom:8px">Backup</div><div class=row style="justify-content:flex-start"><button class=btn onclick=expData()>Export</button><button class=btn onclick="$('#bf').click()">Import</button></div><input id=bf type=file accept=".json,application/json" hidden onchange="impData(this)"><div class=mu style="margin-top:6px">${S.lb?'Last export: '+new Date(S.lb).toLocaleString():'Never exported'} · import merges into your current data</div></div>
 <div class=card><div class=mu style="margin-bottom:8px">Danger zone</div><button class="btn dz" onclick=openReset()>Reset stats…</button></div>`}};
 IC.m=sv('<path d="M4 6h16M4 12h16M4 18h16"/>');IC.n=sv('<path d="M5 12h14"/>');IC.cp=sv('<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>');
+IC.nm=sv('<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>');
 IC.sy=sv('<path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/>');
 IC.nt=sv('<path d="M15.5 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5z"/><path d="M15 3v6h6"/><path d="M8 13h8M8 17h5"/>');
 const star=on=>sv('<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>').replace('fill="none"',on?'fill="currentColor"':'fill="none"');
@@ -154,16 +155,36 @@ function nHTML(s){const e=x=>x.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
  String(s).split('\n').forEach((ln,i)=>{const q=ln.trim(),blk=!!q&&A_HAS.test(q)&&A_FULL.test(q);
   if(i&&!pb&&!blk)out+='\n';
   out+=blk?`<div class="ara blk" dir=rtl>${e(q)}</div>`:e(ln).replace(A_RUN,m=>`<bdi class=ara dir=rtl>${m}</bdi>`);pb=blk});return out}
+// ===== 99 names =====
+let NM=null,nmI=0,nmO=0,nmQ='',nmF=0,nmN=-1;
+const nmK=x=>'nm_'+x.n,nmFav=x=>!!(S.fv[nmK(x)]||{}).v,rk=()=>tab=='nm'?nmK(NM[nmI]):dkey(D[duaI]);
+function loadNM(){fetch('names.json').then(r=>r.json()).then(j=>{NM=(j.names||[]).filter(x=>x&&x.arabic).map((x,i)=>({...x,n:Number.isFinite(+x.n)&&x.n!==''&&x.n!=null?+x.n:i+1}));render()}).catch(()=>{NM=[];render()})}
+function nmList(){const q=dnorm(nmQ.trim());let o=NM.map((x,i)=>i);if(nmF)o=o.filter(i=>nmFav(NM[i]));if(q)o=o.filter(i=>{const x=NM[i];return dnorm([x.name,x.arabic,x.en,x.bn].join(' ')).includes(q)});
+ return o.length?o.map(i=>{const x=NM[i];return `<button class=di onclick="nmI=${i};nmO=1;nmN=-1;render()"><span class=dnum>${x.n||'✦'}</span><span>${x.name}<small class=mu>${x.en||''}</small></span><span class=nra>${x.arabic}</span><span class="fv ${nmFav(x)?'on':''}" onclick="event.stopPropagation();nmFavT(${i})">${star(nmFav(x))}</span></button>`}).join(''):`<div class=mu style="padding:16px;text-align:center">${nmF&&!q?'No favourites yet':'No matches'}</div>`}
+function drawNm(){const e=$('#nmlist');if(e)e.innerHTML=nmList()}
+function nmFavT(i){const k=nmK(NM[i]);S.fv[k]={v:nmFav(NM[i])?0:1,t:Date.now()};persist();nmO?render():drawNm()}
+function nmGo(n){nmI=(nmI+n+NM.length)%NM.length;nmN=-1;render()}
+function nmNoteT(){nmN=nmN==nmI?-1:nmI;render()}
+function copyNm(){const d=NM[nmI],s=S.set;copyTxt([(d.n?d.n+'. ':'')+d.name,d.arabic,s.en&&d.en,s.bn&&d.bn].filter(Boolean).join('\n')).then(ok=>toast(ok?'Copied':'Copy failed'))}
+V.nm=()=>{if(!NM){loadNM();return '<p class=mu>Loading…</p>'}
+ if(!NM.length)return '<h2>99 Names</h2><div class=card>Add names in names.json</div>';
+ if(!nmO)return `<h2>99 Names of Allah</h2><input id=nq class=srch type=search placeholder="Search names…" value="${nmQ.replace(/"/g,'&quot;')}" oninput="nmQ=this.value;drawNm()"><div class=chips><button class="chip ${nmF?'':'on'}" onclick="nmF=0;render()">All</button><button class="chip ${nmF?'on':''}" onclick="nmF=1;render()">★ Favourites</button></div><div class="glass dl" id=nmlist>${nmList()}</div>`;
+ nmI=Math.min(nmI,NM.length-1);const d=NM[nmI],s=S.set,k=nmK(d),T=S.dt[k]||3,c=DC[k]||0;
+ return `<div class=row style="justify-content:space-between"><button class=btn onclick="nmO=0;nmN=-1;render()">${IC.l} All names</button><span class=row style="margin:0"><button class="btn ${nmFav(d)?'on':''}" onclick="nmFavT(nmI)" aria-label=Favourite>${star(nmFav(d))}</button><button class=btn onclick=copyNm() aria-label=Copy>${IC.cp}</button></span></div>
+<div class="glass dua"><span class=orb></span>${d.note?`<button class="nbtn ${nmN==nmI?'on':''}" onclick=nmNoteT() aria-label=Note>${IC.nt}</button>`:''}<div class=dn>${d.n?d.n+' · ':''}${d.name}</div><div class=orn>${ORN}</div><div class="ar big">${d.arabic}</div>${s.en&&d.en?`<div class=tr>${d.en}</div>`:''}${s.bn&&d.bn?`<div class="tr bn">${d.bn}</div>`:''}</div>
+${d.note&&nmN==nmI?`<div class="glass note"><div class=dn style="font-size:.9rem">Note</div><div class="nt bn">${nHTML(d.note)}</div></div>`:''}
+<div class=row style="align-items:center"><span class=mu>Repeat</span>${[3,7].map(m=>`<button class="btn ${T==m?'on':''}" onclick=repT(${m})>${m}×</button>`).join('')}<button class="btn ${T!=3&&T!=7?'on':''}" onclick=repC()>${T!=3&&T!=7?T+'×':'Custom'}</button><button class="btn p" id=rc onclick=repTap() style="min-width:84px">${c} / ${T}</button><button class=btn onclick=repReset() aria-label=Reset>${IC.r}</button></div>
+<div class=row style="align-items:center;gap:18px"><button class=btn onclick=nmGo(-1)>${IC.l}</button><span class=mu>${d.n} / ${Math.max(...NM.map(x=>x.n))}</span><button class=btn onclick=nmGo(1)>${IC.rr}</button></div>`};
 function noteT(){duaN=duaN==duaI?-1:duaI;render()}
 function drawList(){const e=$('#dlist');if(e)e.innerHTML=dList()}
 function favT(i){const k=dkey(D[i]);S.fv[k]={v:isF(D[i])?0:1,t:Date.now()};persist();duaO?render():drawList()}
 function fbCopy(t){const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0;user-select:text;-webkit-user-select:text';document.body.append(a);a.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}a.remove();return Promise.resolve(ok)}
 function copyTxt(t){return navigator.clipboard&&window.isSecureContext?navigator.clipboard.writeText(t).then(()=>true).catch(()=>fbCopy(t)):fbCopy(t)}
 function copyDua(){const d=D[duaI],s=S.set;copyTxt([d.name,d.arabic,s.tl&&d.transliteration,s.en&&d.en,s.bn&&d.bn].filter(Boolean).join('\n\n')).then(ok=>toast(ok?'Copied':'Copy failed'))}
-function repT(n){const k=dkey(D[duaI]);S.dt[k]=n;DC[k]=0;persist(1);render()}
-function repC(){const k=dkey(D[duaI]),n=parseInt(prompt('Repeat how many times?',S.dt[k]||3));if(!n||n<1)return;repT(n)}
-function repReset(){DC[dkey(D[duaI])]=0;render()}
-function repTap(){const k=dkey(D[duaI]),T=S.dt[k]||3;let n=DC[k]||0;if(n>=T)n=0;n++;DC[k]=n;
+function repT(n){const k=rk();S.dt[k]=n;DC[k]=0;persist(1);render()}
+function repC(){const k=rk(),n=parseInt(prompt('Repeat how many times?',S.dt[k]||3));if(!n||n<1)return;repT(n)}
+function repReset(){DC[rk()]=0;render()}
+function repTap(){const k=rk(),T=S.dt[k]||3;let n=DC[k]||0;if(n>=T)n=0;n++;DC[k]=n;
  if(n>=T){vib([80,60,80,60,250]);toast('Done · '+T+'×')}else vib(S.set.hms||35);$('#rc').textContent=n+' / '+T}
 V.d=()=>{if(!D){loadD();return '<p class=mu>Loading…</p>'}
  if(!D.length)return '<h2>Duas</h2><div class=card>No duas yet. Add some in duas.json</div>';
@@ -181,7 +202,7 @@ function auth(n){const a=fb.Au,e=$('#em').value.trim().toLowerCase().replace(/\s
 
 function render(){document.body.dataset.theme=S.set.theme;const r=document.documentElement.style;r.setProperty('--sz',S.set.size);r.setProperty('--arf',AF[S.set.arf]);r.setProperty('--uf',UF[S.set.uf||'nunito']);
  $('#v').innerHTML=V[tab]();
- $('#nav').innerHTML=[['c','','Count'],['p','','Prayers'],['s','','Stats'],['d','','Duas'],['g','','Settings']].map(a=>`<button class="${tab==a[0]?'on':''}" onclick="tab='${a[0]}';render()">${IC[a[0]]}${a[2]}</button>`).join('')}
+ $('#nav').innerHTML=[['c','','Count'],['p','','Prayers'],['s','','Stats'],['d','','Duas'],['nm','','Names'],['g','','Settings']].map(a=>`<button class="${tab==a[0]?'on':''}" onclick="tab='${a[0]}';render()">${IC[a[0]]}${a[2]}</button>`).join('')}
 
 // ===== firebase sync =====
 async function syncNow(){if(syncNow.b)return;if(!user||!fb)return toast('Sign in to sync');if(!navigator.onLine)return toast('You are offline');
