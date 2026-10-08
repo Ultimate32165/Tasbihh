@@ -109,13 +109,13 @@ c(){const t=cur(),T=tg(t),p=pg(t);return `<div class=card><div style="display:fl
 <div class=ring onclick=tap()><svg viewBox="0 0 200 200"><circle class=rb r=90 cx=100 cy=100 /><circle id=rg r=90 cx=100 cy=100 stroke-dasharray=565.5 stroke-dashoffset="${565.5*(1-p/T)}"/></svg><div><span id=cn>${p}</span><span class=mu>of ${T}</span></div></div>
 ${t.note&&tnO==t.id?`<div class="glass note"><div class=dn style="font-size:.9rem">Note</div><div class="nt bn">${nHTML(t.note)}</div></div>`:''}
 <div class=row>${[33,100].map(n=>`<button class="btn ${T==n?'on':''}" onclick=setT(${n})>${n}</button>`).join('')}<button class="btn ${T!=33&&T!=100?'on':''}" onclick=setT(0)>${T!=33&&T!=100?T:'Custom'}</button></div>
-<div class=row><button class=btn onclick=reset()>${IC.r} Reset</button><button class=btn onclick=openAdd()>${IC.a} New tasbih</button></div>
+<div class=row><button class=btn onclick=reset()>${IC.r} Reset</button><button class=btn onclick=cardC()>${IC.sh} Share</button><button class=btn onclick=openAdd()>${IC.a} New tasbih</button></div>
 <p class="mu" style="text-align:center">Today's total: <b id=td>${dt(dk())}</b></p><p class=mu id=ss style="text-align:center;margin-top:-6px;font-size:.75rem">${user?SS:'Not signed in · saved on this device only'}</p>${user?`<div class=row style="margin:0 0 6px"><button class="btn sm syb" onclick=syncNow()>${IC.sy} Sync now</button></div>`:''}`},
 p(){const l=day();let g='';for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=dk(d);
  g+=`<div style="text-align:center"><div class=mu>${d.toLocaleString('en',{weekday:'short'}).slice(0,2)}</div>${[0,1,2,3,4].map(j=>`<div style="width:14px;height:14px;margin:3px auto;border-radius:50%;background:${S.logs[k]&&S.logs[k].p[j].v?'var(--ac)':'var(--bg)'}"></div>`).join('')}${['tahajjud','sunnah'].map((e,j)=>`<div style="width:14px;height:14px;margin:${j?'3px':'10px'} auto 3px;border-radius:5px;background:${((S.logs[k]&&S.logs[k].x||{})[e]||{}).v?'var(--ac)':'var(--bg)'}"></div>`).join('')}</div>`}
  return `<h2>Daily prayers · ${dp(dk())}/5</h2><div class=card>${PN.map((n,i)=>`<div class=pr><span><b>${n}</b> <span class="mu bn">${PB[i]}</span></span><button class="btn ${l.p[i].v?'p':''}" onclick=togP(${i})>${l.p[i].v?IC.k+' Prayed':'Mark'}</button></div>`).join('')}</div>
 ${extras()}${qazaCard()}<div class=card><div class=mu style="margin-bottom:6px">Last 7 days</div><div style="display:flex;justify-content:space-around">${g}</div><div class=mu style="margin-top:8px;font-size:.72rem;text-align:center">● five prayers · ▢ Tahajjud, Sunnah</div></div>`},
-s(){const x=stats();return `<h2>Stats</h2><div class=g>${[['Today',dt(dk())],['Total tasbih',x.tot],['Streak',x.st+' d'],['Best day',x.best],['Prayers today',dp(dk())+'/5'],['Prayers total',x.ptot],['Tahajjud nights',x.tj],['Sunnah days',x.sn]].map(a=>`<div class="card st"><b>${a[1]}</b><span>${a[0]}</span></div>`).join('')}</div>
+s(){const x=stats();return `<div class=row style="justify-content:space-between;margin:0"><h2>Stats</h2><button class=btn onclick=cardS() aria-label=Share>${IC.sh}</button></div><div class=g>${[['Today',dt(dk())],['Total tasbih',x.tot],['Streak',x.st+' d'],['Best day',x.best],['Prayers today',dp(dk())+'/5'],['Prayers total',x.ptot],['Tahajjud nights',x.tj],['Sunnah days',x.sn]].map(a=>`<div class="card st"><b>${a[1]}</b><span>${a[0]}</span></div>`).join('')}</div>
 <div class=card><div class=row style="justify-content:space-between"><span>${[['w','Week'],['m','Month'],['y','Year']].map(a=>`<button class="btn ${rg==a[0]?'on':''}" onclick="setR('${a[0]}')">${a[1]}</button>`).join(' ')}</span><span>${[['t','Tasbih'],['p','Prayer'],['x','Extras']].map(a=>`<button class="btn ${mt==a[0]?'on':''}" onclick="setM('${a[0]}')">${a[1]}</button>`).join(' ')}</span></div>${chart()}</div>
 <div class=card><div class=mu>By tasbih</div>${all().filter(t=>x.per[t.id]).map(t=>`<div class=pr><span>${t.n}</span><b>${x.per[t.id]}</b></div>`).join('')||'<div class=mu>Nothing yet</div>'}</div>`},
 g(){const s=S.set,chk=(k,l)=>`<div class=pr><span>${l}</span><input type=checkbox ${s[k]?'checked':''} onchange="S.set.${k}=this.checked;persist(1);render()"></div>`;
@@ -130,6 +130,7 @@ IC.m=sv('<path d="M4 6h16M4 12h16M4 18h16"/>');IC.n=sv('<path d="M5 12h14"/>');I
 IC.nm=sv('<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>');
 IC.sy=sv('<path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/>');
 IC.nt=sv('<path d="M15.5 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5z"/><path d="M15 3v6h6"/><path d="M8 13h8M8 17h5"/>');
+IC.sh=sv('<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>');
 const star=on=>sv('<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>').replace('fill="none"',on?'fill="currentColor"':'fill="none"');
 function openSide(){const m=document.createElement('div'),L=S.logs[dk()]||{c:{}};m.className='sb';m.id='sb';
  m.onclick=e=>{if(e.target==m)closeSb()};
@@ -170,7 +171,7 @@ V.nm=()=>{if(!NM){loadNM();return '<p class=mu>Loading…</p>'}
  if(!NM.length)return '<h2>99 Names</h2><div class=card>Add names in names.json</div>';
  if(!nmO)return `<h2>99 Names of Allah</h2><input id=nq class=srch type=search placeholder="Search names…" value="${nmQ.replace(/"/g,'&quot;')}" oninput="nmQ=this.value;drawNm()"><div class=chips><button class="chip ${nmF?'':'on'}" onclick="nmF=0;render()">All</button><button class="chip ${nmF?'on':''}" onclick="nmF=1;render()">★ Favourites</button></div><div class="glass dl" id=nmlist>${nmList()}</div>`;
  nmI=Math.min(nmI,NM.length-1);const d=NM[nmI],s=S.set,k=nmK(d),T=S.dt[k]||3,c=DC[k]||0;
- return `<div class=row style="justify-content:space-between"><button class=btn onclick="nmO=0;nmN=-1;render()">${IC.l} All names</button><span class=row style="margin:0"><button class="btn ${nmFav(d)?'on':''}" onclick="nmFavT(nmI)" aria-label=Favourite>${star(nmFav(d))}</button><button class=btn onclick=copyNm() aria-label=Copy>${IC.cp}</button></span></div>
+ return `<div class=row style="justify-content:space-between"><button class=btn onclick="nmO=0;nmN=-1;render()">${IC.l} All names</button><span class=row style="margin:0"><button class="btn ${nmFav(d)?'on':''}" onclick="nmFavT(nmI)" aria-label=Favourite>${star(nmFav(d))}</button><button class=btn onclick=copyNm() aria-label=Copy>${IC.cp}</button><button class=btn onclick=cardN() aria-label=Share>${IC.sh}</button></span></div>
 <div class="glass dua"><span class=orb></span>${d.note?`<button class="nbtn ${nmN==nmI?'on':''}" onclick=nmNoteT() aria-label=Note>${IC.nt}</button>`:''}<div class=dn>${d.n?d.n+' · ':''}${d.name}</div><div class=orn>${ORN}</div><div class="ar big">${d.arabic}</div>${s.en&&d.en?`<div class=tr>${d.en}</div>`:''}${s.bn&&d.bn?`<div class="tr bn">${d.bn}</div>`:''}</div>
 ${d.note&&nmN==nmI?`<div class="glass note"><div class=dn style="font-size:.9rem">Note</div><div class="nt bn">${nHTML(d.note)}</div></div>`:''}
 <div class=row style="align-items:center"><span class=mu>Repeat</span>${[3,7].map(m=>`<button class="btn ${T==m?'on':''}" onclick=repT(${m})>${m}×</button>`).join('')}<button class="btn ${T!=3&&T!=7?'on':''}" onclick=repC()>${T!=3&&T!=7?T+'×':'Custom'}</button><button class="btn p" id=rc onclick=repTap() style="min-width:84px">${c} / ${T}</button><button class=btn onclick=repReset() aria-label=Reset>${IC.r}</button></div>
@@ -190,7 +191,7 @@ V.d=()=>{if(!D){loadD();return '<p class=mu>Loading…</p>'}
  if(!D.length)return '<h2>Duas</h2><div class=card>No duas yet. Add some in duas.json</div>';
  if(!duaO){const sr=D.length>=SEARCH_MIN;if(!sr)duaQ='';return `<h2>Duas</h2>${sr?`<input id=dq class=srch type=search placeholder="Search duas…" value="${duaQ.replace(/"/g,'&quot;')}" oninput="duaQ=this.value;drawList()">`:''}<div class="glass dl" id=dlist>${dList()}</div>`}
  duaI=Math.min(duaI,D.length-1);const d=D[duaI],s=S.set,k=dkey(d),T=S.dt[k]||3,n=DC[k]||0,o=dord();
- return `<div class=row style="justify-content:space-between"><button class=btn onclick="duaO=0;duaN=-1;render()">${IC.l} All duas</button><span class=row style="margin:0"><button class="btn ${isF(d)?'on':''}" onclick="favT(duaI)" aria-label=Favourite>${star(isF(d))}</button><button class=btn onclick=copyDua() aria-label=Copy>${IC.cp}</button></span></div>
+ return `<div class=row style="justify-content:space-between"><button class=btn onclick="duaO=0;duaN=-1;render()">${IC.l} All duas</button><span class=row style="margin:0"><button class="btn ${isF(d)?'on':''}" onclick="favT(duaI)" aria-label=Favourite>${star(isF(d))}</button><button class=btn onclick=copyDua() aria-label=Copy>${IC.cp}</button><button class=btn onclick=cardD() aria-label=Share>${IC.sh}</button></span></div>
 <div class="glass dua"><span class=orb></span>${d.note?`<button class="nbtn ${duaN==duaI?'on':''}" onclick=noteT() aria-label=Note>${IC.nt}</button>`:''}<div class=dn>${d.name}</div><div class=orn>${ORN}</div><div class="ar big">${d.arabic}</div>${s.tl&&d.transliteration?`<div class=trl>${d.transliteration}</div>`:''}${s.en&&d.en?`<div class=tr>${d.en}</div>`:''}${s.bn&&d.bn?`<div class="tr bn">${d.bn}</div>`:''}</div>
 ${d.note&&duaN==duaI?`<div class="glass note"><div class=dn style="font-size:.9rem">Note</div><div class="nt bn">${nHTML(d.note)}</div></div>`:''}
 <div class=row style="align-items:center"><span class=mu>Repeat</span>${[3,7].map(m=>`<button class="btn ${T==m?'on':''}" onclick=repT(${m})>${m}×</button>`).join('')}<button class="btn ${T!=3&&T!=7?'on':''}" onclick=repC()>${T!=3&&T!=7?T+'×':'Custom'}</button><button class="btn p" id=rc onclick=repTap() style="min-width:84px">${n} / ${T}</button><button class=btn onclick=repReset() aria-label=Reset>${IC.r}</button></div>
@@ -257,6 +258,63 @@ async function push(){if(!user||!fb)return;
   if(off&&(S.pend.c||S.pend.p)){const q=S.pend;S.pend={c:0,p:0};wasOff=false;modal(`<h2>Synced</h2><p>Your offline progress is saved to your account:</p><div class=g><div class="card st"><b>${q.c}</b><span>tasbih counts</span></div><div class="card st"><b>${q.p}</b><span>prayers marked</span></div></div><button class="btn p" onclick=closeM()>Done</button>`)}
   else{S.pend.c=Math.max(0,S.pend.c-p.c);S.pend.p=Math.max(0,S.pend.p-p.p)}
   localStorage.setItem(KEY,JSON.stringify(S))}catch(e){setSS('Sync failed · saved on this device')}}
+// ===== photo card =====
+const cv=n=>getComputedStyle(document.body).getPropertyValue(n).trim();
+function wrapT(x,t,w){const L=[];String(t).split('\n').forEach(p=>{let l='';p.split(' ').forEach(wd=>{const a=l?l+' '+wd:wd;if(l&&x.measureText(a).width>w){L.push(l);l=wd}else l=a});L.push(l)});return L}
+async function makeCard(sp){
+ const W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+ const bg=cv('--bg')||'#eef5f0',cd=cv('--cd')||'#fff',ac=cv('--ac')||'#1f7a5c',tx=cv('--tx')||'#173a2f',mu=cv('--mu')||'#6b8a7e';
+ const af=AF[S.set.arf]||AF.amiri,bn="'Hind Siliguri',sans-serif",uf=UF[S.set.uf||'nunito']||'Nunito',uf2=uf+','+bn;
+ try{await Promise.all(['40px '+af,'40px '+bn,'40px '+uf].map(f=>document.fonts.load(f,'ابAঅ')))}catch(e){}
+ x.fillStyle=bg;x.fillRect(0,0,W,H);
+ let g=x.createRadialGradient(150,100,0,150,100,700);g.addColorStop(0,ac);g.addColorStop(1,'transparent');x.globalAlpha=.28;x.fillStyle=g;x.fillRect(0,0,W,H);
+ g=x.createRadialGradient(1000,1150,0,1000,1150,600);g.addColorStop(0,ac);g.addColorStop(1,'transparent');x.globalAlpha=.2;x.fillStyle=g;x.fillRect(0,0,W,H);
+ x.globalAlpha=.78;x.fillStyle=cd;x.beginPath();x.roundRect?x.roundRect(60,60,W-120,H-120,56):x.rect(60,60,W-120,H-120);x.fill();
+ x.globalAlpha=.25;x.strokeStyle=ac;x.lineWidth=2;x.stroke();x.globalAlpha=1;
+ x.textAlign='center';x.textBaseline='middle';x.direction='ltr';
+ let ts=46;do{x.font=`700 ${ts}px ${uf2}`;ts-=2}while(x.measureText(sp.title).width>800&&ts>24);
+ x.fillStyle=ac;x.fillText(sp.title,W/2,175);
+ x.strokeStyle=ac;x.fillStyle=ac;x.lineWidth=3;x.globalAlpha=.75;x.beginPath();x.moveTo(380,232);x.lineTo(510,232);x.moveTo(570,232);x.lineTo(700,232);x.stroke();
+ x.beginPath();x.moveTo(540,220);x.lineTo(552,232);x.lineTo(540,244);x.lineTo(528,232);x.closePath();x.fill();x.globalAlpha=1;
+ const mk=k=>{const o=[],add=(t,fs,fam,col,lh,st)=>{x.direction='ltr';x.font=`${st||''} ${fs*k}px ${fam}`;o.push({L:wrapT(x,t,800),f:x.font,col,lh:fs*k*lh,rtl:fam===af})};
+  if(sp.ar)add(sp.ar,84,af,tx,1.9);for(const l of sp.lines)add(l.t,34,l.k=='bn'?bn:uf2,l.k=='tl'?ac:mu,1.55,l.k=='tl'?'italic':'');return o};
+ const ht=(B,k)=>B.length?B.reduce((a,b)=>a+b.L.length*b.lh,0)+36*k*(B.length-1):0;
+ let k=1,B=mk(k);const R=sp.res||0,AV=880-R;while(ht(B,k)>AV-20&&k>.45){k-=.05;B=mk(k)}
+ let y=290+(AV-ht(B,k))/2;
+ B.forEach((b,i)=>{x.font=b.f;x.fillStyle=b.col;x.direction=b.rtl?'rtl':'ltr';b.L.forEach(l=>{x.fillText(l,W/2,y+b.lh/2);y+=b.lh});y+=36*k});
+ x.direction='ltr';sp.post&&sp.post(x,{W,y:290+AV,ac,bg,tx,mu,uf2});x.direction='ltr';x.font=`700 30px ${uf2}`;x.fillStyle=ac;x.globalAlpha=.8;x.fillText('Tasbih',W/2,1235);x.globalAlpha=1;
+ return c}
+let CB=null;
+async function cardShow(sp){toast('Making card…');
+ try{const c=await makeCard(sp),b=await new Promise(r=>c.toBlob(r,'image/png')),u=URL.createObjectURL(b);
+  CB={b,u,f:new File([b],'tasbih-card.png',{type:'image/png'})};
+  modal(`<img src="${u}" style="max-width:100%;max-height:58vh;justify-self:center;border-radius:16px"><div class=row><button class="btn p" onclick=cardShare()>${IC.sh} Share</button><button class=btn onclick=cardSave()>Save</button><button class=btn onclick=cardClose()>Close</button></div>`)}
+ catch(e){toast('Could not make card')}}
+function cardShare(){if(navigator.canShare&&navigator.canShare({files:[CB.f]}))navigator.share({files:[CB.f]}).catch(()=>{});else cardSave()}
+function cardSave(){const a=document.createElement('a');a.href=CB.u;a.download='tasbih-card-'+dk()+'.png';document.body.append(a);a.click();a.remove()}
+function cardClose(){CB&&URL.revokeObjectURL(CB.u);CB=null;closeM()}
+const cl=(s,t,k)=>s&&t?{t,k}:null;
+function cardD(){const d=D[duaI],s=S.set;cardShow({title:d.name,ar:d.arabic,lines:[cl(s.tl,d.transliteration,'tl'),cl(s.en,d.en,'tr'),cl(s.bn,d.bn,'bn')].filter(Boolean)})}
+function cardN(){const d=NM[nmI],s=S.set;cardShow({title:(d.n?d.n+' · ':'')+d.name,ar:d.arabic,lines:[cl(s.en,d.en,'tr'),cl(s.bn,d.bn,'bn')].filter(Boolean)})}
+const rrect=(x,a,b,w,h,r)=>{x.beginPath();x.roundRect?x.roundRect(a,b,w,h,r):x.rect(a,b,w,h)};
+function cardC(){const t=cur(),s=S.set,p=pg(t),T=tg(t),td=dt(dk());
+ cardShow({title:t.n,ar:t.ar,res:430,lines:[cl(s.en,t.en,'tr'),cl(s.bn,t.bn,'bn')].filter(Boolean),post:(x,o)=>{
+  const cx=o.W/2,cy=o.y+190,r=140;x.lineWidth=26;x.lineCap='round';
+  x.strokeStyle=o.bg;x.beginPath();x.arc(cx,cy,r,0,7);x.stroke();
+  if(p){x.strokeStyle=o.ac;x.beginPath();x.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+2*Math.PI*p/T);x.stroke()}
+  x.textAlign='center';x.fillStyle=o.tx;x.font=`800 96px ${o.uf2}`;x.fillText(p,cx,cy-8);
+  x.fillStyle=o.mu;x.font=`600 30px ${o.uf2}`;x.fillText('of '+T,cx,cy+62);
+  x.font=`600 34px ${o.uf2}`;x.fillText("Today's total: "+td,cx,o.y+395)}})}
+function cardS(){const x0=stats(),d=series(),m=Math.max(1,...d.map(v=>v.v)),tot=d.reduce((a,b)=>a+b.v,0);
+ const cells=[['Today',dt(dk())],['Total tasbih',x0.tot],['Streak',x0.st+' d'],['Best day',x0.best]];
+ const RN={w:'This week',m:'Last 30 days',y:'This year'}[rg],MN={t:'Tasbih',p:'Prayers',x:'Extras'}[mt];
+ cardShow({title:'My stats',res:880,lines:[],post:(x,o)=>{
+  cells.forEach((c,i)=>{const a=140+(i%2)*410,b=o.y+Math.floor(i/2)*150;x.globalAlpha=.14;x.fillStyle=o.ac;rrect(x,a,b,390,130,28);x.fill();x.globalAlpha=1;
+   x.fillStyle=o.ac;x.font=`800 54px ${o.uf2}`;x.fillText(c[1],a+195,b+50);x.fillStyle=o.mu;x.font=`600 26px ${o.uf2}`;x.fillText(c[0],a+195,b+101)});
+  x.fillStyle=o.mu;x.font=`600 28px ${o.uf2}`;x.fillText(MN+' · '+RN,o.W/2,o.y+345);
+  const w=800/d.length,base=o.y+700;
+  d.forEach((v,i)=>{const h=Math.max(v.v/m*300,4),a=140+i*w+w*.15;x.globalAlpha=v.v?1:.25;x.fillStyle=o.ac;rrect(x,a,base-h,w*.7,h,Math.min(8,w*.3));x.fill();x.globalAlpha=1;x.fillStyle=o.mu;x.font=`600 22px ${o.uf2}`;x.fillText(v.l,a+w*.35,base+30)});
+  x.font=`600 28px ${o.uf2}`;x.fillStyle=o.mu;x.fillText('Total: '+tot+' · Peak: '+(tot?m:0),o.W/2,base+95)}})}
 const typing=e=>/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName);
 addEventListener('keydown',e=>{if(e.code!=='Space'||typing(e)||$('#mo')||$('#sb')||tab!=='c')return;e.preventDefault();if(!e.repeat)tap()});
 addEventListener('keyup',e=>{if(e.code==='Space'&&!typing(e)&&tab==='c')e.preventDefault()});
