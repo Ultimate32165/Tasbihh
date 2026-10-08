@@ -107,7 +107,7 @@ const V={
 c(){const t=cur(),T=tg(t),p=pg(t);return `<div class=card><div style="display:flex;gap:8px;align-items:flex-start"><button class=pick onclick=openSide()><span>${t.n}</span>${IC.m}</button>${t.note?`<button class="nbtn in ${tnO==t.id?'on':''}" onclick=noteTT() aria-label=Note>${IC.nt}</button>`:''}</div>
 <div class=ar>${t.ar}</div>${S.set.en&&t.en?`<div class=tr>${t.en}</div>`:''}${S.set.bn&&t.bn?`<div class="tr bn">${t.bn}</div>`:''}</div>
 <div class=ring onclick=tap()><svg viewBox="0 0 200 200"><circle class=rb r=90 cx=100 cy=100 /><circle id=rg r=90 cx=100 cy=100 stroke-dasharray=565.5 stroke-dashoffset="${565.5*(1-p/T)}"/></svg><div><span id=cn>${p}</span><span class=mu>of ${T}</span></div></div>
-${t.note&&tnO==t.id?`<div class="glass note"><div class=dn style="font-size:.9rem">Note</div><div class="nt bn">${t.note}</div></div>`:''}
+${t.note&&tnO==t.id?`<div class="glass note"><div class=dn style="font-size:.9rem">Note</div><div class="nt bn">${nHTML(t.note)}</div></div>`:''}
 <div class=row>${[33,100].map(n=>`<button class="btn ${T==n?'on':''}" onclick=setT(${n})>${n}</button>`).join('')}<button class="btn ${T!=33&&T!=100?'on':''}" onclick=setT(0)>${T!=33&&T!=100?T:'Custom'}</button></div>
 <div class=row><button class=btn onclick=reset()>${IC.r} Reset</button><button class=btn onclick=openAdd()>${IC.a} New tasbih</button></div>
 <p class="mu" style="text-align:center">Today's total: <b id=td>${dt(dk())}</b></p><p class=mu id=ss style="text-align:center;margin-top:-6px;font-size:.75rem">${user?SS:'Not signed in · saved on this device only'}</p>${user?`<div class=row style="margin:0 0 6px"><button class="btn sm syb" onclick=syncNow()>${IC.sy} Sync now</button></div>`:''}`},
@@ -136,7 +136,7 @@ function openSide(){const m=document.createElement('div'),L=S.logs[dk()]||{c:{}}
  document.body.append(m);requestAnimationFrame(()=>m.classList.add('in'))}
 function closeSb(){const m=$('#sb');if(m){m.classList.remove('in');setTimeout(()=>m.remove(),250)}}
 let tnO='';
-function noteTT(){tnO=tnO==S.cur?'':S.cur;render()}
+function noteTT(){const id=cur().id;tnO=tnO==id?'':id;render()}
 function pickT(id){tnO='';S.cur=id;persist(1);closeSb();render()}
 const SEARCH_MIN=8,DC={};let duaQ='',duaN=-1;
 const dkey=x=>x.id||((x.name||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'d'+[...(x.arabic||'')].reduce((h,c)=>(h*31+c.charCodeAt(0))>>>0,7));
@@ -147,6 +147,13 @@ function loadD(){fetch('duas.json').then(r=>r.json()).then(j=>{D=j.duas||[];rend
 function duaGo(n){const o=dord(),p=o.indexOf(duaI);duaI=o[(p+n+o.length)%o.length];render()}
 function dList(){const q=dnorm(duaQ.trim());let o=dord();if(q)o=o.filter(i=>{const x=D[i];return dnorm([x.name,x.arabic,x.transliteration,x.en,x.bn].join(' ')).includes(q)});
  return o.length?o.map((i,n)=>{const x=D[i];return `<button class=di onclick="duaI=${i};duaO=1;render()"><span class=dnum>${n+1}</span><span>${x.name}</span><span class="fv ${isF(x)?'on':''}" onclick="event.stopPropagation();favT(${i})">${star(isF(x))}</span>${IC.rr}</button>`}).join(''):'<div class=mu style="padding:16px;text-align:center">No matches</div>'}
+// notes: Arabic runs are picked out automatically and shown in the Arabic font
+const ARA='\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF';
+const A_HAS=new RegExp('['+ARA+']'),A_RUN=new RegExp('['+ARA+'](?:['+ARA+'\\u200c\\u200d ]*['+ARA+'])?','g'),A_FULL=new RegExp('^['+ARA+'\\s\\u200c\\u200d\\d()\\[\\].,:;!?"\'\\-–—]+$');
+function nHTML(s){const e=x=>x.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');let out='',pb=true;
+ String(s).split('\n').forEach((ln,i)=>{const q=ln.trim(),blk=!!q&&A_HAS.test(q)&&A_FULL.test(q);
+  if(i&&!pb&&!blk)out+='\n';
+  out+=blk?`<div class="ara blk" dir=rtl>${e(q)}</div>`:e(ln).replace(A_RUN,m=>`<bdi class=ara dir=rtl>${m}</bdi>`);pb=blk});return out}
 function noteT(){duaN=duaN==duaI?-1:duaI;render()}
 function drawList(){const e=$('#dlist');if(e)e.innerHTML=dList()}
 function favT(i){const k=dkey(D[i]);S.fv[k]={v:isF(D[i])?0:1,t:Date.now()};persist();duaO?render():drawList()}
@@ -164,7 +171,7 @@ V.d=()=>{if(!D){loadD();return '<p class=mu>Loading…</p>'}
  duaI=Math.min(duaI,D.length-1);const d=D[duaI],s=S.set,k=dkey(d),T=S.dt[k]||3,n=DC[k]||0,o=dord();
  return `<div class=row style="justify-content:space-between"><button class=btn onclick="duaO=0;duaN=-1;render()">${IC.l} All duas</button><span class=row style="margin:0"><button class="btn ${isF(d)?'on':''}" onclick="favT(duaI)" aria-label=Favourite>${star(isF(d))}</button><button class=btn onclick=copyDua() aria-label=Copy>${IC.cp}</button></span></div>
 <div class="glass dua"><span class=orb></span>${d.note?`<button class="nbtn ${duaN==duaI?'on':''}" onclick=noteT() aria-label=Note>${IC.nt}</button>`:''}<div class=dn>${d.name}</div><div class=orn>${ORN}</div><div class="ar big">${d.arabic}</div>${s.tl&&d.transliteration?`<div class=trl>${d.transliteration}</div>`:''}${s.en&&d.en?`<div class=tr>${d.en}</div>`:''}${s.bn&&d.bn?`<div class="tr bn">${d.bn}</div>`:''}</div>
-${d.note&&duaN==duaI?`<div class="glass note"><div class=dn style="font-size:.9rem">Note</div><div class="nt bn">${d.note}</div></div>`:''}
+${d.note&&duaN==duaI?`<div class="glass note"><div class=dn style="font-size:.9rem">Note</div><div class="nt bn">${nHTML(d.note)}</div></div>`:''}
 <div class=row style="align-items:center"><span class=mu>Repeat</span>${[3,7].map(m=>`<button class="btn ${T==m?'on':''}" onclick=repT(${m})>${m}×</button>`).join('')}<button class="btn ${T!=3&&T!=7?'on':''}" onclick=repC()>${T!=3&&T!=7?T+'×':'Custom'}</button><button class="btn p" id=rc onclick=repTap() style="min-width:84px">${n} / ${T}</button><button class=btn onclick=repReset() aria-label=Reset>${IC.r}</button></div>
 <div class=row style="align-items:center;gap:18px"><button class=btn onclick=duaGo(-1)>${IC.l}</button><span class=mu>${o.indexOf(duaI)+1} / ${D.length}</span><button class=btn onclick=duaGo(1)>${IC.rr}</button></div>`};
 function acc(){if(!fb)return FC.apiKey.startsWith('YOUR')?'<span class=mu>Add your Firebase config in index.html to enable sync. Data is saved on this device meanwhile.</span>':'<span class=mu>Loading…</span>';

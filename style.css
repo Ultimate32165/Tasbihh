@@ -132,3 +132,7 @@ textarea{font:inherit;color:var(--tx);background:var(--bg);border:0;border-radiu
 
 /* keep line breaks (\n in the json files, Enter in the add form) */
 .ar,.tr,.trl,.dn{white-space:pre-line}
+
+/* Arabic inside notes */
+.ara{font-family:var(--arf);font-size:1.35em;line-height:2;white-space:normal}
+.ara.blk{display:block;text-align:center;font-size:calc(1.6rem*var(--sz));line-height:2.3;margin:6px 0}

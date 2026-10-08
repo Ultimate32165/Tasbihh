@@ -17,7 +17,7 @@
       "bn": "আপনি ছাড়া কোনো ইলাহ নেই, আপনি পবিত্র। নিশ্চয়ই আমি জালিমদের অন্তর্ভুক্ত ছিলাম।"
     },
     {
-      "name": "Increase in Knowledge",
+      "name": "জ্ঞান বৃদ্ধির জন্য দোয়া",
       "arabic": "رَبِّ زِدْنِي عِلْمًا",
       "transliteration": "Rabbi zidni 'ilma",
       "en": "My Lord, increase me in knowledge.",
@@ -25,10 +25,18 @@
     },
     {
       "name": "আমল কবুলের জন্য দুআ",
-      "arabic": "رَبَّنَا تَقَبَّلْ مِنَّا إِنَّكَ أَنْتَ السَّمِيْعُ الْعَلِيمُ وَتُبْ عَلَيْنَآ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيْمُ\n",
-      "transliteration": "Rabbi zidni 'ilma",
+      "arabic": "رَبَّنَا تَقَبَّلْ مِنَّا إِنَّكَ أَنْتَ السَّمِيْعُ الْعَلِيمُ\n وَتُبْ عَلَيْنَآ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيْمُ",
+      "transliteration": "Rabbana taqabbal minna, innaka antas-Sami'ul-'Alim. Wa tub 'alayna, innaka antat-Tawwabur-Rahim.",
       "en": "My Lord, increase me in knowledge.",
       "bn": "হে আমাদের প্রতিপালক, আমাদের পক্ষ থেকে কবূল করুন। নিশ্চয় আপনি সর্বশ্রোতা, সর্বজ্ঞানী। \nআপনি আমাদেরকে ক্ষমা করুন। নিশ্চয় আপনি ক্ষমাশীল, পরম দয়ালু।\n\nসূরা আল বাকারাহ - ২:১২৭-১২৮"
-    }
+    },
+    {
+  "name": "খাওয়ার পূর্বে দোআ",
+  "arabic": "بِسْمِ اللّٰهِ",
+  "note": "...and if you forget to say it before starting, then you should say [when you remember] :\nبِسْمِ اللّٰهِ فِيْ أَوَّلِهِ وَآخِرِهِ",
+  "transliteration": "Bismillaah.",
+  "en": "In the Name of Allah.",
+  "bn": "আল্লাহর নামে।"
+}
   ]
 }
