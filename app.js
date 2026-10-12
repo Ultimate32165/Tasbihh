@@ -104,7 +104,7 @@ function setR(r){rg=r;render()}function setM(m){mt=m;render()}
 
 // ===== views =====
 const V={
-c(){const t=cur(),T=tg(t),p=pg(t);return `${dateBar()}<div class=card><div style="display:flex;gap:8px;align-items:flex-start"><button class=pick onclick=openSide()><span>${t.n}</span>${IC.m}</button>${t.note?`<button class="nbtn in ${tnO==t.id?'on':''}" onclick=noteTT() aria-label=Note>${IC.nt}</button>`:''}</div>
+c(){const t=cur(),T=tg(t),p=pg(t);return `${dateBar()}${ptCard()}<div class=card><div style="display:flex;gap:8px;align-items:flex-start"><button class=pick onclick=openSide()><span>${t.n}</span>${IC.m}</button>${t.note?`<button class="nbtn in ${tnO==t.id?'on':''}" onclick=noteTT() aria-label=Note>${IC.nt}</button>`:''}</div>
 <div class=ar>${t.ar}</div>${S.set.en&&t.en?`<div class=tr>${t.en}</div>`:''}${S.set.bn&&t.bn?`<div class="tr bn">${t.bn}</div>`:''}</div>
 <div class=ring onclick=tap()><svg viewBox="0 0 200 200"><circle class=rb r=90 cx=100 cy=100 /><circle id=rg r=90 cx=100 cy=100 stroke-dasharray=565.5 stroke-dashoffset="${565.5*(1-p/T)}"/></svg><div><span id=cn>${p}</span><span class=mu>of ${T}</span></div></div>
 ${t.note&&tnO==t.id?`<div class="glass note"><div class=dn style="font-size:.9rem">Note</div><div class="nt bn">${nHTML(t.note)}</div></div>`:''}
@@ -113,7 +113,7 @@ ${t.note&&tnO==t.id?`<div class="glass note"><div class=dn style="font-size:.9re
 <p class="mu" style="text-align:center">Today's total: <b id=td>${dt(dk())}</b></p><p class=mu id=ss style="text-align:center;margin-top:-6px;font-size:.75rem">${user?SS:'Not signed in · saved on this device only'}</p>${user?`<div class=row style="margin:0 0 6px"><button class="btn sm syb" onclick=syncNow()>${IC.sy} Sync now</button></div>`:''}`},
 p(){const l=day();let g='';for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=dk(d);
  g+=`<div style="text-align:center"><div class=mu>${d.toLocaleString('en',{weekday:'short'}).slice(0,2)}</div>${[0,1,2,3,4].map(j=>`<div style="width:14px;height:14px;margin:3px auto;border-radius:50%;background:${S.logs[k]&&S.logs[k].p[j].v?'var(--ac)':'var(--bg)'}"></div>`).join('')}${['tahajjud','sunnah'].map((e,j)=>`<div style="width:14px;height:14px;margin:${j?'3px':'10px'} auto 3px;border-radius:5px;background:${((S.logs[k]&&S.logs[k].x||{})[e]||{}).v?'var(--ac)':'var(--bg)'}"></div>`).join('')}</div>`}
- return `<h2>Daily prayers · ${dp(dk())}/5</h2><div class=card>${PN.map((n,i)=>`<div class=pr><span><b>${n}</b> <span class="mu bn">${PB[i]}</span></span><button class="btn ${l.p[i].v?'p':''}" onclick=togP(${i})>${l.p[i].v?IC.k+' Prayed':'Mark'}</button></div>`).join('')}</div>
+ return `<h2>Daily prayers · ${dp(dk())}/5</h2><div class=card>${PN.map((n,i)=>`<div class=pr><span><b>${n}</b> <span class="mu bn">${PB[i]}</span>${ptT(i)}</span><button class="btn ${l.p[i].v?'p':''}" onclick=togP(${i})>${l.p[i].v?IC.k+' Prayed':'Mark'}</button></div>`).join('')}</div>
 ${extras()}${qazaCard()}<div class=card><div class=mu style="margin-bottom:6px">Last 7 days</div><div style="display:flex;justify-content:space-around">${g}</div><div class=mu style="margin-top:8px;font-size:.72rem;text-align:center">● five prayers · ▢ Tahajjud, Sunnah</div></div>`},
 s(){const x=stats();return `<div class=row style="justify-content:space-between;margin:0"><h2>Stats</h2><button class=btn onclick=cardS() aria-label=Share>${IC.sh}</button></div><div class=g>${[['Today',dt(dk())],['Total tasbih',x.tot],['Streak',x.st+' d'],['Best day',x.best],['Prayers today',dp(dk())+'/5'],['Prayers total',x.ptot],['Tahajjud nights',x.tj],['Sunnah days',x.sn]].map(a=>`<div class="card st"><b>${a[1]}</b><span>${a[0]}</span></div>`).join('')}</div>
 <div class=card><div class=row style="justify-content:space-between"><span>${[['w','Week'],['m','Month'],['y','Year']].map(a=>`<button class="btn ${rg==a[0]?'on':''}" onclick="setR('${a[0]}')">${a[1]}</button>`).join(' ')}</span><span>${[['t','Tasbih'],['p','Prayer'],['x','Extras']].map(a=>`<button class="btn ${mt==a[0]?'on':''}" onclick="setM('${a[0]}')">${a[1]}</button>`).join(' ')}</span></div>${chart()}</div>
@@ -123,6 +123,7 @@ g(){const s=S.set,chk=(k,l)=>`<div class=pr><span>${l}</span><input type=checkbo
 <div class=card>${chk('en','English translation')}${chk('bn','বাংলা translation')}${chk('tl','Transliteration (duas)')}${chk('haptic','Haptic vibration (phones)')}<div class=pr style="display:block"><div class=mu>Tap vibration length · ${s.hms} ms</div><input type=range min=10 max=100 step=5 value=${s.hms} oninput="S.set.hms=+this.value;this.previousElementSibling.textContent='Tap vibration length · '+this.value+' ms'" onchange="persist(1);vib(S.set.hms)"></div>
 <div class=pr style="display:block"><div class=mu>App font</div><select onchange="S.set.uf=this.value;persist(1);render()">${Object.keys(UF).map(k=>`<option value=${k} ${(s.uf||'nunito')==k?'selected':''}>${UF[k].replace(/'/g,'')}</option>`).join('')}</select></div><div class=pr style="display:block"><div class=mu>Arabic font</div><select onchange="S.set.arf=this.value;persist(1);render()"><option value=amiri ${s.arf=='amiri'?'selected':''}>Amiri (Naskh)</option><option value=indo ${s.arf=='indo'?'selected':''}>Indo-Pak (Nastaliq)</option></select></div>
 <div class=pr style="display:block"><div class=mu>Text size</div><input type=range min=.8 max=1.6 step=.1 value=${s.size} oninput="S.set.size=+this.value;document.documentElement.style.setProperty('--sz',this.value)" onchange="persist(1)"></div></div>
+<div class=card><div class=mu style="margin-bottom:8px">Prayer times · city</div>${ptCitySel()}<div class=pr style="display:block"><div class=mu>Calculation method</div><select onchange="S.set.pm=+this.value;persist(1);ptReload()">${PM.map(m=>`<option value=${m[0]} ${s.pm==m[0]?'selected':''}>${m[1]}</option>`).join('')}</select></div><div class=pr style="display:block"><div class=mu>Asr calculation</div><select onchange="S.set.ps=+this.value;persist(1);ptReload()"><option value=1 ${s.ps==1?'selected':''}>Hanafi (later Asr)</option><option value=0 ${s.ps==0?'selected':''}>Shafi'i / Maliki / Hanbali</option></select></div>${chk('h24','24-hour time')}</div>
 <div class=card><div class=mu style="margin-bottom:8px">Sync account</div><div id=acc>${acc()}</div></div>
 <div class=card><div class=mu style="margin-bottom:8px">Backup</div><div class=row style="justify-content:flex-start"><button class=btn onclick=expData()>Export</button><button class=btn onclick="$('#bf').click()">Import</button></div><input id=bf type=file accept=".json,application/json" hidden onchange="impData(this)"><div class=mu style="margin-top:6px">${S.lb?'Last export: '+new Date(S.lb).toLocaleString():'Never exported'} · import merges into your current data</div></div>
 <div class=card><div class=mu style="margin-bottom:8px">Danger zone</div><button class="btn dz" onclick=openReset()>Reset stats…</button></div>`}};
@@ -327,6 +328,59 @@ function heat(){const f=mt=='t'?dt:mt=='p'?dp:dx,t=new Date(),s=new Date(t.getFu
 const dbT=()=>new Date().toLocaleTimeString('en',{hour:'numeric',minute:'2-digit'}),dbD=()=>new Date().toLocaleDateString('en',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 function dateBar(){return `<div class=glass style="padding:12px 18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center"><span id=dbd class=mu style="font-size:.85rem">${dbD()}</span><b id=dbt style="color:var(--ac)">${dbT()}</b></div>`}
 setInterval(()=>{const a=$('#dbt'),b=$('#dbd');if(a&&b){a.textContent=dbT();b.textContent=dbD()}},15000);
+// ===== prayer times (AlAdhan API) =====
+const PTK='tasbih_pt',PTN=['Fajr','Dhuhr','Asr','Maghrib','Isha'];
+const BDC=[['Dhaka',23.8103,90.4125],['Chattogram',22.3569,91.7832],['Khulna',22.8456,89.5403],['Rajshahi',24.3745,88.6042],['Sylhet',24.8949,91.8687],['Barishal',22.7010,90.3535],['Rangpur',25.7439,89.2752],['Mymensingh',24.7471,90.4203],['Cumilla',23.4607,91.1809],['Gazipur',23.9999,90.4203],['Narayanganj',23.6238,90.5000],["Cox's Bazar",21.4272,92.0058],['Bogura',24.8481,89.3730],['Jashore',23.1664,89.2081],['Dinajpur',25.6217,88.6354],['Noakhali',22.8696,91.0995],['Pabna',24.0064,89.2372],['Tangail',24.2513,89.9167],['Faridpur',23.6070,89.8429],['Kishoreganj',24.4260,90.7766]];
+const PM=[[1,'Karachi (Bangladesh / South Asia)'],[3,'Muslim World League'],[2,'ISNA (North America)'],[5,'Egyptian'],[4,'Umm al-Qura (Makkah)']];
+S.set.loc??={n:'Dhaka',lat:23.8103,lon:90.4125,tz:'Asia/Dhaka'};S.set.pm??=1;S.set.ps??=1;S.set.h24??=false;
+let PT=null,ptBusy=0,ptFail=0;try{PT=JSON.parse(localStorage.getItem(PTK)||'null')}catch(e){}
+const hm=x=>{const a=x.split(':');return +a[0]*60+ +a[1]};
+const ptF=x=>{if(S.set.h24)return x;const a=x.split(':');return (a[0]%12||12)+':'+a[1]+' '+(a[0]<12?'AM':'PM')};
+const ptD=m=>m>=60?Math.floor(m/60)+'h '+(m%60)+'m':m+' min';
+const ptKey=(y,m)=>{const l=S.set.loc;return [l.n,l.lat,l.lon,l.c,S.set.pm,S.set.ps,y,m].join('|')};
+function ptNow(){const tz=(PT&&PT.tz)||S.set.loc.tz||undefined;
+ try{const p=new Intl.DateTimeFormat('en-GB',{timeZone:tz,year:'numeric',month:'numeric',day:'numeric',hour:'numeric',minute:'numeric',hour12:false}).formatToParts(new Date()),g=t=>+p.find(x=>x.type==t).value;
+  return{y:g('year'),m:g('month'),d:g('day'),min:(g('hour')%24)*60+g('minute')}}
+ catch(e){const n=new Date();return{y:n.getFullYear(),m:n.getMonth()+1,d:n.getDate(),min:n.getHours()*60+n.getMinutes()}}}
+function ptToday(n){n=n||ptNow();if(!PT||PT.k!=ptKey(n.y,n.m))return null;return PT.days[n.d-1]||null}
+function ptUrl(y,m){const l=S.set.loc,q=new URLSearchParams({method:S.set.pm,school:S.set.ps});let ep;
+ if(l.lat!=null){q.set('latitude',l.lat);q.set('longitude',l.lon);if(l.tz)q.set('timezonestring',l.tz);ep='calendar'}
+ else{q.set('city',l.n);q.set('country',l.c||'Bangladesh');ep='calendarByCity'}
+ return 'https://api.aladhan.com/v1/'+ep+'/'+y+'/'+m+'?'+q}
+function ptLoad(){const n=ptNow(),k=ptKey(n.y,n.m);
+ if(PT&&PT.k==k)return Promise.resolve(true);if(ptBusy)return ptBusy;
+ if(ptFail&&Date.now()-ptFail<60000)return Promise.resolve(false);
+ return ptBusy=fetch(ptUrl(n.y,n.m)).then(r=>r.json()).then(j=>{if(!j||j.code!=200||!j.data||!j.data.length)throw 0;
+  PT={k,tz:(j.data[0].meta||{}).timezone||S.set.loc.tz||'',days:j.data.map(x=>{const o={};PTN.concat('Sunrise').forEach(a=>o[a]=String(x.timings[a]).slice(0,5));
+   const h=x.date&&x.date.hijri;o.hj=h?h.day+' '+h.month.en+' '+h.year:'';return o})};
+  localStorage.setItem(PTK,JSON.stringify(PT));ptFail=0;return true}).catch(()=>{ptFail=Date.now();return false}).then(ok=>{ptBusy=0;ptRefresh(ok);return ok})}
+function ptNext(){const n=ptNow(),t=ptToday(n);if(!t)return null;
+ for(let i=0;i<5;i++){const x=hm(t[PTN[i]]);if(x>n.min)return{i,in:x-n.min,t:t[PTN[i]]}}
+ return{i:0,in:hm(t.Fajr)+1440-n.min,t:t.Fajr,tm:1}}
+function ptInner(x,l){return x?`<span><b style="color:var(--ac)">${PTN[x.i]}</b> <span class=mu>${ptF(x.t)}${x.tm?' · tomorrow':''}</span><div class=mu style="font-size:.75rem">${l.n}</div></span><b>in ${ptD(x.in)}</b>`
+ :`<span class=mu>${ptFail?'Prayer times unavailable · check internet':'Loading prayer times…'}<div style="font-size:.75rem">${l.n}</div></span>`}
+function ptCard(){ptLoad();return `<div class=glass id=ptc onclick=ptOpen() style="padding:12px 18px;margin:0 0 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer">${ptInner(ptNext(),S.set.loc)}</div>`}
+function ptT(i){ptLoad();const t=ptToday();return t?`<br><span class=mu style="font-size:.75rem">${ptF(t[PTN[i]])}</span>`:''}
+function ptRefresh(ok){const e=$('#ptc');if(e)e.innerHTML=ptInner(ptNext(),S.set.loc);if(ok&&tab=='p')render();const m=$('#ptm');if(m)m.innerHTML=ptModal()}
+function ptCitySel(){const l=S.set.loc;
+ return `<select onchange="ptSetCity(this.value)">${BDC.map(c=>`<option ${c[0]==l.n&&!l.g&&!l.c?'selected':''}>${c[0]}</option>`).join('')}<option value=__gps ${l.g?'selected':''}>${l.g?'My location':'Use my location…'}</option><option value=__oth ${l.c?'selected':''}>${l.c?l.n+', '+l.c:'Other city…'}</option></select>`}
+function ptModal(){const t=ptToday(),x=ptNext(),l=S.set.loc,B=['ফজর','যোহর','আসর','মাগরিব','এশা'];
+ const rows=t?[['Fajr','ফজর',0],['Sunrise','সূর্যোদয়',-1],['Dhuhr','যোহর',1],['Asr','আসর',2],['Maghrib','মাগরিব',3],['Isha','এশা',4]].map(r=>`<div class=pr><span ${x&&x.i==r[2]?'style="color:var(--ac);font-weight:800"':''}>${r[0]} <span class="mu bn">${r[1]}</span></span><b>${ptF(t[r[0]])}</b></div>`).join(''):`<div class=mu style="padding:12px;text-align:center">${ptFail?'Unavailable · check your internet':'Loading…'}</div>`;
+ return `<h2 style="margin:0">Prayer times</h2><div class=mu>${t&&t.hj?t.hj+' AH':''}</div><div>${rows}</div>${ptCitySel()}<button class="btn p" onclick=closeM()>Done</button>`}
+function ptOpen(){ptLoad();modal(`<div id=ptm style="display:grid;gap:10px">${ptModal()}</div>`)}
+function ptAfter(){render();const m=$('#ptm');if(m)m.innerHTML=ptModal()}
+async function ptApply(l){const old=S.set.loc;S.set.loc=l;persist(1);PT=null;ptFail=0;localStorage.removeItem(PTK);toast('Loading prayer times…');
+ await ptLoad();const ok=await ptLoad();
+ if(!ok){S.set.loc=old;persist(1);PT=null;ptFail=0;toast('Could not load times for that place');ptLoad()}
+ ptAfter()}
+function ptSetCity(v){
+ if(v=='__gps'){if(!navigator.geolocation){toast('Location not supported');return ptAfter()}
+  navigator.geolocation.getCurrentPosition(p=>ptApply({n:'My location',lat:+p.coords.latitude.toFixed(4),lon:+p.coords.longitude.toFixed(4),g:1}),()=>{toast('Location permission denied');ptAfter()},{timeout:10000});return}
+ if(v=='__oth'){const c=(prompt('City name (e.g. Makkah)')||'').trim();if(!c)return ptAfter();const k=(prompt('Country (e.g. Saudi Arabia)')||'').trim();if(!k)return ptAfter();return ptApply({n:c,c:k})}
+ const c=BDC.find(x=>x[0]==v);if(c)ptApply({n:c[0],lat:c[1],lon:c[2],tz:'Asia/Dhaka'})}
+async function ptReload(){PT=null;ptFail=0;localStorage.removeItem(PTK);await ptLoad();await ptLoad();ptAfter()}
+setInterval(()=>{if(!ptToday())ptLoad();const e=$('#ptc');if(e)e.innerHTML=ptInner(ptNext(),S.set.loc)},20000);
+addEventListener('online',()=>{ptFail=0;ptLoad()});
 const typing=e=>/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName);
 addEventListener('keydown',e=>{if(e.code!=='Space'||typing(e)||$('#mo')||$('#sb')||tab!=='c')return;e.preventDefault();if(!e.repeat)tap()});
 addEventListener('keyup',e=>{if(e.code==='Space'&&!typing(e)&&tab==='c')e.preventDefault()});
