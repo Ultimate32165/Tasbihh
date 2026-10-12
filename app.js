@@ -287,7 +287,9 @@ async function makeCard(sp){
  x.globalAlpha=.25;x.strokeStyle=ac;x.lineWidth=2;x.stroke();x.globalAlpha=1;
  x.textAlign='center';x.textBaseline='middle';x.direction='ltr';
  let ts=46;do{x.font=`700 ${ts}px ${uf2}`;ts-=2}while(x.measureText(sp.title).width>800&&ts>24);
- x.fillStyle=ac;x.fillText(sp.title,W/2,175);
+ let tl=[sp.title];
+ if(x.measureText(sp.title).width>800){ts=34;x.font=`700 ${ts}px ${uf2}`;tl=wrapT(x,sp.title,800);if(tl.length>2){ts=26;x.font=`700 ${ts}px ${uf2}`;tl=wrapT(x,sp.title,800).slice(0,3)}}
+ x.fillStyle=ac;tl.forEach((t,i)=>x.fillText(t,W/2,175+(i-(tl.length-1)/2)*ts*1.22));
  x.strokeStyle=ac;x.fillStyle=ac;x.lineWidth=3;x.globalAlpha=.75;x.beginPath();x.moveTo(380,232);x.lineTo(510,232);x.moveTo(570,232);x.lineTo(700,232);x.stroke();
  x.beginPath();x.moveTo(540,220);x.lineTo(552,232);x.lineTo(540,244);x.lineTo(528,232);x.closePath();x.fill();x.globalAlpha=1;
  const mk=k=>{const o=[],add=(t,fs,fam,col,lh,st)=>{x.direction='ltr';x.font=`${st||''} ${fs*k}px ${fam}`;o.push({L:wrapT(x,t,800),f:x.font,col,lh:fs*k*lh,rtl:fam===af})};

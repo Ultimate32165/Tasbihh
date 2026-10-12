@@ -233,3 +233,11 @@ nav button{padding:8px 2px;min-width:0;font-size:.68rem}
 
 /* Bangla UI: the app already shows a Bangla name beside each English one, so hide the duplicate */
 html[lang=bn] .pn>.mu.bn,html[lang=bn] .xpt>.mu.bn,html[lang=bn] .ptn>.bn,html[lang=bn] .pn>.bn{display:none}
+
+/* long names: wrap instead of truncating, keep the note button inside the box */
+.pick{flex:1 1 0;width:auto;min-width:0}
+.pick span{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;line-height:1.35}
+.nbtn.in{align-self:flex-start}
+.dua .dn{padding:0 34px;overflow-wrap:anywhere;line-height:1.35}
+.di span:nth-child(2){min-width:0;overflow-wrap:anywhere;line-height:1.35}
+.di .dnum,.di .fv,.di svg,.di .nra{flex:none}
