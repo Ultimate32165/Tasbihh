@@ -407,7 +407,27 @@ function ptModal(){const t=ptToday(),x=ptNext(),l=S.set.loc,n=ptNow();
  const rows=t?R.map(r=>{const nx=x&&x.i==r[2],past=!nx&&hm(t[r[0]])<=n.min;
   return `<div class="ptr ${nx?'nx':''} ${past?'past':''} ${r[2]<0?'sr':''}"><span class=pe>${r[3]}</span><span class=pn><b>${r[0]}</b> <span class="mu bn">${r[1]}</span>${nx?`<div><span class=nbd>Next · in ${ptD(x.in)}</span></div>`:''}</span>${past?'<span class=ptck>✓</span>':''}<b class=ptt>${ptF(t[r[0]])}</b></div>`}).join(''):`<div class=mu style="padding:12px;text-align:center">${ptFail?'Unavailable · '+ptErr:'Loading…'}</div>`;
  const fb=t?`<div class=pth2>🚫 Forbidden times <span class=mu>· no voluntary prayer</span></div>${ptForb(t).map(a=>`<div class=ptf><span>${a[0]} <span class="mu bn">${a[1]}</span></span><b>${mF(a[2])} – ${mF(a[3])}</b></div>`).join('')}<div class=mu style="font-size:.72rem;margin:6px 4px 10px">Approximate: sunrise +15 min, noon −6 min, sunset −15 min.</div>`:'';
- return `<div class=pth><div class=ptt2>🕌 Prayer times</div><div class=ptsub>📍 ${l.n}${t&&t.hj?' · '+t.hj+' AH':''}</div></div><div>${rows}</div>${fb}${ptCitySel()}<button class="btn p" onclick=closeM()>Done</button>`}
+ return `<div class=pth><div class=ptt2>🕌 Prayer times</div><div class=ptsub>📍 ${l.n}${t&&t.hj?' · '+t.hj+' AH':''}</div></div><div>${rows}</div>${fb}${ptCitySel()}<div class=row style="margin:4px 0 0"><button class="btn p" onclick=cardPT()>${IC.sh} Photo card</button><button class=btn onclick=closeM()>Done</button></div>`}
+function cardPT(){const t=ptToday();if(!t){toast('Prayer times not loaded yet');return}
+ const nx0=ptNext(),l=S.set.loc,on=cv('--on')||'#fff',bnf="'Hind Siliguri',sans-serif",
+ date=new Date().toLocaleDateString('en',{weekday:'long',day:'numeric',month:'long'})+(t.hj?' · '+t.hj+' AH':''),
+ R=[['Fajr','ফজর',0,'🌅'],['Sunrise','সূর্যোদয়',-1,'🌄'],['Dhuhr','যোহর',1,'☀️'],['Asr','আসর',2,'🌤️'],['Maghrib','মাগরিব',3,'🌇'],['Isha','এশা',4,'🌙']],
+ mth=((PM.find(m=>m[0]==S.set.pm)||['',''])[1]).split(' (')[0]+' · '+(S.set.ps==1?'Hanafi Asr':"Shafi'i Asr");
+ closeM();
+ cardShow({title:'Prayer times',res:880,lines:[],post:(x,o)=>{const y0=o.y,W=o.W;
+  x.textAlign='center';x.fillStyle=o.mu;x.font=`600 28px ${o.uf2}`;x.fillText(date,W/2,y0+10);
+  x.fillStyle=o.ac;x.font=`700 32px ${o.uf2}`;x.fillText('📍 '+l.n,W/2,y0+60);
+  let by=y0+112;
+  R.forEach(r=>{const sr=r[2]<0,h=sr?74:100,nx=nx0&&nx0.i==r[2],cy=by+h/2,tc=nx?on:o.tx,mc=nx?on:o.mu;
+   x.globalAlpha=nx?1:(sr?.08:.13);x.fillStyle=o.ac;rrect(x,140,by,800,h,h/2.8);x.fill();x.globalAlpha=1;
+   x.globalAlpha=nx?.3:.2;x.fillStyle=nx?'#fff':o.ac;x.beginPath();x.arc(206,cy,sr?25:34,0,7);x.fill();x.globalAlpha=1;
+   x.textAlign='center';x.font=(sr?'30px':'40px')+' sans-serif';x.fillStyle=tc;x.fillText(r[3],206,cy+2);
+   x.textAlign='left';x.font=`700 ${sr?30:38}px ${o.uf2}`;x.fillStyle=tc;x.fillText(r[0],268,cy);const w=x.measureText(r[0]).width;
+   x.font=`600 ${sr?24:28}px ${bnf}`;x.fillStyle=mc;x.fillText(r[1],268+w+14,cy+1);
+   if(nx){const bw=x.measureText(r[1]).width,px=268+w+14+bw+14;x.fillStyle='#fff';rrect(x,px,cy-16,84,32,16);x.fill();x.fillStyle=o.ac;x.font=`800 20px ${o.uf2}`;x.textAlign='center';x.fillText('Next',px+42,cy+1)}
+   x.textAlign='right';x.font=`800 ${sr?32:40}px ${o.uf2}`;x.fillStyle=nx?on:(sr?o.mu:o.ac);x.fillText(ptF(t[r[0]]),905,cy);
+   by+=h+14});
+  x.textAlign='center';x.fillStyle=o.mu;x.font=`600 24px ${o.uf2}`;x.fillText(mth,W/2,by+30)}})}
 function ptOpen(){ptFail=0;ptLoad();modal(`<div id=ptm style="display:grid;gap:10px">${ptModal()}</div>`)}
 function ptAfter(){render();const m=$('#ptm');if(m)m.innerHTML=ptModal()}
 async function ptApply(l){const old=S.set.loc;S.set.loc=l;persist(1);PT=null;ptFail=0;localStorage.removeItem(PTK);toast('Loading prayer times…');
