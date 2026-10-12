@@ -336,16 +336,17 @@ function cardP(){const l=day(),n=dp(dk()),t=ptToday(),X=l.x||{},bnf="'Hind Silig
  cardShow({title:'Daily prayers',res:880,lines:[],post:(x,o)=>{const y0=o.y,W=o.W;
   x.textAlign='center';x.fillStyle=o.mu;x.font=`600 28px ${o.uf2}`;x.fillText(date,W/2,y0+10);
   x.fillStyle=o.ac;x.font=`800 120px ${o.uf2}`;x.fillText(n+' / 5',W/2,y0+95);
-  for(let i=0;i<5;i++){x.globalAlpha=l.p[i].v?1:.2;x.fillStyle=o.ac;rrect(x,287+i*104,y0+172,90,22,11);x.fill()}x.globalAlpha=1;
+  for(let i=0;i<5;i++){x.globalAlpha=l.p[i].v?1:.2;x.fillStyle=l.p[i].v==2?'#e0a030':o.ac;rrect(x,287+i*104,y0+172,90,22,11);x.fill()}x.globalAlpha=1;
   x.fillStyle=o.ac;x.font=`700 32px ${o.uf2}`;x.fillText(pMsg(n),W/2,y0+236);
-  PN.forEach((a,i)=>{const by=y0+280+i*98,cy=by+44,d=l.p[i].v;
-   x.globalAlpha=d?.24:.11;x.fillStyle=o.ac;rrect(x,140,by,800,88,32);x.fill();x.globalAlpha=1;
-   if(d){x.fillStyle=o.ac;x.beginPath();x.arc(194,cy,27,0,7);x.fill();x.strokeStyle=on;x.lineWidth=5;x.lineCap='round';x.lineJoin='round';x.beginPath();x.moveTo(183,cy+1);x.lineTo(191,cy+9);x.lineTo(206,cy-9);x.stroke()}
+  PN.forEach((a,i)=>{const by=y0+280+i*98,cy=by+44,d=l.p[i].v,qc=d==2?'#e0a030':o.ac;
+   x.globalAlpha=d?.24:.11;x.fillStyle=qc;rrect(x,140,by,800,88,32);x.fill();x.globalAlpha=1;
+   if(d){x.fillStyle=qc;x.beginPath();x.arc(194,cy,27,0,7);x.fill();x.strokeStyle=on;x.lineWidth=5;x.lineCap='round';x.lineJoin='round';x.beginPath();x.moveTo(183,cy+1);x.lineTo(191,cy+9);x.lineTo(206,cy-9);x.stroke()}
    else{x.globalAlpha=.45;x.strokeStyle=o.ac;x.lineWidth=4;x.beginPath();x.arc(194,cy,27,0,7);x.stroke();x.globalAlpha=1}
    x.textAlign='left';x.font='40px sans-serif';x.fillStyle=o.tx;x.fillText(PE[i],245,cy+2);
    x.font=`700 36px ${o.uf2}`;x.fillStyle=o.tx;x.fillText(a,310,cy);const w=x.measureText(a).width;
    x.font=`600 28px ${bnf}`;x.fillStyle=o.mu;x.fillText(PB[i],310+w+16,cy+1);
-   if(t){x.textAlign='right';x.font=`800 36px ${o.uf2}`;x.fillStyle=d?o.ac:o.tx;x.fillText(ptF(t[a]),915,cy)}});
+   if(d==2){const bw=x.measureText(PB[i]).width,px=310+w+16+bw+16;x.fillStyle=qc;rrect(x,px,cy-17,92,34,17);x.fill();x.fillStyle='#5a3d00';x.font=`800 22px ${o.uf2}`;x.textAlign='center';x.fillText('Qaza',px+46,cy+1)}
+   if(t){x.textAlign='right';x.font=`800 36px ${o.uf2}`;x.fillStyle=d?qc:o.tx;x.fillText(ptF(t[a]),915,cy)}});
   [['tahajjud','🌙 Tahajjud'],['sunnah','✨ Sunnah']].forEach((c,i)=>{const d=(X[c[0]]||{}).v,a=140+i*410,b=y0+790;
    x.globalAlpha=d?1:.13;x.fillStyle=o.ac;rrect(x,a,b,390,70,35);x.fill();x.globalAlpha=1;
    x.textAlign='center';x.fillStyle=d?on:o.mu;x.font=`700 30px ${o.uf2}`;x.fillText(c[1]+(d?'  ✓':''),a+195,b+36)});
