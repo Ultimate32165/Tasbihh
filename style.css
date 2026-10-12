@@ -190,3 +190,38 @@ nav button{padding:8px 2px;min-width:0;font-size:.68rem}
 .pd.qz{background:color-mix(in srgb,#e0a030 20%,var(--cd))}
 .pd.qz .pk{background:linear-gradient(135deg,#e0a030,#f0c060);color:#fff}
 .qbd{display:inline-block;font-size:.65rem;font-weight:800;color:#5a3d00;background:#f0c060;border-radius:99px;padding:1px 8px;vertical-align:middle}
+
+/* cute prayer times (card on Count tab + popup) */
+.ptc{display:flex;align-items:center;gap:12px;padding:12px 16px;margin:0 0 14px;cursor:pointer;border-radius:28px;background:linear-gradient(135deg,color-mix(in srgb,var(--ac) 16%,var(--cd)),color-mix(in srgb,var(--cd) 55%,transparent));box-shadow:0 3px 0 color-mix(in srgb,var(--ac) 16%,transparent),0 10px 28px #00000014;transition:.18s}
+.ptc:active{transform:translateY(3px) scale(.985);box-shadow:none}
+.ptc::after{content:"";position:absolute;right:-24px;top:-30px;width:110px;height:110px;border-radius:50%;background:var(--ac);opacity:.14;filter:blur(24px);pointer-events:none}
+.pte{flex:none;width:46px;height:46px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:color-mix(in srgb,var(--ac) 16%,var(--cd));animation:ptbob 3.2s ease-in-out infinite}
+@keyframes ptbob{50%{transform:translateY(-3px) rotate(-6deg)}}
+@media (prefers-reduced-motion:reduce){.pte{animation:none}}
+.ptx{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.3}
+.ptl{font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mu)}
+.ptn{font-size:1.05rem;color:var(--ac)}
+.ptb{font-weight:600;color:var(--mu);font-size:.85rem}
+.ptw{font-size:.76rem;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ptp{flex:none;font-weight:800;font-size:.8rem;color:var(--on,#fff);background:linear-gradient(135deg,var(--ac),color-mix(in srgb,var(--ac) 60%,#fff));border-radius:99px;padding:7px 12px;box-shadow:0 3px 10px color-mix(in srgb,var(--ac) 35%,transparent);white-space:nowrap}
+.ptfz{align-self:flex-start;margin-top:4px;font-size:.68rem;font-weight:800;color:#8a4b00;background:#f7d8a0;border-radius:99px;padding:2px 9px}
+
+.mo>div{max-height:calc(100dvh - 40px);overflow-y:auto}
+.mo>div:has(#ptm){border-radius:30px;background:linear-gradient(180deg,color-mix(in srgb,var(--ac) 15%,var(--cd)),var(--cd) 200px)}
+.pth{text-align:center;margin-bottom:2px}
+.ptt2{font-size:1.35rem;font-weight:800;color:var(--ac)}
+.ptsub{font-size:.8rem;color:var(--mu);margin-top:2px}
+.ptr{display:flex;align-items:center;gap:12px;padding:9px 12px;margin-bottom:8px;border-radius:24px;background:color-mix(in srgb,var(--ac) 7%,var(--cd));box-shadow:0 3px 0 color-mix(in srgb,var(--ac) 12%,transparent);transition:.2s}
+.ptr .pe{width:40px;height:40px;border-radius:15px;font-size:1.3rem;background:color-mix(in srgb,var(--ac) 15%,var(--cd))}
+.ptr.sr{padding:6px 12px;background:transparent;box-shadow:none;border:1px dashed color-mix(in srgb,var(--ac) 30%,transparent)}
+.ptr.sr .pe{width:32px;height:32px;font-size:1.05rem;border-radius:12px}
+.ptr.past{opacity:.62}
+.ptr.nx{background:linear-gradient(135deg,var(--ac),color-mix(in srgb,var(--ac) 62%,#fff));color:var(--on,#fff);box-shadow:0 6px 18px color-mix(in srgb,var(--ac) 40%,transparent);transform:scale(1.02)}
+.ptr.nx .pe{background:#ffffff38}
+.ptr.nx .mu{color:inherit;opacity:.85}
+.ptr.nx .nbd{background:#fff;color:var(--ac)}
+.ptt{font-weight:800;font-size:1.02rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ptck{flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:var(--on,#fff);background:var(--ac)}
+.pth2{font-weight:800;font-size:.85rem;margin:8px 4px 0}
+.ptf{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 14px;margin-top:6px;border-radius:18px;font-size:.85rem;background:color-mix(in srgb,#f0b040 20%,var(--cd))}
+.ptf b{font-variant-numeric:tabular-nums;white-space:nowrap}
