@@ -344,8 +344,8 @@ function cardP(){const l=day(),n=dp(dk()),t=ptToday(),X=l.x||{},bnf="'Hind Silig
    else{x.globalAlpha=.45;x.strokeStyle=o.ac;x.lineWidth=4;x.beginPath();x.arc(194,cy,27,0,7);x.stroke();x.globalAlpha=1}
    x.textAlign='left';x.font='40px sans-serif';x.fillStyle=o.tx;x.fillText(PE[i],245,cy+2);
    x.font=`700 36px ${o.uf2}`;x.fillStyle=o.tx;x.fillText(a,310,cy);const w=x.measureText(a).width;
-   x.font=`600 28px ${bnf}`;x.fillStyle=o.mu;x.fillText(PB[i],310+w+16,cy+1);
-   if(d==2){const bw=x.measureText(PB[i]).width,px=310+w+16+bw+16;x.fillStyle=qc;rrect(x,px,cy-17,92,34,17);x.fill();x.fillStyle='#5a3d00';x.font=`800 22px ${o.uf2}`;x.textAlign='center';x.fillText('Qaza',px+46,cy+1)}
+   x.font=`600 28px ${bnf}`;x.fillStyle=o.mu;if(!isBn())x.fillText(PB[i],310+w+16,cy+1);
+   if(d==2){const bw=isBn()?0:x.measureText(PB[i]).width,px=310+w+16+bw+16;x.fillStyle=qc;rrect(x,px,cy-17,92,34,17);x.fill();x.fillStyle='#5a3d00';x.font=`800 22px ${o.uf2}`;x.textAlign='center';x.fillText('Qaza',px+46,cy+1)}
    if(t){x.textAlign='right';x.font=`800 36px ${o.uf2}`;x.fillStyle=d?qc:o.tx;x.fillText(ptF(t[a]),915,cy)}});
   [['tahajjud','🌙 Tahajjud'],['sunnah','✨ Sunnah']].forEach((c,i)=>{const d=(X[c[0]]||{}).v,a=140+i*410,b=y0+790;
    x.globalAlpha=d?1:.13;x.fillStyle=o.ac;rrect(x,a,b,390,70,35);x.fill();x.globalAlpha=1;
@@ -425,8 +425,8 @@ function cardPT(){const t=ptToday();if(!t){toast('Prayer times not loaded yet');
    x.globalAlpha=nx?.3:.2;x.fillStyle=nx?'#fff':o.ac;x.beginPath();x.arc(206,cy,sr?25:34,0,7);x.fill();x.globalAlpha=1;
    x.textAlign='center';x.font=(sr?'30px':'40px')+' sans-serif';x.fillStyle=tc;x.fillText(r[3],206,cy+2);
    x.textAlign='left';x.font=`700 ${sr?30:38}px ${o.uf2}`;x.fillStyle=tc;x.fillText(r[0],268,cy);const w=x.measureText(r[0]).width;
-   x.font=`600 ${sr?24:28}px ${bnf}`;x.fillStyle=mc;x.fillText(r[1],268+w+14,cy+1);
-   if(nx){const bw=x.measureText(r[1]).width,px=268+w+14+bw+14;x.fillStyle='#fff';rrect(x,px,cy-16,84,32,16);x.fill();x.fillStyle=o.ac;x.font=`800 20px ${o.uf2}`;x.textAlign='center';x.fillText('Next',px+42,cy+1)}
+   x.font=`600 ${sr?24:28}px ${bnf}`;x.fillStyle=mc;if(!isBn())x.fillText(r[1],268+w+14,cy+1);
+   if(nx){const bw=isBn()?0:x.measureText(r[1]).width,BW=isBn()?112:84,px=268+w+14+bw+14;x.fillStyle='#fff';rrect(x,px,cy-16,BW,32,16);x.fill();x.fillStyle=o.ac;x.font=`800 20px ${o.uf2}`;x.textAlign='center';x.fillText('Next',px+BW/2,cy+1)}
    const f=F[ptFI(r[2])];
    x.textAlign='right';x.font=`800 ${f?(sr?30:36):(sr?32:40)}px ${o.uf2}`;x.fillStyle=nx?on:(sr?o.mu:o.ac);x.fillText(ptF(t[r[0]]),905,f?cy-(sr?13:16):cy);
    if(f){const tx2=ptFR(f[2],f[3]);x.font=`800 ${sr?19:21}px ${o.uf2}`;const fw=x.measureText('🚫 '+tx2).width+24,fh=sr?26:30,fy=cy+(sr?10:12);
@@ -483,6 +483,7 @@ const BD={
 'Name':'নাম','Arabic text':'আরবি টেক্সট','English translation':'ইংরেজি অনুবাদ','Target (default 33)':'লক্ষ্য (ডিফল্ট ৩৩)','Note (optional) - hadith or significance':'টীকা (ঐচ্ছিক) - হাদিস বা গুরুত্ব','New tasbih':'নতুন তাসবিহ',
 'Search duas…':'দোয়া খুঁজুন…','Search names…':'নাম খুঁজুন…','Username':'ইউজারনেম','Password':'পাসওয়ার্ড',
 'Synced':'সিঙ্ক হয়েছে','Your offline progress is saved to your account:':'আপনার অফলাইন অগ্রগতি অ্যাকাউন্টে সংরক্ষিত হয়েছে:','tasbih counts':'তাসবিহ গণনা','prayers marked':'নামাজ চিহ্নিত',
+'All five done, Alhamdulillah 🎉':'পাঁচ ওয়াক্তই সম্পন্ন, আলহামদুলিল্লাহ 🎉','So close, just one more 💫':'প্রায় শেষ, আর মাত্র একটি 💫','Mashallah, keep going ✨':'মাশাআল্লাহ, চালিয়ে যান ✨','A lovely start 🌸':'সুন্দর শুরু 🌸','Bismillah, let us begin 🤍':'বিসমিল্লাহ, শুরু করি 🤍',
 'Add your Firebase config in index.html to enable sync. Data is saved on this device meanwhile.':'সিঙ্ক চালু করতে index.html-এ Firebase কনফিগ যোগ করুন। এর মধ্যে ডেটা এই ডিভাইসে সংরক্ষিত থাকবে।',
 'Daily prayers':'দৈনিক নামাজ','Photo card':'ফটো কার্ড'};
 const SUB=[[' · tomorrow',' · আগামীকাল'],[' · tap to retry',' · আবার চেষ্টা করতে ট্যাপ করুন'],['Never exported','এখনো এক্সপোর্ট হয়নি'],['Last export: ','সর্বশেষ এক্সপোর্ট: '],['Last synced: ','সর্বশেষ সিঙ্ক: '],[' · import merges into your current data',' · ইম্পোর্ট বর্তমান ডেটার সাথে মিলে যাবে'],
@@ -506,6 +507,7 @@ function locN(r){if(r.nodeType==3)return locT(r);if(r.nodeType!=1)return;
 new MutationObserver(ms=>{for(const m of ms){if(m.type=='characterData')locT(m.target);else m.addedNodes.forEach(locN)}}).observe(document.body,{childList:true,subtree:true,characterData:true});
 // native dialogs and canvas cards are not DOM text, so translate them separately
 const _pr=window.prompt.bind(window),_al=window.alert.bind(window);window.prompt=(m,d)=>_pr(loc1(m),d);window.alert=m=>_al(loc1(String(m)));
+const _mt=CanvasRenderingContext2D.prototype.measureText;CanvasRenderingContext2D.prototype.measureText=function(t){return _mt.call(this,typeof t=='string'?loc1(t):t)};
 const _ft=CanvasRenderingContext2D.prototype.fillText;CanvasRenderingContext2D.prototype.fillText=function(t,...a){return _ft.call(this,typeof t=='string'?loc1(t):t,...a)};
 function setUI(v){S.set.ui=v;S.set.bd=v=='bn';persist(1);render()}
 const typing=e=>/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName);

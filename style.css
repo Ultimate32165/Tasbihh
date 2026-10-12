@@ -230,3 +230,6 @@ nav button{padding:8px 2px;min-width:0;font-size:.68rem}
 .ptz{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
 .ptfs{font-size:.62rem;font-weight:800;color:#8a4b00;background:#f7d8a0;border-radius:99px;padding:2px 8px;white-space:nowrap}
 .ptfs.on{background:#e0802a;color:#fff}
+
+/* Bangla UI: the app already shows a Bangla name beside each English one, so hide the duplicate */
+html[lang=bn] .pn>.mu.bn,html[lang=bn] .xpt>.mu.bn,html[lang=bn] .ptn>.bn,html[lang=bn] .pn>.bn{display:none}
