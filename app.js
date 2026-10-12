@@ -333,7 +333,7 @@ const PTK='tasbih_pt',PTN=['Fajr','Dhuhr','Asr','Maghrib','Isha'];
 const BDC=[['Dhaka',23.8103,90.4125],['Chattogram',22.3569,91.7832],['Khulna',22.8456,89.5403],['Rajshahi',24.3745,88.6042],['Sylhet',24.8949,91.8687],['Barishal',22.7010,90.3535],['Rangpur',25.7439,89.2752],['Mymensingh',24.7471,90.4203],['Cumilla',23.4607,91.1809],['Gazipur',23.9999,90.4203],['Narayanganj',23.6238,90.5000],["Cox's Bazar",21.4272,92.0058],['Bogura',24.8481,89.3730],['Jashore',23.1664,89.2081],['Dinajpur',25.6217,88.6354],['Noakhali',22.8696,91.0995],['Pabna',24.0064,89.2372],['Tangail',24.2513,89.9167],['Faridpur',23.6070,89.8429],['Kishoreganj',24.4260,90.7766]];
 const PM=[[1,'Karachi (Bangladesh / South Asia)'],[3,'Muslim World League'],[2,'ISNA (North America)'],[5,'Egyptian'],[4,'Umm al-Qura (Makkah)']];
 S.set.loc??={n:'Dhaka',lat:23.8103,lon:90.4125,tz:'Asia/Dhaka'};S.set.pm??=1;S.set.ps??=1;S.set.h24??=false;
-let PT=null,ptBusy=0,ptFail=0;try{PT=JSON.parse(localStorage.getItem(PTK)||'null')}catch(e){}
+let PT=null,ptBusy=0,ptFail=0,ptErr='';try{PT=JSON.parse(localStorage.getItem(PTK)||'null')}catch(e){}
 const hm=x=>{const a=x.split(':');return +a[0]*60+ +a[1]};
 const ptF=x=>{if(S.set.h24)return x;const a=x.split(':');return (a[0]%12||12)+':'+a[1]+' '+(a[0]<12?'AM':'PM')};
 const ptD=m=>m>=60?Math.floor(m/60)+'h '+(m%60)+'m':m+' min';
@@ -350,24 +350,28 @@ function ptUrl(y,m){const l=S.set.loc,q=new URLSearchParams({method:S.set.pm,sch
 function ptLoad(){const n=ptNow(),k=ptKey(n.y,n.m);
  if(PT&&PT.k==k)return Promise.resolve(true);if(ptBusy)return ptBusy;
  if(ptFail&&Date.now()-ptFail<60000)return Promise.resolve(false);
- return ptBusy=fetch(ptUrl(n.y,n.m)).then(r=>r.json()).then(j=>{if(!j||j.code!=200||!j.data||!j.data.length)throw 0;
+ return ptBusy=fetch(ptUrl(n.y,n.m)).then(r=>r.json()).then(j=>{if(!j||j.code!=200||!j.data||!j.data.length)throw new Error('API '+(j&&j.code)+' '+String(j&&(j.data||j.status)||'').slice(0,40));
   PT={k,tz:(j.data[0].meta||{}).timezone||S.set.loc.tz||'',days:j.data.map(x=>{const o={};PTN.concat('Sunrise').forEach(a=>o[a]=String(x.timings[a]).slice(0,5));
    const h=x.date&&x.date.hijri;o.hj=h?h.day+' '+h.month.en+' '+h.year:'';return o})};
-  localStorage.setItem(PTK,JSON.stringify(PT));ptFail=0;return true}).catch(()=>{ptFail=Date.now();return false}).then(ok=>{ptBusy=0;ptRefresh(ok);return ok})}
+  localStorage.setItem(PTK,JSON.stringify(PT));ptFail=0;return true}).catch(e=>{ptFail=Date.now();ptErr=String(e&&e.message||e).slice(0,70);return false}).then(ok=>{ptBusy=0;ptRefresh(ok);return ok})}
 function ptNext(){const n=ptNow(),t=ptToday(n);if(!t)return null;
  for(let i=0;i<5;i++){const x=hm(t[PTN[i]]);if(x>n.min)return{i,in:x-n.min,t:t[PTN[i]]}}
  return{i:0,in:hm(t.Fajr)+1440-n.min,t:t.Fajr,tm:1}}
-function ptInner(x,l){return x?`<span><b style="color:var(--ac)">${PTN[x.i]}</b> <span class=mu>${ptF(x.t)}${x.tm?' · tomorrow':''}</span><div class=mu style="font-size:.75rem">${l.n}</div></span><b>in ${ptD(x.in)}</b>`
- :`<span class=mu>${ptFail?'Prayer times unavailable · check internet':'Loading prayer times…'}<div style="font-size:.75rem">${l.n}</div></span>`}
+const mF=m=>ptF(String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'));
+function ptForb(t){const sr=hm(t.Sunrise),dh=hm(t.Dhuhr),mg=hm(t.Maghrib);return [['Sunrise','সূর্যোদয়',sr,sr+15],['Zawal (noon)','দুপুর',dh-6,dh],['Sunset','সূর্যাস্ত',mg-15,mg]]}
+function ptForbNow(){const n=ptNow(),t=ptToday(n);if(!t)return '';const f=ptForb(t).find(a=>n.min>=a[2]&&n.min<a[3]);return f?`<div style="color:#d64545;font-size:.75rem;font-weight:700">⚠ Forbidden time (${f[0]}) · ends ${mF(f[3])}</div>`:''}
+function ptInner(x,l){return x?`<span><b style="color:var(--ac)">${PTN[x.i]}</b> <span class=mu>${ptF(x.t)}${x.tm?' · tomorrow':''}</span><div class=mu style="font-size:.75rem">${l.n}</div>${ptForbNow()}</span><b>in ${ptD(x.in)}</b>`
+ :`<span class=mu>${ptFail?'Prayer times unavailable · '+ptErr+' · tap to retry':'Loading prayer times…'}<div style="font-size:.75rem">${l.n}</div></span>`}
 function ptCard(){ptLoad();return `<div class=glass id=ptc onclick=ptOpen() style="padding:12px 18px;margin:0 0 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer">${ptInner(ptNext(),S.set.loc)}</div>`}
 function ptT(i){ptLoad();const t=ptToday();return t?`<br><span class=mu style="font-size:.75rem">${ptF(t[PTN[i]])}</span>`:''}
 function ptRefresh(ok){const e=$('#ptc');if(e)e.innerHTML=ptInner(ptNext(),S.set.loc);if(ok&&tab=='p')render();const m=$('#ptm');if(m)m.innerHTML=ptModal()}
 function ptCitySel(){const l=S.set.loc;
  return `<select onchange="ptSetCity(this.value)">${BDC.map(c=>`<option ${c[0]==l.n&&!l.g&&!l.c?'selected':''}>${c[0]}</option>`).join('')}<option value=__gps ${l.g?'selected':''}>${l.g?'My location':'Use my location…'}</option><option value=__oth ${l.c?'selected':''}>${l.c?l.n+', '+l.c:'Other city…'}</option></select>`}
 function ptModal(){const t=ptToday(),x=ptNext(),l=S.set.loc,B=['ফজর','যোহর','আসর','মাগরিব','এশা'];
- const rows=t?[['Fajr','ফজর',0],['Sunrise','সূর্যোদয়',-1],['Dhuhr','যোহর',1],['Asr','আসর',2],['Maghrib','মাগরিব',3],['Isha','এশা',4]].map(r=>`<div class=pr><span ${x&&x.i==r[2]?'style="color:var(--ac);font-weight:800"':''}>${r[0]} <span class="mu bn">${r[1]}</span></span><b>${ptF(t[r[0]])}</b></div>`).join(''):`<div class=mu style="padding:12px;text-align:center">${ptFail?'Unavailable · check your internet':'Loading…'}</div>`;
- return `<h2 style="margin:0">Prayer times</h2><div class=mu>${t&&t.hj?t.hj+' AH':''}</div><div>${rows}</div>${ptCitySel()}<button class="btn p" onclick=closeM()>Done</button>`}
-function ptOpen(){ptLoad();modal(`<div id=ptm style="display:grid;gap:10px">${ptModal()}</div>`)}
+ const rows=t?[['Fajr','ফজর',0],['Sunrise','সূর্যোদয়',-1],['Dhuhr','যোহর',1],['Asr','আসর',2],['Maghrib','মাগরিব',3],['Isha','এশা',4]].map(r=>`<div class=pr><span ${x&&x.i==r[2]?'style="color:var(--ac);font-weight:800"':''}>${r[0]} <span class="mu bn">${r[1]}</span></span><b>${ptF(t[r[0]])}</b></div>`).join(''):`<div class=mu style="padding:12px;text-align:center">${ptFail?'Unavailable · '+ptErr:'Loading…'}</div>`;
+ const fb=t?`<div class=mu style="margin:10px 0 2px">Forbidden times (no voluntary prayer)</div>${ptForb(t).map(a=>`<div class=pr><span>${a[0]} <span class="mu bn">${a[1]}</span></span><b>${mF(a[2])} – ${mF(a[3])}</b></div>`).join('')}<div class=mu style="font-size:.72rem">Approximate: sunrise +15 min, noon −6 min, sunset −15 min.</div>`:'';
+ return `<h2 style="margin:0">Prayer times</h2><div class=mu>${t&&t.hj?t.hj+' AH':''}</div><div>${rows}</div>${fb}${ptCitySel()}<button class="btn p" onclick=closeM()>Done</button>`}
+function ptOpen(){ptFail=0;ptLoad();modal(`<div id=ptm style="display:grid;gap:10px">${ptModal()}</div>`)}
 function ptAfter(){render();const m=$('#ptm');if(m)m.innerHTML=ptModal()}
 async function ptApply(l){const old=S.set.loc;S.set.loc=l;persist(1);PT=null;ptFail=0;localStorage.removeItem(PTK);toast('Loading prayer times…');
  await ptLoad();const ok=await ptLoad();
