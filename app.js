@@ -402,14 +402,16 @@ function ptT(i){ptLoad();const t=ptToday();return t?`<br><span class=mu style="f
 function ptRefresh(ok){const e=$('#ptc');if(e)e.innerHTML=ptInner(ptNext(),S.set.loc);if(ok&&tab=='p')render();const m=$('#ptm');if(m)m.innerHTML=ptModal()}
 function ptCitySel(){const l=S.set.loc;
  return `<select onchange="ptSetCity(this.value)">${BDC.map(c=>`<option ${c[0]==l.n&&!l.g&&!l.c?'selected':''}>${c[0]}</option>`).join('')}<option value=__gps ${l.g?'selected':''}>${l.g?'My location':'Use my location…'}</option><option value=__oth ${l.c?'selected':''}>${l.c?l.n+', '+l.c:'Other city…'}</option></select>`}
-function ptModal(){const t=ptToday(),x=ptNext(),l=S.set.loc,n=ptNow();
+function ptFR(a,b){const A=mF(a),B=mF(b);return(/ [AP]M$/.test(A)&&A.slice(-2)==B.slice(-2))?A.replace(/ [AP]M$/,'')+'–'+B:A+'–'+B}
+const ptFI=i=>i==-1?0:i==1?1:i==3?2:-1;
+function ptModal(){const t=ptToday(),x=ptNext(),l=S.set.loc,n=ptNow(),F=t?ptForb(t):[];
  const R=[['Fajr','ফজর',0,'🌅'],['Sunrise','সূর্যোদয়',-1,'🌄'],['Dhuhr','যোহর',1,'☀️'],['Asr','আসর',2,'🌤️'],['Maghrib','মাগরিব',3,'🌇'],['Isha','এশা',4,'🌙']];
- const rows=t?R.map(r=>{const nx=x&&x.i==r[2],past=!nx&&hm(t[r[0]])<=n.min;
-  return `<div class="ptr ${nx?'nx':''} ${past?'past':''} ${r[2]<0?'sr':''}"><span class=pe>${r[3]}</span><span class=pn><b>${r[0]}</b> <span class="mu bn">${r[1]}</span>${nx?`<div><span class=nbd>Next · in ${ptD(x.in)}</span></div>`:''}</span>${past?'<span class=ptck>✓</span>':''}<b class=ptt>${ptF(t[r[0]])}</b></div>`}).join(''):`<div class=mu style="padding:12px;text-align:center">${ptFail?'Unavailable · '+ptErr:'Loading…'}</div>`;
- const fb=t?`<div class=pth2>🚫 Forbidden times <span class=mu>· no voluntary prayer</span></div>${ptForb(t).map(a=>`<div class=ptf><span>${a[0]} <span class="mu bn">${a[1]}</span></span><b>${mF(a[2])} – ${mF(a[3])}</b></div>`).join('')}<div class=mu style="font-size:.72rem;margin:6px 4px 10px">Approximate: sunrise +15 min, noon −6 min, sunset −15 min.</div>`:'';
+ const rows=t?R.map(r=>{const nx=x&&x.i==r[2],past=!nx&&hm(t[r[0]])<=n.min,f=F[ptFI(r[2])],fo=f&&n.min>=f[2]&&n.min<f[3];
+  return `<div class="ptr ${nx?'nx':''} ${past?'past':''} ${r[2]<0?'sr':''}"><span class=pe>${r[3]}</span><span class=pn><b>${r[0]}</b> <span class="mu bn">${r[1]}</span>${nx?`<div><span class=nbd>Next · in ${ptD(x.in)}</span></div>`:''}</span>${past?'<span class=ptck>✓</span>':''}<span class=ptz><b class=ptt>${ptF(t[r[0]])}</b>${f?`<span class="ptfs ${fo?'on':''}">🚫 ${ptFR(f[2],f[3])}</span>`:''}</span></div>`}).join(''):`<div class=mu style="padding:12px;text-align:center">${ptFail?'Unavailable · '+ptErr:'Loading…'}</div>`;
+ const fb=t?`<div class=mu style="font-size:.72rem;margin:2px 4px 10px;text-align:center">🚫 = forbidden time, no voluntary prayer (approx: sunrise +15 min, noon −6 min, sunset −15 min)</div>`:'';
  return `<div class=pth><div class=ptt2>🕌 Prayer times</div><div class=ptsub>📍 ${l.n}${t&&t.hj?' · '+t.hj+' AH':''}</div></div><div>${rows}</div>${fb}${ptCitySel()}<div class=row style="margin:4px 0 0"><button class="btn p" onclick=cardPT()>${IC.sh} Photo card</button><button class=btn onclick=closeM()>Done</button></div>`}
 function cardPT(){const t=ptToday();if(!t){toast('Prayer times not loaded yet');return}
- const nx0=ptNext(),l=S.set.loc,on=cv('--on')||'#fff',bnf="'Hind Siliguri',sans-serif",
+ const nx0=ptNext(),F=ptForb(t),l=S.set.loc,on=cv('--on')||'#fff',bnf="'Hind Siliguri',sans-serif",
  date=new Date().toLocaleDateString('en',{weekday:'long',day:'numeric',month:'long'})+(t.hj?' · '+t.hj+' AH':''),
  R=[['Fajr','ফজর',0,'🌅'],['Sunrise','সূর্যোদয়',-1,'🌄'],['Dhuhr','যোহর',1,'☀️'],['Asr','আসর',2,'🌤️'],['Maghrib','মাগরিব',3,'🌇'],['Isha','এশা',4,'🌙']],
  mth=((PM.find(m=>m[0]==S.set.pm)||['',''])[1]).split(' (')[0]+' · '+(S.set.ps==1?'Hanafi Asr':"Shafi'i Asr");
@@ -425,7 +427,10 @@ function cardPT(){const t=ptToday();if(!t){toast('Prayer times not loaded yet');
    x.textAlign='left';x.font=`700 ${sr?30:38}px ${o.uf2}`;x.fillStyle=tc;x.fillText(r[0],268,cy);const w=x.measureText(r[0]).width;
    x.font=`600 ${sr?24:28}px ${bnf}`;x.fillStyle=mc;x.fillText(r[1],268+w+14,cy+1);
    if(nx){const bw=x.measureText(r[1]).width,px=268+w+14+bw+14;x.fillStyle='#fff';rrect(x,px,cy-16,84,32,16);x.fill();x.fillStyle=o.ac;x.font=`800 20px ${o.uf2}`;x.textAlign='center';x.fillText('Next',px+42,cy+1)}
-   x.textAlign='right';x.font=`800 ${sr?32:40}px ${o.uf2}`;x.fillStyle=nx?on:(sr?o.mu:o.ac);x.fillText(ptF(t[r[0]]),905,cy);
+   const f=F[ptFI(r[2])];
+   x.textAlign='right';x.font=`800 ${f?(sr?30:36):(sr?32:40)}px ${o.uf2}`;x.fillStyle=nx?on:(sr?o.mu:o.ac);x.fillText(ptF(t[r[0]]),905,f?cy-(sr?13:16):cy);
+   if(f){const tx2=ptFR(f[2],f[3]);x.font=`800 ${sr?19:21}px ${o.uf2}`;const fw=x.measureText('🚫 '+tx2).width+24,fh=sr?26:30,fy=cy+(sr?10:12);
+    x.fillStyle='#f7d8a0';rrect(x,905-fw,fy,fw,fh,fh/2);x.fill();x.fillStyle='#8a4b00';x.textAlign='center';x.fillText('🚫 '+tx2,905-fw/2,fy+fh/2+1)}
    by+=h+14});
   x.textAlign='center';x.fillStyle=o.mu;x.font=`600 24px ${o.uf2}`;x.fillText(mth,W/2,by+30)}})}
 function ptOpen(){ptFail=0;ptLoad();modal(`<div id=ptm style="display:grid;gap:10px">${ptModal()}</div>`)}
