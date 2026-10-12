@@ -25,7 +25,7 @@ const AF={amiri:"Amiri,serif",indo:"'Noto Nastaliq Urdu',serif"};
 let S=JSON.parse(localStorage.getItem(KEY)||'null')||{tl:[],tt:{},logs:{},prog:{},fv:{},qz:{v:0,t:0},dt:{},cur:'sub',pend:{c:0,p:0},upd:0,
  set:{theme:'forest',arf:'amiri',size:1,en:true,bn:true,haptic:true}};
 let tab='c',rg='w',mt='t',wasOff=!navigator.onLine,duaI=0,duaO=0,D=null;
-S.set.tl??=true;S.set.uf??='nunito';S.set.hms??=35;S.dt??={};
+S.set.tl??=true;S.set.ui??='en';S.set.bd??=false;S.set.uf??='nunito';S.set.hms??=35;S.dt??={};
 const all=()=>DEF.concat(S.tl),cur=()=>all().find(x=>x.id==S.cur)||DEF[0],tg=t=>{const x=S.tt[t.id];return (x&&typeof x=='object'?x.v:x)||t.t};
 const dk=d=>{d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const day=k=>S.logs[k=k||dk()]=S.logs[k]||{c:{},x:{},z:{},p:[0,0,0,0,0].map(()=>({v:0,t:0}))};
@@ -97,9 +97,9 @@ async function impData(inp){const f=inp.files[0];inp.value='';if(!f)return;
 function series(){const n=new Date(),o=[];const f=mt=='t'?dt:mt=='p'?dp:dx;
  if(rg=='y'){for(let i=11;i>=0;i--){const d=new Date(n.getFullYear(),n.getMonth()-i,1);let v=0;
   for(const k in S.logs){const x=new Date(k);if(x.getFullYear()==d.getFullYear()&&x.getMonth()==d.getMonth())v+=f(k)}
-  o.push({l:d.toLocaleString('en',{month:'short'})[0],v})}}
+  o.push({l:d.toLocaleString(LC(),{month:'short'})[0],v})}}
  else{const c=rg=='w'?7:30;for(let i=c-1;i>=0;i--){const d=new Date(n.getFullYear(),n.getMonth(),n.getDate()-i);
-  o.push({l:rg=='w'?d.toLocaleString('en',{weekday:'short'}).slice(0,2):(i%5==0?d.getDate():''),v:f(dk(d))})}}return o}
+  o.push({l:rg=='w'?d.toLocaleString(LC(),{weekday:'short'}).slice(0,2):(i%5==0?d.getDate():''),v:f(dk(d))})}}return o}
 function chart(){const d=series(),m=Math.max(1,...d.map(x=>x.v)),w=320/d.length;
  return `<svg viewBox="0 0 320 150" width=100%>${d.map((x,i)=>{const h=x.v/m*105;return `<rect x="${i*w+w*.15}" y="${115-h}" width="${w*.7}" height="${Math.max(h,2)}" rx="${Math.min(6,w*.3)}" fill="var(--ac)" opacity="${x.v?1:.25}"/><text x="${i*w+w/2}" y="136" font-size="10" text-anchor="middle" fill="var(--mu)">${x.l}</text>`}).join('')}</svg><div class=mu>Total: ${d.reduce((a,b)=>a+b.v,0)} · Peak: ${m>1||d.some(x=>x.v)?m:0}</div>`}
 function stats(){const ks=Object.keys(S.logs).sort(),tot=ks.reduce((a,k)=>a+dt(k),0),ptot=ks.reduce((a,k)=>a+dp(k),0);
@@ -123,8 +123,8 @@ ${t.note&&tnO==t.id?`<div class="glass note"><div class=dn style="font-size:.9re
 <p class="mu" style="text-align:center">Today's total: <b id=td>${dt(dk())}</b></p><p class=mu id=ss style="text-align:center;margin-top:-6px;font-size:.75rem">${user?SS:'Not signed in · saved on this device only'}</p>${user?`<div class=row style="margin:0 0 6px"><button class="btn sm syb" onclick=syncNow()>${IC.sy} Sync now</button></div>`:''}`},
 p(){const l=day(),n=dp(dk()),nx=ptNext(),t=ptToday(),J=pj;pj=-1;let g='';
  for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=dk(d),L=S.logs[k],X=(L&&L.x)||{};
-  g+=`<div class="wd ${i?'':'td'}" onclick="openQ('${k}')"><div class=mu>${d.toLocaleString('en',{weekday:'short'}).slice(0,2)}</div>${[0,1,2,3,4].map(j=>`<i class="${L&&L.p[j].v?'on':''} ${L&&L.p[j].v==2?'q':''}"></i>`).join('')}${['tahajjud','sunnah'].map((e,j)=>`<i class="x ${j?'':'x1'} ${(X[e]||{}).v?'on':''}"></i>`).join('')}</div>`}
- const date=new Date().toLocaleDateString('en',{weekday:'long',day:'numeric',month:'long'});
+  g+=`<div class="wd ${i?'':'td'}" onclick="openQ('${k}')"><div class=mu>${d.toLocaleString(LC(),{weekday:'short'}).slice(0,2)}</div>${[0,1,2,3,4].map(j=>`<i class="${L&&L.p[j].v?'on':''} ${L&&L.p[j].v==2?'q':''}"></i>`).join('')}${['tahajjud','sunnah'].map((e,j)=>`<i class="x ${j?'':'x1'} ${(X[e]||{}).v?'on':''}"></i>`).join('')}</div>`}
+ const date=new Date().toLocaleDateString(LC(),{weekday:'long',day:'numeric',month:'long'});
  return `<div class="glass pz"><span class=orb></span><button class=nbtn onclick=cardP() aria-label=Share>${IC.sh}</button><div class=dn>🌸 Daily prayers</div><div class=pzd>${date}${t&&t.hj?' · '+t.hj+' AH':''}</div><div class=pzm><b>${n}</b><span>/5</span></div><div class=pzb>${[0,1,2,3,4].map(i=>`<i class="${l.p[i].v?'on':''}"></i>`).join('')}</div><div class=pzs>${pMsg(n)}</div></div>
 ${PN.map((a,i)=>{const isN=nx&&!nx.tm&&nx.i==i;return `<button class="pd ${l.p[i].v?'done':''} ${l.p[i].v==2?'qz':''} ${isN&&!l.p[i].v?'nx':''} ${J==i?'jp':''}" onclick=togP(${i})><span class=pe>${PE[i]}</span><span class=pn><b>${a}</b> <span class="mu bn">${PB[i]}</span>${l.p[i].v==2?' <span class=qbd>Qaza</span>':''}${ptT(i)}${isN?`<div><span class=nbd>Next · in ${ptD(nx.in)}</span></div>`:''}</span><span class=pk>${IC.k}</span></button>`}).join('')}
 ${extras()}${qazaCard()}<div class="glass wkc"><div class=mu style="margin-bottom:6px">Last 7 days</div><div class=wk>${g}</div><div class=mu style="margin-top:8px;font-size:.72rem;text-align:center">● on time · ◯ qaza · ▢ Tahajjud, Sunnah · tap a day to log qaza</div></div>`},
@@ -132,7 +132,7 @@ s(){const x=stats();return `<div class=row style="justify-content:space-between;
 <div class=card><div class=row style="justify-content:space-between"><span>${[['w','Week'],['m','Month'],['y','Year']].map(a=>`<button class="btn ${rg==a[0]?'on':''}" onclick="setR('${a[0]}')">${a[1]}</button>`).join(' ')}</span><span>${[['t','Tasbih'],['p','Prayer'],['x','Extras']].map(a=>`<button class="btn ${mt==a[0]?'on':''}" onclick="setM('${a[0]}')">${a[1]}</button>`).join(' ')}</span></div>${chart()}</div>
 ${heat()}<div class=card><div class=mu>By tasbih</div>${all().filter(t=>x.per[t.id]).map(t=>`<div class=pr><span>${t.n}</span><b>${x.per[t.id]}</b></div>`).join('')||'<div class=mu>Nothing yet</div>'}</div>`},
 g(){const s=S.set,chk=(k,l)=>`<div class=pr><span>${l}</span><input type=checkbox ${s[k]?'checked':''} onchange="S.set.${k}=this.checked;persist(1);render()"></div>`;
- return `<h2>Settings</h2><div class=card><div class=mu style="margin-bottom:8px">Theme</div>${THEMES.map(t=>`<span class=sw data-theme=${t} title=${t} style="background:linear-gradient(135deg,var(--bg) 50%,var(--ac) 50%);${s.theme==t?'outline:2px solid var(--ac)':''}" onclick="S.set.theme='${t}';persist(1);render()"></span>`).join('')}</div>
+ return `<h2>Settings</h2><div class=card><div class=pr style="display:block"><div class=mu>Interface language</div><select onchange="setUI(this.value)"><option value=en ${s.ui!='bn'?'selected':''}>English</option><option value=bn ${s.ui=='bn'?'selected':''}>বাংলা</option></select></div>${chk('bd','Bengali numerals (০১২)')}</div><div class=card><div class=mu style="margin-bottom:8px">Theme</div>${THEMES.map(t=>`<span class=sw data-theme=${t} title=${t} style="background:linear-gradient(135deg,var(--bg) 50%,var(--ac) 50%);${s.theme==t?'outline:2px solid var(--ac)':''}" onclick="S.set.theme='${t}';persist(1);render()"></span>`).join('')}</div>
 <div class=card>${chk('en','English translation')}${chk('bn','বাংলা translation')}${chk('tl','Transliteration (duas)')}${chk('haptic','Haptic vibration (phones)')}<div class=pr style="display:block"><div class=mu>Tap vibration length · ${s.hms} ms</div><input type=range min=10 max=100 step=5 value=${s.hms} oninput="S.set.hms=+this.value;this.previousElementSibling.textContent='Tap vibration length · '+this.value+' ms'" onchange="persist(1);vib(S.set.hms)"></div>
 <div class=pr style="display:block"><div class=mu>App font</div><select onchange="S.set.uf=this.value;persist(1);render()">${Object.keys(UF).map(k=>`<option value=${k} ${(s.uf||'nunito')==k?'selected':''}>${UF[k].replace(/'/g,'')}</option>`).join('')}</select></div><div class=pr style="display:block"><div class=mu>Arabic font</div><select onchange="S.set.arf=this.value;persist(1);render()"><option value=amiri ${s.arf=='amiri'?'selected':''}>Amiri (Naskh)</option><option value=indo ${s.arf=='indo'?'selected':''}>Indo-Pak (Nastaliq)</option></select></div>
 <div class=pr style="display:block"><div class=mu>Text size</div><input type=range min=.8 max=1.6 step=.1 value=${s.size} oninput="S.set.size=+this.value;document.documentElement.style.setProperty('--sz',this.value)" onchange="persist(1)"></div></div>
@@ -215,7 +215,7 @@ function acc(){if(!fb)return FC.apiKey.startsWith('YOUR')?'<span class=mu>Add yo
  return `<div style="display:grid;gap:8px"><input id=em placeholder=Username autocapitalize=none autocomplete=username><input id=pw type=password placeholder=Password><div class=row><button class="btn p" onclick="auth(0)">Sign in</button><button class=btn onclick="auth(1)">Sign up</button></div></div>`}
 function auth(n){const a=fb.Au,e=$('#em').value.trim().toLowerCase().replace(/\s+/g,'')+'@tasbih-app.com',p=$('#pw').value;(n?a.createUserWithEmailAndPassword:a.signInWithEmailAndPassword)(fb.auth,e,p).catch(x=>alert(x.message))}
 
-function render(){document.body.dataset.theme=S.set.theme;const r=document.documentElement.style;r.setProperty('--sz',S.set.size);r.setProperty('--arf',AF[S.set.arf]);r.setProperty('--uf',UF[S.set.uf||'nunito']);
+function render(){document.body.dataset.theme=S.set.theme;document.documentElement.lang=isBn()?'bn':'en';const r=document.documentElement.style;r.setProperty('--sz',S.set.size);r.setProperty('--arf',AF[S.set.arf]);r.setProperty('--uf',UF[S.set.uf||'nunito']);
  $('#v').innerHTML=V[tab]();
  $('#nav').innerHTML=[['c','','Count'],['p','','Prayers'],['s','','Stats'],['d','','Duas'],['nm','','Names'],['g','','Settings']].map(a=>`<button class="${tab==a[0]?'on':''}" onclick="tab='${a[0]}';render()">${IC[a[0]]}${a[2]}</button>`).join('')}
 
@@ -332,7 +332,7 @@ function cardS(){const x0=stats(),d=series(),m=Math.max(1,...d.map(v=>v.v)),tot=
 const PE=['🌅','☀️','🌤️','🌇','🌙'];
 const pMsg=n=>n>=5?'All five done, Alhamdulillah 🎉':n==4?'So close, just one more 💫':n>=2?'Mashallah, keep going ✨':n==1?'A lovely start 🌸':'Bismillah, let us begin 🤍';
 function cardP(){const l=day(),n=dp(dk()),t=ptToday(),X=l.x||{},bnf="'Hind Siliguri',sans-serif",on=cv('--on')||'#fff',
- date=new Date().toLocaleDateString('en',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+(t&&t.hj?' · '+t.hj+' AH':'');
+ date=new Date().toLocaleDateString(LC(),{weekday:'long',day:'numeric',month:'long',year:'numeric'})+(t&&t.hj?' · '+t.hj+' AH':'');
  cardShow({title:'Daily prayers',res:880,lines:[],post:(x,o)=>{const y0=o.y,W=o.W;
   x.textAlign='center';x.fillStyle=o.mu;x.font=`600 28px ${o.uf2}`;x.fillText(date,W/2,y0+10);
   x.fillStyle=o.ac;x.font=`800 120px ${o.uf2}`;x.fillText(n+' / 5',W/2,y0+95);
@@ -357,10 +357,10 @@ function heat(){const f=mt=='t'?dt:mt=='p'?dp:dx,t=new Date(),s=new Date(t.getFu
  const op=[.13,.35,.55,.78,1];
  cs.forEach(([i,d,v])=>{const c=Math.floor(i/7),r=i%7,l=v?Math.min(4,Math.ceil(v/m*4)):0;
   o+=`<rect x="${c*14}" y="${16+r*14}" width="11" height="11" rx="3" fill="var(--ac)" opacity="${op[l]}"/>`;
-  if(r==0&&d.getDate()<=7)o+=`<text x="${c*14}" y="9" font-size="9" fill="var(--mu)">${d.toLocaleString('en',{month:'short'})}</text>`});
+  if(r==0&&d.getDate()<=7)o+=`<text x="${c*14}" y="9" font-size="9" fill="var(--mu)">${d.toLocaleString(LC(),{month:'short'})}</text>`});
  o+=`<text x="266" y="124" font-size="9" text-anchor="end" fill="var(--mu)">Less</text>${op.map((q,j)=>`<rect x="${270+j*14}" y="116" width="11" height="11" rx="3" fill="var(--ac)" opacity="${q}"/>`).join('')}<text x="340" y="124" font-size="9" fill="var(--mu)">More</text>`;
  return `<div class=card><div class=mu style="margin-bottom:6px">Activity · last 26 weeks</div><svg viewBox="0 0 364 130" width=100%>${o}</svg></div>`}
-const dbT=()=>new Date().toLocaleTimeString('en',{hour:'numeric',minute:'2-digit'}),dbD=()=>new Date().toLocaleDateString('en',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const dbT=()=>new Date().toLocaleTimeString(LC(),{hour:'numeric',minute:'2-digit'}),dbD=()=>new Date().toLocaleDateString(LC(),{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 function dateBar(){return `<div class=glass style="padding:12px 18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center"><span id=dbd class=mu style="font-size:.85rem">${dbD()}</span><b id=dbt style="color:var(--ac)">${dbT()}</b></div>`}
 setInterval(()=>{const a=$('#dbt'),b=$('#dbd');if(a&&b){a.textContent=dbT();b.textContent=dbD()}},15000);
 // ===== prayer times (AlAdhan API) =====
@@ -412,7 +412,7 @@ function ptModal(){const t=ptToday(),x=ptNext(),l=S.set.loc,n=ptNow(),F=t?ptForb
  return `<div class=pth><div class=ptt2>🕌 Prayer times</div><div class=ptsub>📍 ${l.n}${t&&t.hj?' · '+t.hj+' AH':''}</div></div><div>${rows}</div>${fb}${ptCitySel()}<div class=row style="margin:4px 0 0"><button class="btn p" onclick=cardPT()>${IC.sh} Photo card</button><button class=btn onclick=closeM()>Done</button></div>`}
 function cardPT(){const t=ptToday();if(!t){toast('Prayer times not loaded yet');return}
  const nx0=ptNext(),F=ptForb(t),l=S.set.loc,on=cv('--on')||'#fff',bnf="'Hind Siliguri',sans-serif",
- date=new Date().toLocaleDateString('en',{weekday:'long',day:'numeric',month:'long'})+(t.hj?' · '+t.hj+' AH':''),
+ date=new Date().toLocaleDateString(LC(),{weekday:'long',day:'numeric',month:'long'})+(t.hj?' · '+t.hj+' AH':''),
  R=[['Fajr','ফজর',0,'🌅'],['Sunrise','সূর্যোদয়',-1,'🌄'],['Dhuhr','যোহর',1,'☀️'],['Asr','আসর',2,'🌤️'],['Maghrib','মাগরিব',3,'🌇'],['Isha','এশা',4,'🌙']],
  mth=((PM.find(m=>m[0]==S.set.pm)||['',''])[1]).split(' (')[0]+' · '+(S.set.ps==1?'Hanafi Asr':"Shafi'i Asr");
  closeM();
@@ -447,6 +447,67 @@ function ptSetCity(v){
 async function ptReload(){PT=null;ptFail=0;localStorage.removeItem(PTK);await ptLoad();await ptLoad();ptAfter()}
 setInterval(()=>{if(!ptToday())ptLoad();const e=$('#ptc');if(e)e.innerHTML=ptInner(ptNext(),S.set.loc)},20000);
 addEventListener('online',()=>{ptFail=0;ptLoad()});
+// ===== Bangla UI layer =====
+// Translates rendered text in place, so templates stay English. Unknown strings fall back to English.
+const LC=()=>S.set.ui=='bn'?'bn-BD':'en',isBn=()=>S.set.ui=='bn';
+const BNN='০১২৩৪৫৬৭৮৯',bdig=s=>s.replace(/\d/g,d=>BNN[d]);
+const BD={
+'Count':'গণনা','Prayers':'নামাজ','Stats':'পরিসংখ্যান','Duas':'দোয়া','Names':'নাম','Settings':'সেটিংস',
+'Reset':'রিসেট','Share':'শেয়ার','Save':'সংরক্ষণ','New tasbih':'নতুন তাসবিহ','Custom':'কাস্টম',"Today's total:":'আজকের মোট:',
+'Not signed in · saved on this device only':'সাইন ইন করা নেই · শুধু এই ডিভাইসে সংরক্ষিত','Sync now':'এখনই সিঙ্ক করুন',
+'Note':'টীকা','Add':'যোগ করুন','Done':'সম্পন্ন','Cancel':'বাতিল','Close':'বন্ধ করুন','Continue':'চালিয়ে যান',
+'Daily prayers':'দৈনিক নামাজ','Fajr':'ফজর','Dhuhr':'যোহর','Asr':'আসর','Maghrib':'মাগরিব','Isha':'এশা','Sunrise':'সূর্যোদয়','Zawal (noon)':'দুপুর (যাওয়াল)','Sunset':'সূর্যাস্ত',
+'Tahajjud':'তাহাজ্জুদ','Sunnah':'সুন্নাত','Qaza':'কাযা','Next':'পরবর্তী','Next prayer':'পরবর্তী নামাজ',
+'Missed prayers (qaza)':'কাযা নামাজ','+ missed · − made up · tap the number to set it':'+ ছুটে গেছে · − আদায় হয়েছে · সংখ্যায় ট্যাপ করে নির্ধারণ করুন',
+'Log a qaza prayer':'কাযা নামাজ লিখুন','Log qaza':'কাযা লিখুন','Pick the date you missed, then tap a prayer to mark it as made up (qaza).':'যে তারিখের নামাজ ছুটেছিল সেটি বেছে নিন, তারপর নামাজে ট্যাপ করে কাযা হিসেবে চিহ্নিত করুন।',
+'Not prayed':'পড়া হয়নি','On time':'সময়মতো','Last 7 days':'গত ৭ দিন','● on time · ◯ qaza · ▢ Tahajjud, Sunnah · tap a day to log qaza':'● সময়মতো · ◯ কাযা · ▢ তাহাজ্জুদ, সুন্নাত · কাযা লিখতে একটি দিনে ট্যাপ করুন',
+'Prayer times':'নামাজের সময়','Loading prayer times…':'নামাজের সময় লোড হচ্ছে…','Prayer times unavailable':'নামাজের সময় পাওয়া যায়নি','Loading…':'লোড হচ্ছে…','Unavailable':'পাওয়া যায়নি','Photo card':'ফটো কার্ড',
+'🚫 = forbidden time, no voluntary prayer (approx: sunrise +15 min, noon −6 min, sunset −15 min)':'🚫 = নিষিদ্ধ সময়, নফল নামাজ নয় (আনুমানিক: সূর্যোদয়ের পর ১৫ মিনিট, দুপুরের আগে ৬ মিনিট, সূর্যাস্তের আগে ১৫ মিনিট)',
+'Today':'আজ','Total tasbih':'মোট তাসবিহ','Streak':'ধারাবাহিকতা','Best day':'সেরা দিন','Prayers today':'আজকের নামাজ','Prayers total':'মোট নামাজ','Qaza made up':'কাযা আদায়','Tahajjud nights':'তাহাজ্জুদের রাত','Sunnah days':'সুন্নাতের দিন',
+'Week':'সপ্তাহ','Month':'মাস','Year':'বছর','Tasbih':'তাসবিহ','Prayer':'নামাজ','Extras':'অতিরিক্ত','By tasbih':'তাসবিহ অনুযায়ী','Nothing yet':'এখনো কিছু নেই','Less':'কম','More':'বেশি',
+'Activity · last 26 weeks':'কার্যকলাপ · গত ২৬ সপ্তাহ','This week':'এই সপ্তাহ','Last 30 days':'গত ৩০ দিন','This year':'এই বছর','My stats':'আমার পরিসংখ্যান',
+'Duas':'দোয়া','All duas':'সব দোয়া','All names':'সব নাম','All':'সব','★ Favourites':'★ প্রিয়','No matches':'কিছু পাওয়া যায়নি','No favourites yet':'এখনো কোনো প্রিয় নেই','Repeat':'পুনরাবৃত্তি','99 Names of Allah':'আল্লাহর ৯৯টি নাম','99 Names':'৯৯টি নাম',
+'No duas yet. Add some in duas.json':'এখনো কোনো দোয়া নেই। duas.json-এ যোগ করুন',
+'My tasbih':'আমার তাসবিহ','New tasbih':'নতুন তাসবিহ',
+'Interface language':'ভাষা','Bengali numerals (০১২)':'বাংলা সংখ্যা (০১২)','Theme':'থিম','English translation':'ইংরেজি অনুবাদ','বাংলা translation':'বাংলা অনুবাদ','Transliteration (duas)':'উচ্চারণ (দোয়া)','Haptic vibration (phones)':'কম্পন (ফোন)',
+'App font':'অ্যাপের ফন্ট','Arabic font':'আরবি ফন্ট','Text size':'লেখার আকার','Prayer times · city':'নামাজের সময় · শহর','Calculation method':'গণনা পদ্ধতি','Asr calculation':'আসর গণনা','Hanafi (later Asr)':'হানাফি (দেরিতে আসর)',"Shafi'i / Maliki / Hanbali":'শাফেয়ি / মালিকি / হাম্বলি','24-hour time':'২৪ ঘণ্টার সময়',
+'Sync account':'সিঙ্ক অ্যাকাউন্ট','Sign in':'সাইন ইন','Sign up':'সাইন আপ','Sign out':'সাইন আউট','Signed in:':'সাইন ইন:','Not synced yet':'এখনো সিঙ্ক হয়নি','Synced':'সিঙ্ক হয়েছে','Syncing…':'সিঙ্ক হচ্ছে…','Saving…':'সংরক্ষণ হচ্ছে…',
+'Offline · saved on this device, will sync later':'অফলাইন · এই ডিভাইসে সংরক্ষিত, পরে সিঙ্ক হবে','Sync failed · saved on this device':'সিঙ্ক ব্যর্থ · এই ডিভাইসে সংরক্ষিত',
+'Backup':'ব্যাকআপ','Export':'এক্সপোর্ট','Import':'ইম্পোর্ট','Danger zone':'বিপদ অঞ্চল','Reset stats…':'পরিসংখ্যান রিসেট…','Reset stats':'পরিসংখ্যান রিসেট',
+"Choose what to erase. This can't be undone.":'কী মুছবেন বেছে নিন। এটি ফেরানো যাবে না।','Tasbih counts':'তাসবিহ গণনা','All dhikr counts, daily totals and streak':'সব জিকিরের গণনা, দৈনিক মোট ও ধারাবাহিকতা','History of the five prayers':'পাঁচ ওয়াক্তের ইতিহাস',
+'Extra prayers':'অতিরিক্ত নামাজ','Tahajjud and Sunnah history':'তাহাজ্জুদ ও সুন্নাতের ইতিহাস','Qaza counter':'কাযা কাউন্টার','Set back to 0':'০-তে ফিরিয়ে আনুন','Export a backup first':'আগে ব্যাকআপ এক্সপোর্ট করুন','Are you sure?':'আপনি কি নিশ্চিত?','Erase now':'এখনই মুছুন',
+'Target complete':'লক্ষ্য পূর্ণ','Synced ✓':'সিঙ্ক হয়েছে ✓','Sync failed':'সিঙ্ক ব্যর্থ','Sign in to sync':'সিঙ্ক করতে সাইন ইন করুন','You are offline':'আপনি অফলাইনে আছেন','Backup exported':'ব্যাকআপ এক্সপোর্ট হয়েছে','Backup restored':'ব্যাকআপ ফিরিয়ে আনা হয়েছে','Stats reset':'পরিসংখ্যান রিসেট হয়েছে',
+'Copied':'কপি হয়েছে','Copy failed':'কপি ব্যর্থ','Making card…':'কার্ড তৈরি হচ্ছে…','Could not make card':'কার্ড তৈরি করা যায়নি','Prayer times not loaded yet':'নামাজের সময় এখনো লোড হয়নি','Location not supported':'লোকেশন সমর্থিত নয়','Location permission denied':'লোকেশনের অনুমতি দেওয়া হয়নি',
+'Could not load times for that place':'ওই স্থানের সময় লোড করা যায়নি','Loading prayer times…':'নামাজের সময় লোড হচ্ছে…','My location':'আমার অবস্থান','Use my location…':'আমার অবস্থান ব্যবহার করুন…','Other city…':'অন্য শহর…',
+'Custom target':'কাস্টম লক্ষ্য','Repeat how many times?':'কতবার পড়বেন?','Missed prayers owed':'বাকি কাযা নামাজ','City name (e.g. Makkah)':'শহরের নাম (যেমন: মক্কা)','Country (e.g. Saudi Arabia)':'দেশ (যেমন: সৌদি আরব)','That file is not a valid Tasbih backup.':'এটি সঠিক Tasbih ব্যাকআপ ফাইল নয়।',
+'Name':'নাম','Arabic text':'আরবি টেক্সট','English translation':'ইংরেজি অনুবাদ','Target (default 33)':'লক্ষ্য (ডিফল্ট ৩৩)','Note (optional) - hadith or significance':'টীকা (ঐচ্ছিক) - হাদিস বা গুরুত্ব','New tasbih':'নতুন তাসবিহ',
+'Search duas…':'দোয়া খুঁজুন…','Search names…':'নাম খুঁজুন…','Username':'ইউজারনেম','Password':'পাসওয়ার্ড',
+'Synced':'সিঙ্ক হয়েছে','Your offline progress is saved to your account:':'আপনার অফলাইন অগ্রগতি অ্যাকাউন্টে সংরক্ষিত হয়েছে:','tasbih counts':'তাসবিহ গণনা','prayers marked':'নামাজ চিহ্নিত',
+'Add your Firebase config in index.html to enable sync. Data is saved on this device meanwhile.':'সিঙ্ক চালু করতে index.html-এ Firebase কনফিগ যোগ করুন। এর মধ্যে ডেটা এই ডিভাইসে সংরক্ষিত থাকবে।',
+'Daily prayers':'দৈনিক নামাজ','Photo card':'ফটো কার্ড'};
+const SUB=[[' · tomorrow',' · আগামীকাল'],[' · tap to retry',' · আবার চেষ্টা করতে ট্যাপ করুন'],['Never exported','এখনো এক্সপোর্ট হয়নি'],['Last export: ','সর্বশেষ এক্সপোর্ট: '],['Last synced: ','সর্বশেষ সিঙ্ক: '],[' · import merges into your current data',' · ইম্পোর্ট বর্তমান ডেটার সাথে মিলে যাবে'],
+ [' AM',' এএম'],[' PM',' পিএম'],['Done · ','সম্পন্ন · ']];
+const BU=s=>s.replace(/(\d+)h/,'$1 ঘণ্টা').replace(/(\d+)m\b/,'$1 মিনিট').replace(/(\d+) min\b/,'$1 মিনিট');
+const RX=[[/^of (\d+)$/,'$1 এর মধ্যে'],[/^(\d+) d$/,'$1 দিন'],[/^Total: (\d+) · Peak: (\d+)$/,'মোট: $1 · সর্বোচ্চ: $2'],
+ [/^Tap vibration length · (\d+) ms$/,'ট্যাপ কম্পনের দৈর্ঘ্য · $1 মি.সে.'],
+ [/^Next · in (.+)$/,(m,a)=>'পরবর্তী · '+BU(a)+' পরে'],[/^in (\d+h \d+m|\d+h|\d+m|\d+ min)$/,(m,a)=>BU(a)+' পরে'],
+ [/^⚠ Forbidden time \((.+)\) · ends (.+)$/,(m,a,b)=>'⚠ নিষিদ্ধ সময় ('+(BD[a]||a)+') · শেষ '+b.replace(/ AM\b/,' এএম').replace(/ PM\b/,' পিএম')]];
+function trS(s){const t=s.trim();if(!t)return s;let r=BD[t];
+ if(r==null){const m=t.match(/^([^A-Za-z0-9]*)([\s\S]*)$/);if(m[1]&&BD[m[2]]!=null)r=m[1]+BD[m[2]]}
+ if(r==null)for(const[re,f]of RX)if(re.test(t)){r=t.replace(re,f);break}
+ if(r==null){r=t;for(const[a,b]of SUB)if(r.includes(a))r=r.split(a).join(b);if(r==t)return s}
+ return s.match(/^\s*/)[0]+r+s.match(/\s*$/)[0]}
+function loc1(s){if(!s)return s;if(isBn())s=trS(s);if(S.set.bd)s=bdig(s);return s}
+const LSKIP=/^(SCRIPT|STYLE|TEXTAREA|OPTION)$/;
+function locT(n){const p=n.parentNode;if(!p||(p.nodeName!='OPTION'&&LSKIP.test(p.nodeName))||(p.closest&&p.closest('.ar')))return;const v=n.nodeValue,w=loc1(v);if(w!==v)n.nodeValue=w}
+function locN(r){if(r.nodeType==3)return locT(r);if(r.nodeType!=1)return;
+ const w=document.createTreeWalker(r,NodeFilter.SHOW_TEXT),a=[];let n;while(n=w.nextNode())a.push(n);a.forEach(locT);
+ if(isBn())[r,...r.querySelectorAll('[placeholder],[aria-label]')].forEach(e=>['placeholder','aria-label'].forEach(k=>{const v=e.getAttribute&&e.getAttribute(k);if(v){const t=trS(v);if(t!==v)e.setAttribute(k,t)}}))}
+new MutationObserver(ms=>{for(const m of ms){if(m.type=='characterData')locT(m.target);else m.addedNodes.forEach(locN)}}).observe(document.body,{childList:true,subtree:true,characterData:true});
+// native dialogs and canvas cards are not DOM text, so translate them separately
+const _pr=window.prompt.bind(window),_al=window.alert.bind(window);window.prompt=(m,d)=>_pr(loc1(m),d);window.alert=m=>_al(loc1(String(m)));
+const _ft=CanvasRenderingContext2D.prototype.fillText;CanvasRenderingContext2D.prototype.fillText=function(t,...a){return _ft.call(this,typeof t=='string'?loc1(t):t,...a)};
+function setUI(v){S.set.ui=v;S.set.bd=v=='bn';persist(1);render()}
 const typing=e=>/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName);
 addEventListener('keydown',e=>{if(e.code!=='Space'||typing(e)||$('#mo')||$('#sb')||tab!=='c')return;e.preventDefault();if(!e.repeat)tap()});
 addEventListener('keyup',e=>{if(e.code==='Space'&&!typing(e)&&tab==='c')e.preventDefault()});
