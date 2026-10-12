@@ -51,12 +51,13 @@ function addT(){const g=i=>$('#'+i).value.trim();if(!g('an')&&!g('aa'))return;
 function openAdd(){modal(`<h2>New tasbih</h2><input id=an placeholder="Name"><textarea id=aa dir=rtl rows=2 placeholder="Arabic text"></textarea><textarea id=ae rows=2 placeholder="English translation"></textarea><textarea id=ab rows=2 placeholder="বাংলা অনুবাদ"></textarea><input id=at type=number placeholder="Target (default 33)"><textarea id=anote rows=3 placeholder="Note (optional) - hadith or significance"></textarea><button class="btn p" onclick=addT()>Add</button>`)}
 
 // ===== prayers =====
-function togP(i){const l=day();l.p[i]={v:l.p[i].v?0:1,t:Date.now()};S.pend.p+=l.p[i].v;if(!navigator.onLine)wasOff=true;vib(S.set.hms||35);persist();render()}
+let pj=-1;
+function togP(i){const l=day();l.p[i]={v:l.p[i].v?0:1,t:Date.now()};S.pend.p+=l.p[i].v;pj=l.p[i].v?i:-1;if(!navigator.onLine)wasOff=true;vib(S.set.hms||35);persist();render()}
 
 function togX(k){const l=day();l.x=l.x||{};l.x[k]={v:(l.x[k]||{}).v?0:1,t:Date.now()};if(!navigator.onLine)wasOff=true;vib(S.set.hms||35);persist()}
-function extras(){const x=day().x||{},ck=(k,n,b,e)=>`<label class="pr xr"><span><span class=xe>${e}</span><b>${n}</b> <span class="mu bn">${b}</span></span><input type=checkbox class=cbi ${(x[k]||{}).v?'checked':''} onchange="togX('${k}')"><span class=cbx>${IC.k}</span></label>`;
- return `<div class=card><div class=mu style="margin-bottom:2px">Extras today</div>${ck('tahajjud','Tahajjud','তাহাজ্জুদ','🌙')}${ck('sunnah','Sunnah','সুন্নাত','✨')}</div>`}
-function qazaCard(){return `<div class=card><div class=mu>Missed prayers (qaza)</div><div class=row style="align-items:center;gap:18px;margin:10px 0"><button class=btn onclick="qz(-1)" aria-label="Made up one">${IC.n}</button><b id=qn style="font-size:2.2rem;min-width:3ch;text-align:center;cursor:pointer" onclick="qzSet()">${S.qz.v}</b><button class=btn onclick="qz(1)" aria-label="Missed one">${IC.a}</button></div><div class=mu style="text-align:center">+ missed · − made up · tap the number to set it</div></div>`}
+function extras(){const x=day().x||{},ck=(k,n,b,e)=>`<label class=xp><input type=checkbox class=cbi ${(x[k]||{}).v?'checked':''} onchange="togX('${k}')"><span class=xpl><span class=xe>${e}</span><span class=xpt><b>${n}</b><span class="mu bn">${b}</span></span>${IC.k}</span></label>`;
+ return `<div class=xps>${ck('tahajjud','Tahajjud','তাহাজ্জুদ','🌙')}${ck('sunnah','Sunnah','সুন্নাত','✨')}</div>`}
+function qazaCard(){return `<div class="glass qzc"><div class=dn style="font-size:.95rem">🕊️ Missed prayers (qaza)</div><div class=row style="align-items:center;gap:18px;margin:10px 0"><button class=btn onclick="qz(-1)" aria-label="Made up one">${IC.n}</button><b id=qn style="font-size:2.4rem;min-width:3ch;text-align:center;cursor:pointer;color:var(--ac)" onclick="qzSet()">${S.qz.v}</b><button class=btn onclick="qz(1)" aria-label="Missed one">${IC.a}</button></div><div class=mu style="text-align:center;font-size:.75rem">+ missed · − made up · tap the number to set it</div></div>`}
 function qz(n){S.qz={v:Math.max(0,S.qz.v+n),t:Date.now()};vib(S.set.hms||35);persist();$('#qn').textContent=S.qz.v}
 function qzSet(){const n=parseInt(prompt('Missed prayers owed',S.qz.v));if(isNaN(n)||n<0)return;S.qz={v:n,t:Date.now()};persist();render()}
 
@@ -111,10 +112,13 @@ ${t.note&&tnO==t.id?`<div class="glass note"><div class=dn style="font-size:.9re
 <div class=row>${[33,100].map(n=>`<button class="btn ${T==n?'on':''}" onclick=setT(${n})>${n}</button>`).join('')}<button class="btn ${T!=33&&T!=100?'on':''}" onclick=setT(0)>${T!=33&&T!=100?T:'Custom'}</button></div>
 <div class=row><button class=btn onclick=reset()>${IC.r} Reset</button><button class=btn onclick=cardC()>${IC.sh} Share</button><button class=btn onclick=openAdd()>${IC.a} New tasbih</button></div>
 <p class="mu" style="text-align:center">Today's total: <b id=td>${dt(dk())}</b></p><p class=mu id=ss style="text-align:center;margin-top:-6px;font-size:.75rem">${user?SS:'Not signed in · saved on this device only'}</p>${user?`<div class=row style="margin:0 0 6px"><button class="btn sm syb" onclick=syncNow()>${IC.sy} Sync now</button></div>`:''}`},
-p(){const l=day();let g='';for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=dk(d);
- g+=`<div style="text-align:center"><div class=mu>${d.toLocaleString('en',{weekday:'short'}).slice(0,2)}</div>${[0,1,2,3,4].map(j=>`<div style="width:14px;height:14px;margin:3px auto;border-radius:50%;background:${S.logs[k]&&S.logs[k].p[j].v?'var(--ac)':'var(--bg)'}"></div>`).join('')}${['tahajjud','sunnah'].map((e,j)=>`<div style="width:14px;height:14px;margin:${j?'3px':'10px'} auto 3px;border-radius:5px;background:${((S.logs[k]&&S.logs[k].x||{})[e]||{}).v?'var(--ac)':'var(--bg)'}"></div>`).join('')}</div>`}
- return `<h2>Daily prayers · ${dp(dk())}/5</h2><div class=card>${PN.map((n,i)=>`<div class=pr><span><b>${n}</b> <span class="mu bn">${PB[i]}</span>${ptT(i)}</span><button class="btn ${l.p[i].v?'p':''}" onclick=togP(${i})>${l.p[i].v?IC.k+' Prayed':'Mark'}</button></div>`).join('')}</div>
-${extras()}${qazaCard()}<div class=card><div class=mu style="margin-bottom:6px">Last 7 days</div><div style="display:flex;justify-content:space-around">${g}</div><div class=mu style="margin-top:8px;font-size:.72rem;text-align:center">● five prayers · ▢ Tahajjud, Sunnah</div></div>`},
+p(){const l=day(),n=dp(dk()),nx=ptNext(),t=ptToday(),J=pj;pj=-1;let g='';
+ for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=dk(d),L=S.logs[k],X=(L&&L.x)||{};
+  g+=`<div class="wd ${i?'':'td'}"><div class=mu>${d.toLocaleString('en',{weekday:'short'}).slice(0,2)}</div>${[0,1,2,3,4].map(j=>`<i class="${L&&L.p[j].v?'on':''}"></i>`).join('')}${['tahajjud','sunnah'].map((e,j)=>`<i class="x ${j?'':'x1'} ${(X[e]||{}).v?'on':''}"></i>`).join('')}</div>`}
+ const date=new Date().toLocaleDateString('en',{weekday:'long',day:'numeric',month:'long'});
+ return `<div class="glass pz"><span class=orb></span><button class=nbtn onclick=cardP() aria-label=Share>${IC.sh}</button><div class=dn>🌸 Daily prayers</div><div class=pzd>${date}${t&&t.hj?' · '+t.hj+' AH':''}</div><div class=pzm><b>${n}</b><span>/5</span></div><div class=pzb>${[0,1,2,3,4].map(i=>`<i class="${l.p[i].v?'on':''}"></i>`).join('')}</div><div class=pzs>${pMsg(n)}</div></div>
+${PN.map((a,i)=>{const isN=nx&&!nx.tm&&nx.i==i;return `<button class="pd ${l.p[i].v?'done':''} ${isN&&!l.p[i].v?'nx':''} ${J==i?'jp':''}" onclick=togP(${i})><span class=pe>${PE[i]}</span><span class=pn><b>${a}</b> <span class="mu bn">${PB[i]}</span>${ptT(i)}${isN?`<div><span class=nbd>Next · in ${ptD(nx.in)}</span></div>`:''}</span><span class=pk>${IC.k}</span></button>`}).join('')}
+${extras()}${qazaCard()}<div class="glass wkc"><div class=mu style="margin-bottom:6px">Last 7 days</div><div class=wk>${g}</div><div class=mu style="margin-top:8px;font-size:.72rem;text-align:center">● five prayers · ▢ Tahajjud, Sunnah</div></div>`},
 s(){const x=stats();return `<div class=row style="justify-content:space-between;margin:0"><h2>Stats</h2><button class=btn onclick=cardS() aria-label=Share>${IC.sh}</button></div><div class=g>${[['Today',dt(dk())],['Total tasbih',x.tot],['Streak',x.st+' d'],['Best day',x.best],['Prayers today',dp(dk())+'/5'],['Prayers total',x.ptot],['Tahajjud nights',x.tj],['Sunnah days',x.sn]].map(a=>`<div class="card st"><b>${a[1]}</b><span>${a[0]}</span></div>`).join('')}</div>
 <div class=card><div class=row style="justify-content:space-between"><span>${[['w','Week'],['m','Month'],['y','Year']].map(a=>`<button class="btn ${rg==a[0]?'on':''}" onclick="setR('${a[0]}')">${a[1]}</button>`).join(' ')}</span><span>${[['t','Tasbih'],['p','Prayer'],['x','Extras']].map(a=>`<button class="btn ${mt==a[0]?'on':''}" onclick="setM('${a[0]}')">${a[1]}</button>`).join(' ')}</span></div>${chart()}</div>
 ${heat()}<div class=card><div class=mu>By tasbih</div>${all().filter(t=>x.per[t.id]).map(t=>`<div class=pr><span>${t.n}</span><b>${x.per[t.id]}</b></div>`).join('')||'<div class=mu>Nothing yet</div>'}</div>`},
@@ -316,6 +320,27 @@ function cardS(){const x0=stats(),d=series(),m=Math.max(1,...d.map(v=>v.v)),tot=
   const w=800/d.length,base=o.y+700;
   d.forEach((v,i)=>{const h=Math.max(v.v/m*300,4),a=140+i*w+w*.15;x.globalAlpha=v.v?1:.25;x.fillStyle=o.ac;rrect(x,a,base-h,w*.7,h,Math.min(8,w*.3));x.fill();x.globalAlpha=1;x.fillStyle=o.mu;x.font=`600 22px ${o.uf2}`;x.fillText(v.l,a+w*.35,base+30)});
   x.font=`600 28px ${o.uf2}`;x.fillStyle=o.mu;x.fillText('Total: '+tot+' · Peak: '+(tot?m:0),o.W/2,base+95)}})}
+const PE=['🌅','☀️','🌤️','🌇','🌙'];
+const pMsg=n=>n>=5?'All five done, Alhamdulillah 🎉':n==4?'So close, just one more 💫':n>=2?'Mashallah, keep going ✨':n==1?'A lovely start 🌸':'Bismillah, let us begin 🤍';
+function cardP(){const l=day(),n=dp(dk()),t=ptToday(),X=l.x||{},bnf="'Hind Siliguri',sans-serif",on=cv('--on')||'#fff',
+ date=new Date().toLocaleDateString('en',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+(t&&t.hj?' · '+t.hj+' AH':'');
+ cardShow({title:'Daily prayers',res:880,lines:[],post:(x,o)=>{const y0=o.y,W=o.W;
+  x.textAlign='center';x.fillStyle=o.mu;x.font=`600 28px ${o.uf2}`;x.fillText(date,W/2,y0+10);
+  x.fillStyle=o.ac;x.font=`800 120px ${o.uf2}`;x.fillText(n+' / 5',W/2,y0+95);
+  for(let i=0;i<5;i++){x.globalAlpha=l.p[i].v?1:.2;x.fillStyle=o.ac;rrect(x,287+i*104,y0+172,90,22,11);x.fill()}x.globalAlpha=1;
+  x.fillStyle=o.ac;x.font=`700 32px ${o.uf2}`;x.fillText(pMsg(n),W/2,y0+236);
+  PN.forEach((a,i)=>{const by=y0+280+i*98,cy=by+44,d=l.p[i].v;
+   x.globalAlpha=d?.24:.11;x.fillStyle=o.ac;rrect(x,140,by,800,88,32);x.fill();x.globalAlpha=1;
+   if(d){x.fillStyle=o.ac;x.beginPath();x.arc(194,cy,27,0,7);x.fill();x.strokeStyle=on;x.lineWidth=5;x.lineCap='round';x.lineJoin='round';x.beginPath();x.moveTo(183,cy+1);x.lineTo(191,cy+9);x.lineTo(206,cy-9);x.stroke()}
+   else{x.globalAlpha=.45;x.strokeStyle=o.ac;x.lineWidth=4;x.beginPath();x.arc(194,cy,27,0,7);x.stroke();x.globalAlpha=1}
+   x.textAlign='left';x.font='40px sans-serif';x.fillStyle=o.tx;x.fillText(PE[i],245,cy+2);
+   x.font=`700 36px ${o.uf2}`;x.fillStyle=o.tx;x.fillText(a,310,cy);const w=x.measureText(a).width;
+   x.font=`600 28px ${bnf}`;x.fillStyle=o.mu;x.fillText(PB[i],310+w+16,cy+1);
+   if(t){x.textAlign='right';x.font=`800 36px ${o.uf2}`;x.fillStyle=d?o.ac:o.tx;x.fillText(ptF(t[a]),915,cy)}});
+  [['tahajjud','🌙 Tahajjud'],['sunnah','✨ Sunnah']].forEach((c,i)=>{const d=(X[c[0]]||{}).v,a=140+i*410,b=y0+790;
+   x.globalAlpha=d?1:.13;x.fillStyle=o.ac;rrect(x,a,b,390,70,35);x.fill();x.globalAlpha=1;
+   x.textAlign='center';x.fillStyle=d?on:o.mu;x.font=`700 30px ${o.uf2}`;x.fillText(c[1]+(d?'  ✓':''),a+195,b+36)});
+  x.textAlign='center'}})}
 // ===== heatmap + date bar =====
 function heat(){const f=mt=='t'?dt:mt=='p'?dp:dx,t=new Date(),s=new Date(t.getFullYear(),t.getMonth(),t.getDate()-t.getDay()-25*7),cs=[];let m=1,o='';
  for(let i=0;i<182;i++){const d=new Date(s.getFullYear(),s.getMonth(),s.getDate()+i);if(d>t)break;const v=f(dk(d));m=Math.max(m,v);cs.push([i,d,v])}

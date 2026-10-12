@@ -141,3 +141,47 @@ textarea{font:inherit;color:var(--tx);background:var(--bg);border:0;border-radiu
 .nra{flex:none;font-family:var(--arf);font-size:calc(1.4rem*var(--sz));line-height:1.7}
 .di small{display:block;font-weight:400;font-size:.78rem}
 nav button{padding:8px 2px;min-width:0;font-size:.68rem}
+
+/* cute prayers tab */
+.pz{padding:22px 20px 20px;text-align:center;margin-bottom:14px}
+.pzd{font-size:.8rem;color:var(--mu);margin-top:2px}
+.pzm{display:flex;align-items:baseline;justify-content:center;gap:2px;margin:10px 0 4px;line-height:1.1}
+.pzm b{font-size:4rem;font-weight:800;background:linear-gradient(135deg,var(--ac),color-mix(in srgb,var(--ac) 55%,#fff));-webkit-background-clip:text;background-clip:text;color:transparent}
+.pzm span{font-size:1.4rem;font-weight:700;color:var(--mu)}
+.pzb{display:flex;gap:8px;justify-content:center;margin:12px 0 10px}
+.pzb i{width:38px;height:12px;border-radius:99px;background:color-mix(in srgb,var(--ac) 16%,transparent);transition:.3s}
+.pzb i.on{background:linear-gradient(90deg,var(--ac),color-mix(in srgb,var(--ac) 60%,#fff));box-shadow:0 2px 8px color-mix(in srgb,var(--ac) 45%,transparent)}
+.pzs{font-weight:700;color:var(--ac)}
+.pd{display:flex;align-items:center;gap:12px;width:100%;font:inherit;color:var(--tx);text-align:left;cursor:pointer;border:1px solid color-mix(in srgb,#fff 40%,transparent);background:color-mix(in srgb,var(--cd) 62%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:26px;padding:12px 14px;margin-bottom:10px;box-shadow:0 3px 0 color-mix(in srgb,var(--ac) 14%,transparent);transition:.18s}
+.pd:active{transform:translateY(3px) scale(.985);box-shadow:none}
+.pd.done{background:color-mix(in srgb,var(--ac) 17%,var(--cd))}
+.pd.nx{outline:2px dashed color-mix(in srgb,var(--ac) 55%,transparent);outline-offset:2px}
+.pe{flex:none;width:46px;height:46px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:color-mix(in srgb,var(--ac) 14%,transparent)}
+.pn{flex:1;min-width:0;line-height:1.35}
+.pn b{font-size:1.05rem}
+.nbd{display:inline-block;margin-top:3px;font-size:.68rem;font-weight:800;color:var(--on,#fff);background:var(--ac);border-radius:99px;padding:2px 9px}
+.pk{flex:none;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px dashed color-mix(in srgb,var(--ac) 45%,transparent);color:transparent;transition:.2s}
+.pk svg{width:20px;height:20px;stroke-width:3}
+.pd.done .pk{border:0;background:linear-gradient(135deg,var(--ac),color-mix(in srgb,var(--ac) 60%,#fff));color:var(--on,#fff)}
+.pd.jp .pk{animation:pop .4s cubic-bezier(.3,1.8,.5,1)}
+@keyframes pop{from{transform:scale(.4) rotate(-30deg)}to{transform:none}}
+.xps{display:flex;gap:10px;margin:14px 0}
+.xp{flex:1;position:relative;cursor:pointer}
+.xpl{display:flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:10px 12px;font-weight:700;background:color-mix(in srgb,var(--cd) 62%,transparent);border:1px solid color-mix(in srgb,#fff 40%,transparent);box-shadow:0 3px 0 color-mix(in srgb,var(--ac) 14%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:.18s}
+.xpl .xe{margin:0}
+.xpt{display:flex;flex-direction:column;line-height:1.2;text-align:left;font-size:.9rem}
+.xpt .mu{font-size:.7rem}
+.xpl svg{display:none;width:16px;height:16px;stroke-width:3}
+.xp:active .xpl{transform:translateY(3px) scale(.97);box-shadow:none}
+.cbi:checked+.xpl{background:linear-gradient(135deg,var(--ac),color-mix(in srgb,var(--ac) 62%,#fff));color:var(--on,#fff);border-color:transparent}
+.cbi:checked+.xpl .mu{color:inherit;opacity:.85}
+.cbi:checked+.xpl svg{display:block}
+.qzc{padding:16px;margin-bottom:14px;text-align:center}
+.wkc{padding:16px;margin-bottom:14px}
+.wk{display:flex;justify-content:space-around;gap:2px}
+.wd{text-align:center;padding:8px 6px;border-radius:18px}
+.wd.td{background:color-mix(in srgb,var(--ac) 14%,transparent)}
+.wd.td .mu{color:var(--ac);font-weight:800}
+.wd i{display:block;width:14px;height:14px;margin:4px auto;border-radius:50%;background:color-mix(in srgb,var(--ac) 14%,transparent)}
+.wd i.x{border-radius:5px}.wd i.x1{margin-top:10px}
+.wd i.on{background:var(--ac)}
