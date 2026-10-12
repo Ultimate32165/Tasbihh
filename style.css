@@ -185,3 +185,8 @@ nav button{padding:8px 2px;min-width:0;font-size:.68rem}
 .wd i{display:block;width:14px;height:14px;margin:4px auto;border-radius:50%;background:color-mix(in srgb,var(--ac) 14%,transparent)}
 .wd i.x{border-radius:5px}.wd i.x1{margin-top:10px}
 .wd i.on{background:var(--ac)}
+.wd{cursor:pointer}
+.wd i.q{background:transparent;box-shadow:inset 0 0 0 3px #e0a030}
+.pd.qz{background:color-mix(in srgb,#e0a030 20%,var(--cd))}
+.pd.qz .pk{background:linear-gradient(135deg,#e0a030,#f0c060);color:#fff}
+.qbd{display:inline-block;font-size:.65rem;font-weight:800;color:#5a3d00;background:#f0c060;border-radius:99px;padding:1px 8px;vertical-align:middle}
