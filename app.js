@@ -278,7 +278,7 @@ function wrapT(x,t,w){const L=[];String(t).split('\n').forEach(p=>{let l='';p.sp
 async function makeCard(sp){
  const W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
  const bg=cv('--bg')||'#eef5f0',cd=cv('--cd')||'#fff',ac=cv('--ac')||'#1f7a5c',tx=cv('--tx')||'#173a2f',mu=cv('--mu')||'#6b8a7e';
- const af=AF[S.set.arf]||AF.amiri,bn="'Hind Siliguri',sans-serif",uf=UF[S.set.uf||'nunito']||'Nunito',uf2=uf+','+bn;
+ const af=AF[S.set.arf]||AF.amiri,bn="'Noto Sans Bengali','Hind Siliguri',sans-serif",uf=UF[S.set.uf||'nunito']||'Nunito',uf2=uf+','+bn;
  try{await Promise.all(['40px '+af,'40px '+bn,'40px '+uf].map(f=>document.fonts.load(f,'ابAঅ')))}catch(e){}
  x.fillStyle=bg;x.fillRect(0,0,W,H);
  let g=x.createRadialGradient(150,100,0,150,100,700);g.addColorStop(0,ac);g.addColorStop(1,'transparent');x.globalAlpha=.28;x.fillStyle=g;x.fillRect(0,0,W,H);
@@ -331,7 +331,7 @@ function cardS(){const x0=stats(),d=series(),m=Math.max(1,...d.map(v=>v.v)),tot=
   x.font=`600 28px ${o.uf2}`;x.fillStyle=o.mu;x.fillText('Total: '+tot+' · Peak: '+(tot?m:0),o.W/2,base+95)}})}
 const PE=['🌅','☀️','🌤️','🌇','🌙'];
 const pMsg=n=>n>=5?'All five done, Alhamdulillah 🎉':n==4?'So close, just one more 💫':n>=2?'Mashallah, keep going ✨':n==1?'A lovely start 🌸':'Bismillah, let us begin 🤍';
-function cardP(){const l=day(),n=dp(dk()),t=ptToday(),X=l.x||{},bnf="'Hind Siliguri',sans-serif",on=cv('--on')||'#fff',
+function cardP(){const l=day(),n=dp(dk()),t=ptToday(),X=l.x||{},bnf="'Noto Sans Bengali','Hind Siliguri',sans-serif",on=cv('--on')||'#fff',
  date=new Date().toLocaleDateString(LC(),{weekday:'long',day:'numeric',month:'long',year:'numeric'})+(t&&t.hj?' · '+t.hj+' AH':'');
  cardShow({title:'Daily prayers',res:880,lines:[],post:(x,o)=>{const y0=o.y,W=o.W;
   x.textAlign='center';x.fillStyle=o.mu;x.font=`600 28px ${o.uf2}`;x.fillText(date,W/2,y0+10);
@@ -411,7 +411,7 @@ function ptModal(){const t=ptToday(),x=ptNext(),l=S.set.loc,n=ptNow(),F=t?ptForb
  const fb=t?`<div class=mu style="font-size:.72rem;margin:2px 4px 10px;text-align:center">🚫 = forbidden time, no voluntary prayer (approx: sunrise +15 min, noon −6 min, sunset −15 min)</div>`:'';
  return `<div class=pth><div class=ptt2>🕌 Prayer times</div><div class=ptsub>📍 ${l.n}${t&&t.hj?' · '+t.hj+' AH':''}</div></div><div>${rows}</div>${fb}${ptCitySel()}<div class=row style="margin:4px 0 0"><button class="btn p" onclick=cardPT()>${IC.sh} Photo card</button><button class=btn onclick=closeM()>Done</button></div>`}
 function cardPT(){const t=ptToday();if(!t){toast('Prayer times not loaded yet');return}
- const nx0=ptNext(),F=ptForb(t),l=S.set.loc,on=cv('--on')||'#fff',bnf="'Hind Siliguri',sans-serif",
+ const nx0=ptNext(),F=ptForb(t),l=S.set.loc,on=cv('--on')||'#fff',bnf="'Noto Sans Bengali','Hind Siliguri',sans-serif",
  date=new Date().toLocaleDateString(LC(),{weekday:'long',day:'numeric',month:'long'})+(t.hj?' · '+t.hj+' AH':''),
  R=[['Fajr','ফজর',0,'🌅'],['Sunrise','সূর্যোদয়',-1,'🌄'],['Dhuhr','যোহর',1,'☀️'],['Asr','আসর',2,'🌤️'],['Maghrib','মাগরিব',3,'🌇'],['Isha','এশা',4,'🌙']],
  mth=((PM.find(m=>m[0]==S.set.pm)||['',''])[1]).split(' (')[0]+' · '+(S.set.ps==1?'Hanafi Asr':"Shafi'i Asr");

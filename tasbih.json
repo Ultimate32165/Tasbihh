@@ -65,6 +65,15 @@
   "en": "There is no god but You; glory be to You. Indeed, I have been among the wrongdoers.",
   "bn": "আপনি ছাড়া কোনো ইলাহ নেই, আপনি পবিত্র। নিশ্চয়ই আমি জালিমদের অন্তর্ভুক্ত ছিলাম।",
   "target": 100
+},
+{
+  "id": "Aia",
+  "name": "Allahumma innaka afuwwun tuhibbul afwa fa’fu annee",
+  "note": "It was narrated from ‘Aishah that she said: “O Messenger of Allah, what do you think I should say in my supplication, if I come upon Laylatul-Qadr?” He said: “Say: ‘Allahumma innaka ‘afuwwun tuhibbul-‘afwa, fa’fu ‘anni (O Allah, You are Forgiving and love forgiveness, so forgive me).’\n\nGrade: Sahih (Darussalam)",
+  "arabic": "اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
+  "en": "O Allah, You are Forgiving and love forgiveness, so forgive me",
+  "bn": "",
+  "target": 33
 }
 
   ]
