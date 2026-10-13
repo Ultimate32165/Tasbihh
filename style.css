@@ -261,3 +261,9 @@ html[lang=bn] .pn>.mu.bn,html[lang=bn] .xpt>.mu.bn,html[lang=bn] .ptn>.bn,html[l
 .qv .trl{font-style:italic;color:var(--mu)}
 .btn[disabled]{opacity:.4;pointer-events:none}
 html[lang=bn] nav button{font-size:.58rem}
+
+/* Quran: verse by verse + favourites */
+.qvm{padding:30px 20px}
+.qvm .ar.big{font-size:calc(1.9rem*var(--qs,1));line-height:2.1}
+.qvm .tr,.qvm .trl{font-size:calc(.98rem*var(--qs,1))}
+.qfl .dnum{width:auto;min-width:3.2em}
