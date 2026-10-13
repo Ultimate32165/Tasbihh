@@ -302,3 +302,7 @@ nav button{font-size:.74rem}html[lang=bn] nav button{font-size:.66rem}
 .hd .ar{font-size:calc(1.4rem*var(--sz));line-height:2.3;text-align:right;margin:4px 0 10px}
 .hd .tr{text-align:left;color:var(--tx);line-height:1.65;font-size:calc(.95rem*var(--sz))}
 .hd .hnr{margin-top:8px;font-size:.78rem}
+
+/* hadith index rows */
+.di .hn{display:block}
+.di small.nox{margin-top:2px;line-height:1.4}
