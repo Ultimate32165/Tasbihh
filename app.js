@@ -34,7 +34,9 @@ const dx=k=>S.logs[k]?Object.values(S.logs[k].x||{}).reduce((a,b)=>a+(b.v?1:0),0
 const dp=k=>S.logs[k]?S.logs[k].p.reduce((a,b)=>a+(b.v?1:0),0):0;
 const vib=p=>{if(S.set.haptic&&navigator.vibrate)navigator.vibrate(p)};
 function toast(m){const t=$('#toast');t.textContent=m;t.style.opacity=1;setTimeout(()=>t.style.opacity=0,1800)}
-function persist(k){localStorage.setItem(KEY,JSON.stringify(S));if(!k&&!persist.t)persist.t=setTimeout(()=>{persist.t=0;push()},400)}
+function persist(k){clearTimeout(persist.w);persist.w=setTimeout(persist.f,300);if(!k&&!persist.t)persist.t=setTimeout(()=>{persist.t=0;push()},400)}
+persist.f=()=>{clearTimeout(persist.w);persist.w=0;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+addEventListener('pagehide',()=>persist.f());document.addEventListener('visibilitychange',()=>{if(document.hidden)persist.f()});
 function modal(h){const m=document.createElement('div');m.className='mo';m.id='mo';m.innerHTML='<div>'+h+'</div>';m.onclick=e=>{if(e.target==m)m.remove()};document.body.append(m)}
 const closeM=()=>$('#mo')&&$('#mo').remove();
 

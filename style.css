@@ -274,3 +274,22 @@ html[lang=bn] nav button{font-size:.58rem}
 
 /* Duas: category picker shows every category instead of a hidden scrolling row */
 select.xcat{width:100%;margin-bottom:14px;padding-right:18px}
+
+/* ===== PERFORMANCE OVERRIDES (phone lag fix) =====
+   backdrop-filter / filter:blur / fixed backgrounds force the GPU to re-blur
+   the page on every tap and scroll. Same look, near-zero cost. */
+body{background:var(--bg);background-attachment:scroll}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+ background:radial-gradient(circle at 15% 0,color-mix(in srgb,var(--ac) 24%,transparent),transparent 45%),radial-gradient(circle at 95% 75%,color-mix(in srgb,var(--ac) 18%,transparent),transparent 50%)}
+.card,.glass,.chip,.pick,.srch,.xpl,.pd,nav{backdrop-filter:none;-webkit-backdrop-filter:none}
+.card{background:color-mix(in srgb,var(--cd) 90%,transparent)}
+.glass{background:color-mix(in srgb,var(--cd) 88%,transparent)}
+.chip,.pick,.srch,.xpl,.pd{background:color-mix(in srgb,var(--cd) 85%,transparent)}
+nav{background:color-mix(in srgb,var(--cd) 94%,transparent)}
+/* blurred blobs -> plain soft gradients (no filter) */
+.orb{filter:none;background:radial-gradient(circle,var(--ac),transparent 70%);opacity:.22}
+.ptc::after{filter:none;background:radial-gradient(circle,var(--ac),transparent 70%);opacity:.18}
+/* tap ring: only animate what is needed */
+.ring{touch-action:manipulation}
+.ring svg,#rg{will-change:auto}
+button,.btn,.pd,.di,.chip{touch-action:manipulation}
