@@ -217,7 +217,7 @@ function auth(n){const a=fb.Au,e=$('#em').value.trim().toLowerCase().replace(/\s
 
 function render(){document.body.dataset.theme=S.set.theme;document.documentElement.lang=isBn()?'bn':'en';const r=document.documentElement.style;r.setProperty('--sz',S.set.size);r.setProperty('--arf',AF[S.set.arf]);r.setProperty('--uf',UF[S.set.uf||'nunito']);
  $('#v').innerHTML=V[tab]();
- $('#nav').innerHTML=[['c','','Count'],['p','','Prayers'],['s','','Stats'],['d','','Duas'],['nm','','Names'],['g','','Settings']].map(a=>`<button class="${tab==a[0]?'on':''}" onclick="tab='${a[0]}';render()">${IC[a[0]]}${a[2]}</button>`).join('')}
+ $('#nav').innerHTML=[['c','','Count'],['p','','Prayers'],['q','','Quran'],['s','','Stats'],['d','','Duas'],['nm','','Names'],['g','','Settings']].map(a=>`<button class="${tab==a[0]?'on':''}" onclick="tab='${a[0]}';render()">${IC[a[0]]}${a[2]}</button>`).join('')}
 
 // ===== firebase sync =====
 async function syncNow(){if(syncNow.b)return;if(!user||!fb)return toast('Sign in to sync');if(!navigator.onLine)return toast('You are offline');
@@ -512,6 +512,91 @@ const _pr=window.prompt.bind(window),_al=window.alert.bind(window);window.prompt
 const _mt=CanvasRenderingContext2D.prototype.measureText;CanvasRenderingContext2D.prototype.measureText=function(t){return _mt.call(this,typeof t=='string'?loc1(t):t)};
 const _ft=CanvasRenderingContext2D.prototype.fillText;CanvasRenderingContext2D.prototype.fillText=function(t,...a){return _ft.call(this,typeof t=='string'?loc1(t):t,...a)};
 function setUI(v){S.set.ui=v;S.set.bd=v=='bn';persist(1);render()}
+// ===== Quran reader (UmmahAPI) =====
+// Surah list is built in, so it works offline. Verses come from UmmahAPI once per surah and are kept in IndexedDB.
+const QAPI='https://ummahapi.com';
+const QN=['Al-Fatihah','Al-Baqarah',"Ali 'Imran",'An-Nisa',"Al-Ma'idah","Al-An'am","Al-A'raf",'Al-Anfal','At-Tawbah','Yunus','Hud','Yusuf',"Ar-Ra'd",'Ibrahim','Al-Hijr','An-Nahl','Al-Isra','Al-Kahf','Maryam','Ta-Ha','Al-Anbiya','Al-Hajj',"Al-Mu'minun",'An-Nur','Al-Furqan',"Ash-Shu'ara",'An-Naml','Al-Qasas',"Al-'Ankabut",'Ar-Rum','Luqman','As-Sajdah','Al-Ahzab','Saba','Fatir','Ya-Sin','As-Saffat','Sad','Az-Zumar','Ghafir','Fussilat','Ash-Shuraa','Az-Zukhruf','Ad-Dukhan','Al-Jathiyah','Al-Ahqaf','Muhammad','Al-Fath','Al-Hujurat','Qaf','Adh-Dhariyat','At-Tur','An-Najm','Al-Qamar','Ar-Rahman',"Al-Waqi'ah",'Al-Hadid','Al-Mujadila','Al-Hashr','Al-Mumtahanah','As-Saff',"Al-Jumu'ah",'Al-Munafiqun','At-Taghabun','At-Talaq','At-Tahrim','Al-Mulk','Al-Qalam','Al-Haqqah',"Al-Ma'arij",'Nuh','Al-Jinn','Al-Muzzammil','Al-Muddaththir','Al-Qiyamah','Al-Insan','Al-Mursalat','An-Naba',"An-Nazi'at","'Abasa",'At-Takwir','Al-Infitar','Al-Mutaffifin','Al-Inshiqaq','Al-Buruj','At-Tariq',"Al-A'la",'Al-Ghashiyah','Al-Fajr','Al-Balad','Ash-Shams','Al-Layl','Ad-Duhaa','Ash-Sharh','At-Tin',"Al-'Alaq",'Al-Qadr','Al-Bayyinah','Az-Zalzalah',"Al-'Adiyat","Al-Qari'ah",'At-Takathur',"Al-'Asr",'Al-Humazah','Al-Fil','Quraysh',"Al-Ma'un",'Al-Kawthar','Al-Kafirun','An-Nasr','Al-Masad','Al-Ikhlas','Al-Falaq','An-Nas'];
+const QV=[7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6];
+const QBIS='بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ';
+let qO=0,qQ='',qJ=0,qErr=null,qRaw='',qDl=0,qInit=0;const QC={},qL={},QD=new Set();
+S.qr??=null;S.qb??={};S.set.qbn??=true;S.set.qen??=true;S.set.qtl??=false;S.set.qsz??=1;
+IC.q=sv('<path d="M4 5c3-1 6-1 8 1 2-2 5-2 8-1v13c-3-1-6-1-8 1-2-2-5-2-8-1z"/><path d="M12 6v13"/>');
+Object.assign(BD,{'Quran':'কুরআন','All surahs':'সব সূরা','Continue reading':'পড়া চালিয়ে যান','Search surahs…':'সূরা খুঁজুন…','Stop':'থামান','Last read here':'এখানে শেষ পড়েছেন','Transliteration':'উচ্চারণ','Retry':'আবার চেষ্টা করুন','Details':'বিস্তারিত',
+ "Couldn't load this surah":'এই সূরা লোড করা যায়নি','You are offline and this surah is not downloaded yet.':'আপনি অফলাইনে আছেন এবং এই সূরা এখনো ডাউনলোড করা হয়নি।',
+ 'Too many requests. Wait a minute and retry.':'অনেক বেশি অনুরোধ হয়েছে। এক মিনিট পরে আবার চেষ্টা করুন।',
+ 'Could not reach UmmahAPI. Check your connection and retry.':'UmmahAPI-তে সংযোগ করা যায়নি। ইন্টারনেট দেখে আবার চেষ্টা করুন।',
+ 'The API replied in a format this app does not understand yet.':'API এমন ফরম্যাটে উত্তর দিয়েছে যা অ্যাপ এখনো বুঝতে পারছে না।',
+ 'Quran data:':'কুরআনের ডেটা:','Rate limit reached, try again later':'অনুরোধের সীমা শেষ, পরে চেষ্টা করুন','Download stopped':'ডাউনলোড বন্ধ হয়েছে','This verse is too long for a card':'এই আয়াতটি কার্ডের জন্য অনেক লম্বা','Bookmark added':'বুকমার্ক যোগ হয়েছে','Bookmark removed':'বুকমার্ক সরানো হয়েছে'});
+RX.push([/^(\d+) verses$/,'$1 আয়াত'],[/^Downloading… (\d+) \/ (\d+)$/,'ডাউনলোড হচ্ছে… $1 / $2'],[/^Download for offline \((\d+) \/ (\d+)\)$/,'অফলাইনের জন্য ডাউনলোড ($1 / $2)']);
+const qe=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const qk=s=>dnorm(String(s)).replace(/[^a-z0-9\u0600-\u06ff]/g,'');
+const qdb=(()=>{let p;const open=()=>p||(p=new Promise((res,rej)=>{const r=indexedDB.open('tasbih_quran',1);r.onupgradeneeded=()=>r.result.createObjectStore('s');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}));
+ const tx=(m,f)=>open().then(db=>new Promise((res,rej)=>{const t=db.transaction('s',m),rq=f(t.objectStore('s'));t.oncomplete=()=>res(rq.result);t.onerror=()=>rej(t.error)}));
+ return{get:k=>tx('readonly',s=>s.get(k)),set:(k,v)=>tx('readwrite',s=>s.put(v,k)),keys:()=>tx('readonly',s=>s.getAllKeys())}})();
+// --- reading the API response (field names are matched loosely) ---
+const qStr=x=>x==null?'':typeof x=='string'?x:typeof x=='object'?(x.text||x.translation||x.value||x.uthmani||x.arabic||''):String(x);
+function qArr(j){let d=j&&j.data!==undefined?j.data:j;if(d&&!Array.isArray(d)){const k=['verses','ayahs','ayat'].find(k=>Array.isArray(d[k]));if(k)return d[k];
+ if(d.surah&&Array.isArray(d.surah.verses))return d.surah.verses;const f=Object.values(d).find(v=>Array.isArray(v)&&v.length&&typeof v[0]=='object');if(f)return f}return Array.isArray(d)?d:[]}
+const qNum=(v,i)=>{for(const k of['ayah','verse_number','verse','ayah_number','number_in_surah','numberInSurah']){const x=v[k];if(x!=null&&+x>0&&+x<=300)return+x}return i+1};
+const qAr=v=>qStr(v.arabic!==undefined?v.arabic:v.text_uthmani!==undefined?v.text_uthmani:v.uthmani!==undefined?v.uthmani:v.arabic_text!==undefined?v.arabic_text:v.text_arabic!==undefined?v.text_arabic:v.text);
+const qTl=v=>qStr(v.transliteration!==undefined?v.transliteration:v.transliteration_text!==undefined?v.transliteration_text:v.translit);
+function qTr(v,key){const t=v.translations!==undefined?v.translations:v.translation;if(t==null)return qStr(v.text_translation!==undefined?v.text_translation:v[key]);if(typeof t=='string')return t;
+ if(Array.isArray(t)){const o=t.find(x=>x&&[x.key,x.slug,x.name,x.translation_key,x.id].includes(key))||t[0];return qStr(o)}
+ return qStr(t[key]!==undefined?t[key]:Object.values(t)[0])}
+const qNorm=s=>s.replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g,'').replace(/[\u0671]/g,'ا');
+function qNoBis(n,ar){if(n==1||n==9)return ar;const w=ar.split(/\s+/);if(w.length>4&&qNorm(w.slice(0,4).join(' '))==qNorm(QBIS))return w.slice(4).join(' ');return ar}
+async function qGet(path){const r=await fetch(QAPI+path,{headers:{Accept:'application/json'}});if(r.status==429)throw new Error('rate');if(!r.ok)throw new Error('http '+r.status);const j=await r.json();if(j&&j.success===false)throw new Error('api');return j}
+async function qFetch(n){
+ const[b,e]=await Promise.allSettled([qGet(`/api/quran/surah/${n}?translation=bengali`),qGet(`/api/quran/surah/${n}?translation=sahih_international`)]);
+ if(b.status=='rejected'&&e.status=='rejected')throw e.reason&&e.reason.message=='rate'?e.reason:(b.reason||e.reason);
+ const A=b.status=='fulfilled'?qArr(b.value):[],B=e.status=='fulfilled'?qArr(e.value):[],base=A.length?A:B;
+ if(!base.length||!base.some(v=>qAr(v))){qRaw=JSON.stringify((b.status=='fulfilled'?b.value:e.value),null,1).slice(0,900);throw new Error('shape')}
+ const em={};B.forEach((v,i)=>em[qNum(v,i)]=v);
+ const v=base.map((x,i)=>{const a=qNum(x,i),y=A.length?x:null,z=A.length?em[a]:x;return{n:a,ar:qNoBis(n,qAr(x)),tl:qTl(x)||(z?qTl(z):''),bn:y?qTr(y,'bengali'):'',en:z?qTr(z,'sahih_international'):''}});
+ return{v,t:Date.now()}}
+async function qLoad(n){if(QC[n]||qL[n])return;qL[n]=1;qErr=null;
+ try{let c=null;try{c=await qdb.get('s'+n)}catch(e){}
+  if(!c){if(!navigator.onLine)throw new Error('offline');c=await qFetch(n);try{await qdb.set('s'+n,c);QD.add(n)}catch(e){}}
+  QC[n]=c}catch(e){qErr={n,m:e.message}}
+ qL[n]=0;if(tab=='q'&&qO==n)render()}
+async function qAll(){if(qDl){qDl=0;return}if(!navigator.onLine)return toast('You are offline');qDl=1;render();
+ for(let n=1;n<=114&&qDl;n++){if(QD.has(n))continue;try{const c=await qFetch(n);await qdb.set('s'+n,c);QD.add(n)}catch(e){toast(e.message=='rate'?'Rate limit reached, try again later':'Download stopped');break}
+  const b=$('#qdl');if(b)b.textContent=`Downloading… ${QD.size} / 114`;await new Promise(r=>setTimeout(r,300))}
+ qDl=0;if(tab=='q'&&!qO)render()}
+// --- views ---
+function qRows(){const q=qk(qQ.trim());const o=[];for(let n=1;n<=114;n++)if(!q||qk(n+' '+QN[n-1]).includes(q))o.push(n);
+ return o.length?o.map(n=>`<button class=di onclick="qOpen(${n})"><span class=dnum>${n}</span><span>${qe(QN[n-1])}<small class=mu>${QV[n-1]} verses</small></span>${QD.has(n)?'<span class=qok>✓</span>':''}${IC.rr}</button>`).join(''):'<div class=mu style="padding:16px;text-align:center">No matches</div>'}
+function qDraw(){const e=$('#qlist');if(e)e.innerHTML=qRows()}
+function qOpen(n,a){if(n<1||n>114)return;qO=n;qJ=a||0;qErr=null;render();if(!a)scrollTo(0,0)}
+function qT(k){S.set[k]=!S.set[k];persist(1);render()}
+function qZ(d){S.set.qsz=Math.min(1.8,Math.max(.8,+(S.set.qsz+d).toFixed(2)));persist(1);render()}
+function qMark(a){S.qr={s:qO,a,t:Date.now()};persist(1);document.querySelectorAll('.qv.cur').forEach(e=>e.classList.remove('cur'));const e=$('#qv'+a);e&&e.classList.add('cur');toast('Last read here')}
+function qBm(a){const k=qO+':'+a,on=!S.qb[k];if(on)S.qb[k]=Date.now();else delete S.qb[k];persist(1);const b=document.querySelector('#qv'+a+' .qa .btn');if(b){b.classList.toggle('on',on);b.innerHTML=star(on)}toast(on?'Bookmark added':'Bookmark removed')}
+const qVs=a=>QC[qO]&&QC[qO].v.find(x=>x.n==a);
+function qCp(a){const v=qVs(a),s=S.set;if(!v)return;copyTxt([`${QN[qO-1]} (${qO}:${a})`,v.ar,s.qtl&&v.tl,s.qen&&v.en,s.qbn&&v.bn].filter(Boolean).join('\n\n')).then(ok=>toast(ok?'Copied':'Copy failed'))}
+function qCard(a){const v=qVs(a),s=S.set;if(!v)return;if(v.ar.length>330||(v.ar+v.en+v.bn).length>1100)return toast('This verse is too long for a card');
+ cardShow({title:`${QN[qO-1]} ${qO}:${a}`,ar:v.ar,lines:[cl(s.qtl,v.tl,'tl'),cl(s.qen,v.en,'tr'),cl(s.qbn,v.bn,'bn')].filter(Boolean)})}
+function qDbg(){modal(`<h3>${qe(qErr?qErr.m:'')}</h3><pre style="white-space:pre-wrap;word-break:break-all;user-select:text;max-height:50vh;overflow:auto;font-size:.75rem">${qe(qRaw||'(no response captured)')}</pre><div class=row><button class=btn onclick=closeM()>Close</button></div>`)}
+function qList(){if(!qInit){qInit=1;qdb.keys().then(k=>{(k||[]).forEach(x=>{const n=+String(x).slice(1);if(n)QD.add(n)});if(tab=='q'&&!qO)render()}).catch(()=>{})}
+ const r=S.qr;
+ return `<h2>Quran</h2>${r?`<button class="glass qcont" onclick="qOpen(${r.s},${r.a})"><span class=mu>Continue reading</span><b>${qe(QN[r.s-1])} · ${r.s}:${r.a}</b>${IC.rr}</button>`:''}<input class=srch type=search placeholder="Search surahs…" value="${qe(qQ)}" oninput="qQ=this.value;qDraw()"><div class="glass dl" id=qlist>${qRows()}</div>
+<div class=row><button class=btn id=qdl onclick=qAll()>${qDl?'Downloading… '+QD.size+' / 114':'Download for offline ('+QD.size+' / 114)'}</button>${qDl?'<button class=btn onclick=qAll()>Stop</button>':''}</div>
+<div class=mu style="text-align:center;font-size:.8rem;margin:6px 0 90px">Quran data: <a href="https://ummahapi.com" target=_blank rel=noopener>UmmahAPI</a></div>`}
+function qRead(){const n=qO,c=QC[n],s=S.set;
+ const top=`<div class=row style="justify-content:space-between"><button class=btn onclick="qO=0;render()">${IC.l} All surahs</button><span class=mu>${n} / 114</span></div>`;
+ if(!c){if(!qL[n]&&!qErr)qLoad(n);
+  if(qErr&&qErr.n==n){const m=qErr.m=='offline'?'You are offline and this surah is not downloaded yet.':qErr.m=='rate'?'Too many requests. Wait a minute and retry.':qErr.m=='shape'?'The API replied in a format this app does not understand yet.':'Could not reach UmmahAPI. Check your connection and retry.';
+   return top+`<div class=card><p><b>Couldn't load this surah</b></p><p class=mu>${m}</p><div class=row><button class="btn p" onclick="qErr=null;qL[${n}]=0;render()">Retry</button>${qRaw?'<button class=btn onclick=qDbg()>Details</button>':''}</div></div>`}
+  return top+'<p class=mu>Loading…</p>'}
+ const ch=`<div class=chips><button class="chip ${s.qbn?'on':''}" onclick="qT('qbn')">বাংলা</button><button class="chip ${s.qen?'on':''}" onclick="qT('qen')">English</button><button class="chip ${s.qtl?'on':''}" onclick="qT('qtl')">Transliteration</button><button class=chip onclick="qZ(-.1)" aria-label="Smaller text">A−</button><button class=chip onclick="qZ(.1)" aria-label="Larger text">A+</button></div>`;
+ const r=S.qr,vs=c.v.map(v=>{const b=S.qb[n+':'+v.n],cur=r&&r.s==n&&r.a==v.n;
+  return `<div class="qv ${cur?'cur':''}" id=qv${v.n} data-a=${v.n}><div class=qh><button class=qn onclick="qMark(${v.n})" aria-label="Mark as last read">${v.n}</button><span class=qa><button class="btn ${b?'on':''}" onclick="qBm(${v.n})" aria-label=Bookmark>${star(!!b)}</button><button class=btn onclick="qCp(${v.n})" aria-label=Copy>${IC.cp}</button><button class=btn onclick="qCard(${v.n})" aria-label=Share>${IC.sh}</button></span></div><div class="ar big" dir=rtl>${qe(v.ar)}</div>${s.qtl&&v.tl?`<div class=trl>${qe(v.tl)}</div>`:''}${s.qen&&v.en?`<div class=tr>${qe(v.en)}</div>`:''}${s.qbn&&v.bn?`<div class="tr bn">${qe(v.bn)}</div>`:''}</div>`}).join('');
+ if(qJ){const a=qJ;qJ=0;setTimeout(()=>{const e=$('#qv'+a);e&&e.scrollIntoView({block:'start'})},60)}
+ return `<div style="--qs:${s.qsz}">${top}<div class="glass dua"><span class=orb></span><div class=dn>${n}. ${qe(QN[n-1])}</div><div class=mu>${QV[n-1]} verses</div>${n!=1&&n!=9?`<div class=orn>${ORN}</div><div class="ar big" dir=rtl>${QBIS}</div>`:''}</div>${ch}<div class="glass qvs">${vs}</div>
+<div class=row style="align-items:center;gap:18px;margin-bottom:90px"><button class=btn onclick="qOpen(${n-1})" ${n>1?'':'disabled'} aria-label="Previous surah">${IC.l}</button><span class=mu>${n} / 114</span><button class=btn onclick="qOpen(${n+1})" ${n<114?'':'disabled'} aria-label="Next surah">${IC.rr}</button></div></div>`}
+V.q=()=>qO?qRead():qList();
+// remember where the reader is when they scroll
+let qSt=0;addEventListener('scroll',()=>{if(tab!=='q'||!qO||qSt||scrollY<200)return;qSt=setTimeout(()=>{qSt=0;for(const e of document.querySelectorAll('.qv'))if(e.getBoundingClientRect().bottom>90){const a=+e.dataset.a;if(!S.qr||S.qr.s!=qO||S.qr.a!=a){S.qr={s:qO,a,t:Date.now()};persist(1)}break}},700)},{passive:true});
 const typing=e=>/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName);
 addEventListener('keydown',e=>{if(e.code!=='Space'||typing(e)||$('#mo')||$('#sb')||tab!=='c')return;e.preventDefault();if(!e.repeat)tap()});
 addEventListener('keyup',e=>{if(e.code==='Space'&&!typing(e)&&tab==='c')e.preventDefault()});

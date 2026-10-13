@@ -241,3 +241,23 @@ html[lang=bn] .pn>.mu.bn,html[lang=bn] .xpt>.mu.bn,html[lang=bn] .ptn>.bn,html[l
 .dua .dn{padding:0 34px;overflow-wrap:anywhere;line-height:1.35}
 .di span:nth-child(2){min-width:0;overflow-wrap:anywhere;line-height:1.35}
 .di .dnum,.di .fv,.di svg,.di .nra{flex:none}
+
+/* Quran tab */
+.qcont{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;font:inherit;color:var(--tx);padding:14px 18px;margin-bottom:14px;cursor:pointer;text-align:left}
+.qcont b{flex:1;text-align:right}
+.qcont svg{flex:none;color:var(--mu)}
+.qok{color:var(--ac);font-weight:800;flex:none}
+.qvs{padding:6px 16px;margin-bottom:14px}
+.qv{padding:16px 0;border-top:1px solid color-mix(in srgb,var(--tx) 8%,transparent);user-select:text}
+.qv:first-child{border-top:0}
+.qv.cur{background:color-mix(in srgb,var(--ac) 9%,transparent);margin:0 -16px;padding:16px;border-radius:18px}
+.qh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.qn{width:34px;height:34px;border-radius:50%;border:1px solid color-mix(in srgb,var(--ac) 50%,transparent);background:none;color:var(--ac);font:inherit;font-weight:700;font-size:.8rem;cursor:pointer}
+.qa{display:flex;gap:6px}
+.qv .btn{padding:6px 12px;box-shadow:none}
+.qv .btn svg{width:18px;height:18px}
+.qv .ar{text-align:right;line-height:2.1;font-size:calc(1.55rem*var(--qs,1))}
+.qv .tr,.qv .trl{text-align:left;margin-top:10px;font-size:calc(.95rem*var(--qs,1))}
+.qv .trl{font-style:italic;color:var(--mu)}
+.btn[disabled]{opacity:.4;pointer-events:none}
+html[lang=bn] nav button{font-size:.58rem}
