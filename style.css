@@ -271,3 +271,6 @@ html[lang=bn] nav button{font-size:.58rem}
 /* Quran reader options wrap instead of scrolling sideways, so nothing is hidden */
 .chips.qc{flex-wrap:wrap;overflow:visible;gap:8px}
 .chips.qc .chip{padding:8px 14px}
+
+/* Duas: category picker shows every category instead of a hidden scrolling row */
+select.xcat{width:100%;margin-bottom:14px;padding-right:18px}

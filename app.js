@@ -657,7 +657,7 @@ async function loadX(force){if(xS=='load'||!D)return;xS='load';
 function duaSet(s,ci){duaSrc=s;duaCat=ci===''?'':(duaCats[ci]||'');render()}
 function duaChips(){duaCats=[...new Set(D.filter(x=>x.src=='x'&&x.cat).map(x=>x.cat))];
  return `<div class="chips qc"><button class="chip ${!duaSrc?'on':''}" onclick="duaSet('','')">All</button><button class="chip ${duaSrc=='m'?'on':''}" onclick="duaSet('m','')">My duas</button><button class="chip ${duaSrc=='x'?'on':''}" onclick="duaSet('x','')">More duas</button></div>`
- +(duaSrc=='x'&&duaCats.length?`<div class=chips><button class="chip ${!duaCat?'on':''}" onclick="duaSet('x','')">All categories</button>${duaCats.map((c,i)=>`<button class="chip ${duaCat==c?'on':''}" onclick="duaSet('x',${i})">${xp(c)}</button>`).join('')}</div>`:'')}
+ +(duaSrc=='x'&&duaCats.length?`<select class="srch xcat" onchange="duaSet('x',this.value)" aria-label="Category"><option value="">All categories (${D.filter(x=>x.src=='x').length})</option>${duaCats.map((c,k)=>`<option value="${k}" ${duaCat==c?'selected':''}>${xp(c)} (${D.filter(x=>x.src=='x'&&x.cat==c).length})</option>`).join('')}</select>`:'')}
 function xDbg(){modal(`<pre style="white-space:pre-wrap;word-break:break-all;user-select:text;max-height:50vh;overflow:auto;font-size:.75rem">${qe(xRaw||'(no response captured)')}</pre><div class=row><button class=btn onclick=closeM()>Close</button></div>`)}
 function duaStatus(){if(duaSrc=='m')return '';
  if(xS=='load')return duaSrc=='x'?'<p class=mu style="text-align:center">Loading more duas…</p>':'';
