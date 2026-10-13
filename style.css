@@ -293,3 +293,12 @@ nav{background:color-mix(in srgb,var(--cd) 94%,transparent)}
 .ring{touch-action:manipulation}
 .ring svg,#rg{will-change:auto}
 button,.btn,.pd,.di,.chip{touch-action:manipulation}
+
+/* ===== Library tab (5 bottom tabs) + Hadith ===== */
+nav button{font-size:.74rem}html[lang=bn] nav button{font-size:.66rem}
+.card.hd{padding:16px;user-select:text;-webkit-user-select:text}
+.hd .qh{margin-bottom:6px}.hd .btn{padding:6px 12px;box-shadow:none}.hd .btn svg{width:18px;height:18px}
+.hn{font-weight:800;color:var(--ac);font-size:.85rem}
+.hd .ar{font-size:calc(1.4rem*var(--sz));line-height:2.3;text-align:right;margin:4px 0 10px}
+.hd .tr{text-align:left;color:var(--tx);line-height:1.65;font-size:calc(.95rem*var(--sz))}
+.hd .hnr{margin-top:8px;font-size:.78rem}

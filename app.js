@@ -217,9 +217,9 @@ function acc(){if(!fb)return FC.apiKey.startsWith('YOUR')?'<span class=mu>Add yo
  return `<div style="display:grid;gap:8px"><input id=em placeholder=Username autocapitalize=none autocomplete=username><input id=pw type=password placeholder=Password><div class=row><button class="btn p" onclick="auth(0)">Sign in</button><button class=btn onclick="auth(1)">Sign up</button></div></div>`}
 function auth(n){const a=fb.Au,e=$('#em').value.trim().toLowerCase().replace(/\s+/g,'')+'@tasbih-app.com',p=$('#pw').value;(n?a.createUserWithEmailAndPassword:a.signInWithEmailAndPassword)(fb.auth,e,p).catch(x=>alert(x.message))}
 
-function render(){document.body.dataset.theme=S.set.theme;document.documentElement.lang=isBn()?'bn':'en';const r=document.documentElement.style;r.setProperty('--sz',S.set.size);r.setProperty('--arf',AF[S.set.arf]);r.setProperty('--uf',UF[S.set.uf||'nunito']);
+function render(){if(LIB.includes(tab))libLast=tab;document.body.dataset.theme=S.set.theme;document.documentElement.lang=isBn()?'bn':'en';const r=document.documentElement.style;r.setProperty('--sz',S.set.size);r.setProperty('--arf',AF[S.set.arf]);r.setProperty('--uf',UF[S.set.uf||'nunito']);
  $('#v').innerHTML=V[tab]();
- $('#nav').innerHTML=[['c','','Count'],['p','','Prayers'],['q','','Quran'],['s','','Stats'],['d','','Duas'],['nm','','Names'],['g','','Settings']].map(a=>`<button class="${tab==a[0]?'on':''}" onclick="tab='${a[0]}';render()">${IC[a[0]]}${a[2]}</button>`).join('')}
+ $('#nav').innerHTML=[['c','','Count'],['p','','Prayers'],['lib','','Library'],['s','','Stats'],['g','','Settings']].map(a=>{const lb=a[0]=='lib';return `<button class="${(lb?LIB.includes(tab):tab==a[0])?'on':''}" onclick="tab=${lb?'libLast':`'${a[0]}'`};render()">${IC[a[0]]}${a[2]}</button>`}).join('')}
 
 // ===== firebase sync =====
 async function syncNow(){if(syncNow.b)return;if(!user||!fb)return toast('Sign in to sync');if(!navigator.onLine)return toast('You are offline');
@@ -505,7 +505,7 @@ function trS(s){const t=s.trim();if(!t)return s;let r=BD[t];
  return s.match(/^\s*/)[0]+r+s.match(/\s*$/)[0]}
 function loc1(s){if(!s)return s;if(isBn())s=trS(s);if(S.set.bd)s=bdig(s);return s}
 const LSKIP=/^(SCRIPT|STYLE|TEXTAREA|OPTION)$/;
-function locT(n){const p=n.parentNode;if(!p||(p.nodeName!='OPTION'&&LSKIP.test(p.nodeName))||(p.closest&&p.closest('.ar')))return;const v=n.nodeValue,w=loc1(v);if(w!==v)n.nodeValue=w}
+function locT(n){const p=n.parentNode;if(!p||(p.nodeName!='OPTION'&&LSKIP.test(p.nodeName))||(p.closest&&p.closest('.ar,.nox')))return;const v=n.nodeValue,w=loc1(v);if(w!==v)n.nodeValue=w}
 function locN(r){if(r.nodeType==3)return locT(r);if(r.nodeType!=1)return;
  const w=document.createTreeWalker(r,NodeFilter.SHOW_TEXT),a=[];let n;while(n=w.nextNode())a.push(n);a.forEach(locT);
  if(isBn())[r,...r.querySelectorAll('[placeholder],[aria-label]')].forEach(e=>['placeholder','aria-label'].forEach(k=>{const v=e.getAttribute&&e.getAttribute(k);if(v){const t=trS(v);if(t!==v)e.setAttribute(k,t)}}))}
@@ -674,6 +674,72 @@ addEventListener('keydown',e=>{if(e.code!=='Space'||typing(e)||$('#mo')||$('#sb'
 addEventListener('keyup',e=>{if(e.code==='Space'&&!typing(e)&&tab==='c')e.preventDefault()});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)push()});addEventListener('pagehide',push);
 addEventListener('offline',()=>{wasOff=true;setSS('Offline · saved on this device, will sync later')});addEventListener('online',push);
+// ===== Library tab (Quran / Hadith / Duas / Names) + Hadith reader (UmmahAPI) =====
+// One bottom-bar tab holds the four reading sections; each keeps its own tab id so the existing views work unchanged.
+const LIB=['q','h','d','nm'];let libLast='q';
+IC.lib=sv('<path d="M4 4h4v16H4zM10 4h4v16h-4z"/><path d="M15.5 5.5l3.6-1 2.9 14.5-3.6 1z"/>');
+for(const[k,v]of Object.entries({'Library':'লাইব্রেরি','Hadith':'হাদিস','Search hadith…':'হাদিস খুঁজুন…','Search':'খুঁজুন','Random hadith':'যেকোনো একটি হাদিস','Another hadith':'আরেকটি হাদিস','Back':'ফিরে যান','No hadith found.':'কোনো হাদিস পাওয়া যায়নি।',"Couldn't load this":'লোড করা যায়নি','You are offline and this page is not saved yet.':'আপনি অফলাইনে আছেন এবং এই পাতা এখনো সংরক্ষিত হয়নি।','Hadith data:':'হাদিসের ডেটা:'}))BD[k]??=v;
+function libBar(){return `<div class="chips qc">${[['q','Quran'],['h','Hadith'],['d','Duas'],['nm','Names']].map(a=>`<button class="chip ${tab==a[0]?'on':''}" onclick="libGo('${a[0]}')">${a[1]}</button>`).join('')}</div>`}
+function libGo(t){if(tab==t)return;tab=t;render();scrollTo(0,0)}
+const _vq=V.q,_vd=V.d,_vnm=V.nm;
+V.q=()=>(qO?'':libBar())+_vq();
+V.d=()=>(duaO?'':libBar())+_vd();
+V.nm=()=>(nmO?'':libBar())+_vnm();
+
+const HC=[['bukhari','Sahih al-Bukhari'],['muslim','Sahih Muslim'],['abudawud','Sunan Abi Dawud'],['tirmidhi',"Jami' at-Tirmidhi"],['ibnmajah','Sunan Ibn Majah'],['nasai',"Sunan an-Nasa'i"],['malik','Muwatta Malik'],['nawawi',"Nawawi's 40 Hadith"],['qudsi','40 Hadith Qudsi'],['dehlawi',"Shah Waliullah's 40"]];
+const HPG=15,hNm=c=>(HC.find(x=>x[0]==c)||[0,c])[1];
+let hM='home',hC='',hP=1,hQ='',hL=[],hTot=0,hSt='',hErr='',hRaw='',hRq=0;
+// The API's exact field names are not documented, so these helpers accept the usual variants.
+function hItems(j){const HT=['arabic','english','text','arabic_text','english_text','hadith_arabic','hadith_english'],
+ has=o=>o&&typeof o=='object'&&!Array.isArray(o)&&HT.some(k=>o[k]!=null),
+ walk=(d,n)=>{if(d==null||n>3)return null;
+  if(Array.isArray(d))return d.length&&typeof d[0]=='object'?d:null;
+  if(typeof d!='object')return null;
+  for(const k of['hadiths','results','items','data'])if(Array.isArray(d[k])&&d[k].length&&typeof d[k][0]=='object')return d[k];
+  if(has(d))return[d];
+  for(const k in d){const r=walk(d[k],n+1);if(r)return r}
+  return null};
+ return walk(j&&j.data!==undefined?j.data:j,0)||[]}
+function hN(r,i,src){if(r.hadith&&typeof r.hadith=='object'&&!Array.isArray(r.hadith))r=Object.assign({},r,r.hadith);
+ const g=(...ks)=>{for(const k of ks){const v=r[k];if(v!=null&&v!=='')return v}return''},cl=xs(g('collection_name','collection'));
+ return{n:xs(g('hadith_number','hadithNumber','number','hadith_no','id'))||String(i+1),
+  ar:xs(g('arabic','arabic_text','text_arabic','ar','hadith_arabic')),
+  en:xs(g('english','english_text','text_english','en','text','translation','hadith_english')),
+  nr:xs(g('narrator','narrated_by','chapter','book')),
+  src:HC.some(x=>x[0]==cl)?hNm(cl):(src||'')}}
+function hPg(j){const p=(j&&(j.pagination||j.meta||(j.data&&j.data.pagination)))||j||{},t=+(p.total_pages??p.totalPages??p.pages??p.last_page??0);return t>0?t:0}
+async function hLoad(){const m=hM,c=hC,p=hP,q=hQ,id=++hRq;hSt='load';hErr='';hRaw='';if(tab=='h')render();
+ try{let r=null;const key=m=='list'?`h_${c}_${p}`:'';
+  if(key){try{r=await qdb.get(key)}catch(e){}}
+  if(!r||!r.list||!r.list.length){r=null;
+   if(!navigator.onLine)throw new Error('offline');
+   const path=m=='list'?`/api/hadith/${c}?page=${p}&limit=${HPG}`:m=='search'?`/api/hadith/search?q=${encodeURIComponent(q)}&limit=50`:'/api/hadith/random',
+    j=await qGet(path),a=hItems(j);
+   if(!a.length){if(m!='search'){hRaw=JSON.stringify(j,null,1).slice(0,900);throw new Error('shape')}r={list:[],pg:0}}
+   else r={list:a.map((x,i)=>hN(x,i,m=='list'?hNm(c):'')),pg:hPg(j)};
+   if(key&&r.list.length){try{await qdb.set(key,r)}catch(e){}}}
+  if(id!=hRq)return;hL=r.list;hTot=r.pg||0;hSt=''}
+ catch(e){if(id!=hRq)return;hSt='err';hErr=e.message}
+ if(tab=='h')render()}
+function hCard(x,i){return `<div class="card hd"><div class=qh><span class=hn>${x.src?qe(x.src)+' · ':''}#${qe(x.n)}</span><button class=btn onclick="hCp(${i})" aria-label=Copy>${IC.cp}</button></div>${x.ar?`<div class=ar dir=rtl>${qe(x.ar)}</div>`:''}${x.en?`<div class="tr nox">${qe(x.en)}</div>`:''}${x.nr&&x.nr!=x.en?`<div class="mu nox hnr">${qe(x.nr)}</div>`:''}</div>`}
+V.h=()=>{const bar=libBar(),cr='<div class=mu style="text-align:center;font-size:.8rem;margin:6px 0 90px">Hadith data: <a href="https://ummahapi.com" target=_blank rel=noopener>UmmahAPI</a></div>';
+ if(hM=='home')return `${bar}<h2>Hadith</h2><div class=card><div style="display:flex;gap:8px;align-items:center"><input id=hq class=srch style="margin:0;flex:1;min-width:0" type=search placeholder="Search hadith…" value="${qe(hQ)}" onkeydown="if(event.key=='Enter')hSearch()"><button class="btn p" onclick=hSearch()>Search</button></div><div class=row style="margin-top:12px"><button class="btn p" onclick=hRandom()>Random hadith</button></div></div><div class="glass dl">${HC.map(x=>`<button class=di onclick="hOpen('${x[0]}')"><span style="flex:1;min-width:0;text-align:left">${qe(x[1])}</span>${IC.rr}</button>`).join('')}</div>${cr}`;
+ const title=hM=='list'?qe(hNm(hC)):hM=='search'?'“'+qe(hQ)+'”':'Random hadith';
+ let body;
+ if(hSt=='load')body='<p class=mu style="text-align:center;margin:30px 0">Loading…</p>';
+ else if(hSt=='err'){const m=hErr=='rate'?'Too many requests. Wait a minute and retry.':hErr=='offline'?'You are offline and this page is not saved yet.':hErr=='shape'?'The API replied in a format this app does not understand yet.':'Could not reach UmmahAPI. Check your connection and retry.';
+  body=`<div class=card><p><b>Couldn't load this</b></p><p class=mu>${m}</p><div class=row><button class="btn p" onclick=hLoad()>Retry</button></div>${hRaw?`<pre class=mu style="font-size:.65rem;white-space:pre-wrap;word-break:break-all;user-select:text;-webkit-user-select:text">${qe(hRaw)}</pre>`:''}</div>`}
+ else if(!hL.length)body='<div class=card><p class=mu>No hadith found.</p></div>';
+ else body=hL.map(hCard).join('');
+ const more=hSt==''&&hL.length?(hM=='list'?`<div class=row style="align-items:center;gap:18px;margin:6px 0"><button class=btn onclick="hPage(-1)" ${hP<=1?'disabled':''} aria-label=Previous>${IC.l}</button><span class=mu>${hP}${hTot?' / '+hTot:''}</span><button class=btn onclick="hPage(1)" ${(hTot?hP>=hTot:hL.length<HPG)?'disabled':''} aria-label=Next>${IC.rr}</button></div>`:hM=='random'?'<div class=row><button class="btn p" onclick=hRandom()>Another hadith</button></div>':''):'';
+ return `${bar}<div class=row style="justify-content:space-between;align-items:center;margin:0 4px 10px"><button class=btn onclick=hBack()>${IC.l} Back</button><span class=mu style="min-width:0;overflow-wrap:anywhere;text-align:right">${title}</span></div>${body}${more}${cr}`};
+function hOpen(c){hM='list';hC=c;hP=1;hL=[];hTot=0;hLoad();scrollTo(0,0)}
+function hPage(d){const p=hP+d;if(p<1)return;hP=p;hLoad();scrollTo(0,0)}
+function hSearch(){const e=$('#hq'),v=e&&e.value.trim();if(!v)return;hQ=v;hM='search';hC='';hL=[];hTot=0;hLoad();scrollTo(0,0)}
+function hRandom(){hM='random';hC='';hL=[];hTot=0;hLoad();scrollTo(0,0)}
+function hBack(){hM='home';hC='';hL=[];hSt='';hRq++;render();scrollTo(0,0)}
+function hCp(i){const x=hL[i];if(!x)return;copyTxt([`${x.src?x.src+' ':''}#${x.n}`,x.ar,x.en,x.nr&&x.nr!=x.en?x.nr:''].filter(Boolean).join('\n\n')).then(ok=>toast(ok?'Copied':'Copy failed'))}
+
 const TJ=fetch('tasbih.json').then(r=>r.json()).then(j=>{const l=(j.tasbih||[]).filter(x=>x&&x.id&&x.name).map(x=>({id:String(x.id),n:x.name,ar:x.arabic||'',en:x.en||'',bn:x.bn||'',t:+x.target||33,note:x.note||''}));if(l.length)DEF=l}).catch(()=>{});
 let started=0;const go=()=>{if(started)return render();started=1;migrate();render();initFB()};
 TJ.then(go);setTimeout(()=>{if(!started)go()},1500);
