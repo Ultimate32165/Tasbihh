@@ -21,9 +21,9 @@ const pg=t=>Math.max(0,lf(t.id)-((S.bs[t.id]||{}).v||0))%tg(t);
 function migrate(){norm(S);if(S.prog){for(const id in S.prog)S.bs[id]={v:Math.max(0,lf(id)-S.prog[id]),t:0};delete S.prog}}
 const out=()=>({tl:[...S.tl].sort((a,b)=>a.id<b.id?-1:1),tt:S.tt,logs:S.logs,bs:S.bs,fv:S.fv,qz:S.qz});
 const canon=o=>JSON.stringify(o,(k,v)=>v&&typeof v=='object'&&!Array.isArray(v)?Object.fromEntries(Object.keys(v).sort().map(x=>[x,v[x]])):v);
-const AF={amiri:"Amiri,serif",quran:"'Scheherazade New',Amiri,serif",indo:"'Noto Nastaliq Urdu',serif"};
+const AF={amiri:"Amiri,serif",quran:"'Amiri Quran',Amiri,serif",indo:"'Noto Nastaliq Urdu',serif",wbw:"'AlQuran IndoPak by QuranWBW','Amiri Quran',Amiri,serif"};
 let S=JSON.parse(localStorage.getItem(KEY)||'null')||{tl:[],tt:{},logs:{},prog:{},fv:{},qz:{v:0,t:0},dt:{},cur:'sub',pend:{c:0,p:0},upd:0,
- set:{theme:'forest',arf:'quran',size:1,en:true,bn:true,haptic:true}};
+ set:{theme:'forest',arf:'wbw',size:1,en:true,bn:true,haptic:true}};
 let tab='c',rg='w',mt='t',wasOff=!navigator.onLine,duaI=0,duaO=0,D=null;
 S.set.tl??=true;S.set.ui??='en';S.set.bd??=false;S.set.uf??='nunito';S.set.hms??=35;S.dt??={};
 const all=()=>DEF.concat(S.tl),cur=()=>all().find(x=>x.id==S.cur)||DEF[0],tg=t=>{const x=S.tt[t.id];return (x&&typeof x=='object'?x.v:x)||t.t};
@@ -136,7 +136,7 @@ ${heat()}<div class=card><div class=mu>By tasbih</div>${all().filter(t=>x.per[t.
 g(){const s=S.set,chk=(k,l)=>`<div class=pr><span>${l}</span><input type=checkbox ${s[k]?'checked':''} onchange="S.set.${k}=this.checked;persist(1);render()"></div>`;
  return `<h2>Settings</h2><div class=card><div class=pr style="display:block"><div class=mu>Interface language</div><select onchange="setUI(this.value)"><option value=en ${s.ui!='bn'?'selected':''}>English</option><option value=bn ${s.ui=='bn'?'selected':''}>বাংলা</option></select></div>${chk('bd','Bengali numerals (০১২)')}</div><div class=card><div class=mu style="margin-bottom:8px">Theme</div>${THEMES.map(t=>`<span class=sw data-theme=${t} title=${t} style="background:linear-gradient(135deg,var(--bg) 50%,var(--ac) 50%);${s.theme==t?'outline:2px solid var(--ac)':''}" onclick="S.set.theme='${t}';persist(1);render()"></span>`).join('')}</div>
 <div class=card>${chk('en','English translation')}${chk('bn','বাংলা translation')}${chk('tl','Transliteration (duas)')}${chk('haptic','Haptic vibration (phones)')}<div class=pr style="display:block"><div class=mu>Tap vibration length · ${s.hms} ms</div><input type=range min=10 max=100 step=5 value=${s.hms} oninput="S.set.hms=+this.value;this.previousElementSibling.textContent='Tap vibration length · '+this.value+' ms'" onchange="persist(1);vib(S.set.hms)"></div>
-<div class=pr style="display:block"><div class=mu>App font</div><select onchange="S.set.uf=this.value;persist(1);render()">${Object.keys(UF).map(k=>`<option value=${k} ${(s.uf||'nunito')==k?'selected':''}>${UF[k].replace(/'/g,'')}</option>`).join('')}</select></div><div class=pr style="display:block"><div class=mu>Arabic font</div><select onchange="S.set.arf=this.value;persist(1);render()"><option value=amiri ${s.arf=='amiri'?'selected':''}>Amiri (Naskh)</option><option value=quran ${s.arf=='quran'?'selected':''}>Uthmani (Scheherazade)</option><option value=indo ${s.arf=='indo'?'selected':''}>Indo-Pak (Nastaliq)</option></select></div>
+<div class=pr style="display:block"><div class=mu>App font</div><select onchange="S.set.uf=this.value;persist(1);render()">${Object.keys(UF).map(k=>`<option value=${k} ${(s.uf||'nunito')==k?'selected':''}>${UF[k].replace(/'/g,'')}</option>`).join('')}</select></div><div class=pr style="display:block"><div class=mu>Arabic font</div><select onchange="S.set.arf=this.value;persist(1);render();if(S.set.arf=='wbw')ipLoad().then(()=>render())"><option value=amiri ${s.arf=='amiri'?'selected':''}>Amiri (Naskh)</option><option value=quran ${s.arf=='quran'?'selected':''}>Uthmani (Amiri Quran)</option><option value=indo ${s.arf=='indo'?'selected':''}>Indo-Pak (Nastaliq)</option><option value=wbw ${s.arf=='wbw'?'selected':''}>Indo-Pak (QuranWBW)</option></select></div>
 <div class=pr style="display:block"><div class=mu>Text size</div><input type=range min=.8 max=1.6 step=.1 value=${s.size} oninput="S.set.size=+this.value;document.documentElement.style.setProperty('--sz',this.value)" onchange="persist(1)"></div></div>
 <div class=card><div class=mu style="margin-bottom:8px">Prayer times · city</div>${ptCitySel()}<div class=pr style="display:block"><div class=mu>Calculation method</div><select onchange="S.set.pm=+this.value;persist(1);ptReload()">${PM.map(m=>`<option value=${m[0]} ${s.pm==m[0]?'selected':''}>${m[1]}</option>`).join('')}</select></div><div class=pr style="display:block"><div class=mu>Asr calculation</div><select onchange="S.set.ps=+this.value;persist(1);ptReload()"><option value=1 ${s.ps==1?'selected':''}>Hanafi (later Asr)</option><option value=0 ${s.ps==0?'selected':''}>Shafi'i / Maliki / Hanbali</option></select></div>${chk('h24','24-hour time')}</div>
 <div class=card><div class=mu style="margin-bottom:8px">Sync account</div><div id=acc>${acc()}</div></div>
@@ -542,6 +542,15 @@ function qArr(j){let d=j&&j.data!==undefined?j.data:j;if(d&&!Array.isArray(d)){c
  if(d.surah&&Array.isArray(d.surah.verses))return d.surah.verses;const f=Object.values(d).find(v=>Array.isArray(v)&&v.length&&typeof v[0]=='object');if(f)return f}return Array.isArray(d)?d:[]}
 const qNum=(v,i)=>{for(const k of['ayah','verse_number','verse','ayah_number','number_in_surah','numberInSurah']){const x=v[k];if(x!=null&&+x>0&&+x<=300)return+x}return i+1};
 const qAr=v=>qStr(v.arabic!==undefined?v.arabic:v.text_uthmani!==undefined?v.text_uthmani:v.uthmani!==undefined?v.uthmani:v.arabic_text!==undefined?v.arabic_text:v.text_arabic!==undefined?v.text_arabic:v.text);
+// --- IndoPak script: read from a bundled indopak.json (verse_key -> text), used only with the QuranWBW font ---
+let IPM=null,IPp=null;
+function ipLoad(){return IPM?Promise.resolve(IPM):IPp||(IPp=fetch('indopak.json').then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>{
+ const m={},put=(k,x)=>{const t=typeof x=='string'?x:x&&(x.text_indopak||x.text||x.indopak||'');if(k&&t)m[String(k)]=t};
+ let d=j;if(d&&!Array.isArray(d)){const k=['ayahs','verses','data'].find(k=>Array.isArray(d[k]));if(k)d=d[k]}
+ if(Array.isArray(d))d.forEach(x=>put(x.verse_key||(x.surah&&x.ayah?x.surah+':'+x.ayah:''),x));else if(d)Object.keys(d).forEach(k=>put(k,d[k]));
+ if(!Object.keys(m).length)throw 0;IPM=m;return m}).catch(()=>{IPp=null;return null}))}
+const qA=(n,v)=>S.set.arf=='wbw'&&IPM&&IPM[n+':'+v.n]||v.ar;
+if(S.set.arf=='wbw')ipLoad().then(()=>{if(tab=='q')render()});
 const qTl=v=>qStr(v.transliteration!==undefined?v.transliteration:v.transliteration_text!==undefined?v.transliteration_text:v.translit);
 function qTr(v,key){const t=v.translations!==undefined?v.translations:v.translation;if(t==null)return qStr(v.text_translation!==undefined?v.text_translation:v[key]);if(typeof t=='string')return t;
  if(Array.isArray(t)){const o=t.find(x=>x&&[x.key,x.slug,x.name,x.translation_key,x.id].includes(key))||t[0];return qStr(o)}
@@ -575,10 +584,10 @@ function qT(k){S.set[k]=!S.set[k];if(k=='qvm'){if(S.set.qvm){if(S.qr&&S.qr.s==qO
 function qZ(d){S.set.qsz=Math.min(1.8,Math.max(.8,+(S.set.qsz+d).toFixed(2)));persist(1);render()}
 function qMark(a){S.qr={s:qO,a,t:Date.now()};persist(1);document.querySelectorAll('.qv.cur').forEach(e=>e.classList.remove('cur'));const e=$('#qv'+a);e&&e.classList.add('cur');toast('Last read here')}
 const qVs=a=>QC[qO]&&QC[qO].v.find(x=>x.n==a);
-function qCp(a){const v=qVs(a),s=S.set;if(!v)return;copyTxt([`${QN[qO-1]} (${qO}:${a})`,v.ar,s.qtl&&v.tl,s.qen&&v.en,s.qbn&&v.bn].filter(Boolean).join('\n\n')).then(ok=>toast(ok?'Copied':'Copy failed'))}
+function qCp(a){const v=qVs(a),s=S.set;if(!v)return;copyTxt([`${QN[qO-1]} (${qO}:${a})`,qA(qO,v),s.qtl&&v.tl,s.qen&&v.en,s.qbn&&v.bn].filter(Boolean).join('\n\n')).then(ok=>toast(ok?'Copied':'Copy failed'))}
 function qCard(a){const v=qVs(a),s=S.set;if(!v)return;let L=[cl(s.qtl,v.tl,'tl'),cl(s.qen,v.en,'tr'),cl(s.qbn,v.bn,'bn')].filter(Boolean);
- if(v.ar.length>260){const t=L.filter(l=>l.k!='tl');L=t.length?[t.find(l=>l.k=='bn')||t[0]]:[]}
- cardShow({title:`${QN[qO-1]} ${qO}:${a}`,ar:v.ar,lines:L,mk:.4})}
+ if(qA(qO,v).length>260){const t=L.filter(l=>l.k!='tl');L=t.length?[t.find(l=>l.k=='bn')||t[0]]:[]}
+ cardShow({title:`${QN[qO-1]} ${qO}:${a}`,ar:qA(qO,v),lines:L,mk:.4})}
 function qDbg(){modal(`<h3>${qe(qErr?qErr.m:'')}</h3><pre style="white-space:pre-wrap;word-break:break-all;user-select:text;max-height:50vh;overflow:auto;font-size:.75rem">${qe(qRaw||'(no response captured)')}</pre><div class=row><button class=btn onclick=closeM()>Close</button></div>`)}
 function qFav(a,s){const k=(s||qO)+':'+a,on=!S.qb[k];if(on)S.qb[k]=Date.now();else delete S.qb[k];persist(1);toast(on?'Added to favourites':'Removed from favourites');
  const b=!s&&!S.set.qvm&&document.querySelector('#qv'+a+' .qa .btn');if(b){b.classList.toggle('on',on);b.innerHTML=star(on)}else render()}
@@ -615,11 +624,11 @@ function qRead(){const n=qO,c=QC[n],s=S.set,tot=QV[n-1];
  const tx=v=>`${s.qtl&&v.tl?`<div class=trl>${qe(v.tl)}</div>`:''}${s.qen&&v.en?`<div class=tr>${qe(v.en)}</div>`:''}${s.qbn&&v.bn?`<div class="tr bn">${qe(v.bn)}</div>`:''}`;
  if(s.qvm){qJ=0;const v=c.v.find(x=>x.n==qVi)||c.v[0],f=!!S.qb[n+':'+v.n];qVi=v.n;
   return `<div style="--qs:${s.qsz}">${top}<div class=row style="justify-content:space-between;margin:0 4px 6px"><b>${qe(QN[n-1])}</b><span class=mu>${n}:${v.n}</span></div>${ch}
-<div class="glass dua qvm"><span class=orb></span>${v.n==1&&n!=1&&n!=9?`<div class=ar dir=rtl style="font-size:1.15rem;opacity:.8;margin-bottom:10px">${QBIS}</div>`:''}<div class="ar big" dir=rtl>${qe(v.ar)}</div>${tx(v)}</div>
+<div class="glass dua qvm"><span class=orb></span>${v.n==1&&n!=1&&n!=9?`<div class=ar dir=rtl style="font-size:1.15rem;opacity:.8;margin-bottom:10px">${QBIS}</div>`:''}<div class="ar big" dir=rtl>${qe(qA(n,v))}</div>${tx(v)}</div>
 <div class=row><button class="btn ${f?'on':''}" onclick="qFav(${v.n})">${star(f)} Favourite</button><button class=btn onclick="qCp(${v.n})">${IC.cp} Copy</button><button class=btn onclick="qCard(${v.n})">${IC.sh} Photo card</button></div>
 <div class=row style="align-items:center;gap:18px;margin-bottom:90px"><button class=btn onclick="qGo(-1)" aria-label="Previous verse">${IC.l}</button><button class=btn onclick=qJump()>${v.n} / ${tot}</button><button class=btn onclick="qGo(1)" aria-label="Next verse">${IC.rr}</button></div></div>`}
  const r=S.qr,vs=c.v.map(v=>{const b=S.qb[n+':'+v.n],cur=r&&r.s==n&&r.a==v.n;
-  return `<div class="qv ${cur?'cur':''}" id=qv${v.n} data-a=${v.n}><div class=qh><button class=qn onclick="qMark(${v.n})" aria-label="Mark as last read">${v.n}</button><span class=qa><button class="btn ${b?'on':''}" onclick="qFav(${v.n})" aria-label=Favourite>${star(!!b)}</button><button class=btn onclick="qCp(${v.n})" aria-label=Copy>${IC.cp}</button><button class=btn onclick="qCard(${v.n})" aria-label="Photo card">${IC.sh}</button></span></div><div class="ar big" dir=rtl>${qe(v.ar)}</div>${tx(v)}</div>`}).join('');
+  return `<div class="qv ${cur?'cur':''}" id=qv${v.n} data-a=${v.n}><div class=qh><button class=qn onclick="qMark(${v.n})" aria-label="Mark as last read">${v.n}</button><span class=qa><button class="btn ${b?'on':''}" onclick="qFav(${v.n})" aria-label=Favourite>${star(!!b)}</button><button class=btn onclick="qCp(${v.n})" aria-label=Copy>${IC.cp}</button><button class=btn onclick="qCard(${v.n})" aria-label="Photo card">${IC.sh}</button></span></div><div class="ar big" dir=rtl>${qe(qA(n,v))}</div>${tx(v)}</div>`}).join('');
  if(qJ){const a=qJ;qJ=0;setTimeout(()=>{const e=$('#qv'+a);e&&e.scrollIntoView({block:'start'})},60)}
  return `<div style="--qs:${s.qsz}">${top}<div class="glass dua"><span class=orb></span><div class=dn>${n}. ${qe(QN[n-1])}</div><div class=mu>${tot} verses</div>${n!=1&&n!=9?`<div class=orn>${ORN}</div><div class="ar big" dir=rtl>${QBIS}</div>`:''}</div>${ch}<div class="glass qvs">${vs}</div>
 <div class=row style="align-items:center;gap:18px;margin-bottom:90px"><button class=btn onclick="qOpen(${n-1})" ${n>1?'':'disabled'} aria-label="Previous surah">${IC.l}</button><span class=mu>${n} / 114</span><button class=btn onclick="qOpen(${n+1})" ${n<114?'':'disabled'} aria-label="Next surah">${IC.rr}</button></div></div>`}

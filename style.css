@@ -1,3 +1,7 @@
+@font-face{font-family:"AlQuran IndoPak by QuranWBW";font-display:swap;
+src:url("https://db.onlinewebfonts.com/t/05779d80159ce2736e595e72dfdecbcf.woff2") format("woff2"),
+url("https://db.onlinewebfonts.com/t/05779d80159ce2736e595e72dfdecbcf.woff") format("woff"),
+url("https://db.onlinewebfonts.com/t/05779d80159ce2736e595e72dfdecbcf.ttf") format("truetype")}
 [data-theme=forest]{--bg:#eef5f0;--cd:#fff;--ac:#1f7a5c;--tx:#173a2f;--mu:#6b8a7e}
 [data-theme=night]{--bg:#0f1720;--cd:#18232f;--ac:#4fd1a5;--tx:#e6f1ee;--mu:#7f95a3}
 [data-theme=rose]{--bg:#fbf0f2;--cd:#fff;--ac:#c2576f;--tx:#4a1f2a;--mu:#a37b85}
