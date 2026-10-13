@@ -267,3 +267,7 @@ html[lang=bn] nav button{font-size:.58rem}
 .qvm .ar.big{font-size:calc(1.9rem*var(--qs,1));line-height:2.1}
 .qvm .tr,.qvm .trl{font-size:calc(.98rem*var(--qs,1))}
 .qfl .dnum{width:auto;min-width:3.2em}
+
+/* Quran reader options wrap instead of scrolling sideways, so nothing is hidden */
+.chips.qc{flex-wrap:wrap;overflow:visible;gap:8px}
+.chips.qc .chip{padding:8px 14px}
