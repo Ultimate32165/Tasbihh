@@ -23,7 +23,7 @@ const out=()=>({tl:[...S.tl].sort((a,b)=>a.id<b.id?-1:1),tt:S.tt,logs:S.logs,bs:
 const canon=o=>JSON.stringify(o,(k,v)=>v&&typeof v=='object'&&!Array.isArray(v)?Object.fromEntries(Object.keys(v).sort().map(x=>[x,v[x]])):v);
 const AF={amiri:"Amiri,serif",quran:"'Scheherazade New',Amiri,serif",indo:"'Noto Nastaliq Urdu',serif"};
 let S=JSON.parse(localStorage.getItem(KEY)||'null')||{tl:[],tt:{},logs:{},prog:{},fv:{},qz:{v:0,t:0},dt:{},cur:'sub',pend:{c:0,p:0},upd:0,
- set:{theme:'forest',arf:'amiri',size:1,en:true,bn:true,haptic:true}};
+ set:{theme:'forest',arf:'quran',size:1,en:true,bn:true,haptic:true}};
 let tab='c',rg='w',mt='t',wasOff=!navigator.onLine,duaI=0,duaO=0,D=null;
 S.set.tl??=true;S.set.ui??='en';S.set.bd??=false;S.set.uf??='nunito';S.set.hms??=35;S.dt??={};
 const all=()=>DEF.concat(S.tl),cur=()=>all().find(x=>x.id==S.cur)||DEF[0],tg=t=>{const x=S.tt[t.id];return (x&&typeof x=='object'?x.v:x)||t.t};
