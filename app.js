@@ -158,11 +158,11 @@ const SEARCH_MIN=8,DC={};let duaQ='',duaN=-1;
 const dkey=x=>x.id||((x.name||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'d'+[...(x.arabic||'')].reduce((h,c)=>(h*31+c.charCodeAt(0))>>>0,7));
 const isF=x=>!!(S.fv[dkey(x)]||{}).v;
 const dnorm=s=>(s||'').toLowerCase().replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g,'');
-const dord=()=>D.map((x,i)=>i).sort((a,b)=>isF(D[b])-isF(D[a])||a-b);
-function loadD(){fetch('duas.json').then(r=>r.json()).then(j=>{D=j.duas||[];render()}).catch(()=>{D=[];render()})}
+const dord=()=>D.map((x,i)=>i).filter(i=>duaOk(D[i])).sort((a,b)=>isF(D[b])-isF(D[a])||a-b);
+function loadD(){fetch('duas.json').then(r=>r.json()).then(j=>{D=j.duas||[];render();loadX()}).catch(()=>{D=[];render();loadX()})}
 function duaGo(n){const o=dord(),p=o.indexOf(duaI);duaI=o[(p+n+o.length)%o.length];render()}
-function dList(){const q=dnorm(duaQ.trim());let o=dord();if(q)o=o.filter(i=>{const x=D[i];return dnorm([x.name,x.arabic,x.transliteration,x.en,x.bn].join(' ')).includes(q)});
- return o.length?o.map((i,n)=>{const x=D[i];return `<button class=di onclick="duaI=${i};duaO=1;render()"><span class=dnum>${n+1}</span><span>${x.name}</span><span class="fv ${isF(x)?'on':''}" onclick="event.stopPropagation();favT(${i})">${star(isF(x))}</span>${IC.rr}</button>`}).join(''):'<div class=mu style="padding:16px;text-align:center">No matches</div>'}
+function dList(){const q=dnorm(duaQ.trim());let o=dord();if(q)o=o.filter(i=>{const x=D[i];return dnorm([x.name,x.arabic,x.transliteration,x.en,x.bn,x.cat].join(' ')).includes(q)});
+ return o.length?o.map((i,n)=>{const x=D[i];return `<button class=di onclick="duaI=${i};duaO=1;render()"><span class=dnum>${n+1}</span><span>${x.name}${x.src=='x'&&x.cat?`<small class=mu>${xp(x.cat)}</small>`:''}</span><span class="fv ${isF(x)?'on':''}" onclick="event.stopPropagation();favT(${i})">${star(isF(x))}</span>${IC.rr}</button>`}).join(''):'<div class=mu style="padding:16px;text-align:center">No matches</div>'}
 // notes: Arabic runs are picked out automatically and shown in the Arabic font
 const ARA='\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF';
 const A_HAS=new RegExp('['+ARA+']'),A_RUN=new RegExp('['+ARA+'](?:['+ARA+'\\u200c\\u200d ]*['+ARA+'])?','g'),A_FULL=new RegExp('^['+ARA+'\\s\\u200c\\u200d\\d()\\[\\].,:;!?"\'\\-–—]+$');
@@ -203,13 +203,13 @@ function repTap(){const k=rk(),T=S.dt[k]||3;let n=DC[k]||0;if(n>=T)n=0;n++;DC[k]
  if(n>=T){vib([80,60,80,60,250]);toast('Done · '+T+'×')}else vib(S.set.hms||35);$('#rc').textContent=n+' / '+T}
 V.d=()=>{if(!D){loadD();return '<p class=mu>Loading…</p>'}
  if(!D.length)return '<h2>Duas</h2><div class=card>No duas yet. Add some in duas.json</div>';
- if(!duaO){const sr=D.length>=SEARCH_MIN;if(!sr)duaQ='';return `<h2>Duas</h2>${sr?`<input id=dq class=srch type=search placeholder="Search duas…" value="${duaQ.replace(/"/g,'&quot;')}" oninput="duaQ=this.value;drawList()">`:''}<div class="glass dl" id=dlist>${dList()}</div>`}
+ if(!duaO){const sr=D.length>=SEARCH_MIN;if(!sr)duaQ='';return `<h2>Duas</h2>${sr?`<input id=dq class=srch type=search placeholder="Search duas…" value="${duaQ.replace(/"/g,'&quot;')}" oninput="duaQ=this.value;drawList()">`:''}${duaChips()}<div class="glass dl" id=dlist>${dList()}</div>${duaStatus()}`}
  duaI=Math.min(duaI,D.length-1);const d=D[duaI],s=S.set,k=dkey(d),T=S.dt[k]||3,n=DC[k]||0,o=dord();
  return `<div class=row style="justify-content:space-between"><button class=btn onclick="duaO=0;duaN=-1;render()">${IC.l} All duas</button><span class=row style="margin:0"><button class="btn ${isF(d)?'on':''}" onclick="favT(duaI)" aria-label=Favourite>${star(isF(d))}</button><button class=btn onclick=copyDua() aria-label=Copy>${IC.cp}</button><button class=btn onclick=cardD() aria-label=Share>${IC.sh}</button></span></div>
 <div class="glass dua"><span class=orb></span>${d.note?`<button class="nbtn ${duaN==duaI?'on':''}" onclick=noteT() aria-label=Note>${IC.nt}</button>`:''}<div class=dn>${d.name}</div><div class=orn>${ORN}</div><div class="ar big">${d.arabic}</div>${s.tl&&d.transliteration?`<div class=trl>${d.transliteration}</div>`:''}${s.en&&d.en?`<div class=tr>${d.en}</div>`:''}${s.bn&&d.bn?`<div class="tr bn">${d.bn}</div>`:''}</div>
 ${d.note&&duaN==duaI?`<div class="glass note"><div class=dn style="font-size:.9rem">Note</div><div class="nt bn">${nHTML(d.note)}</div></div>`:''}
 <div class=row style="align-items:center"><span class=mu>Repeat</span>${[3,7].map(m=>`<button class="btn ${T==m?'on':''}" onclick=repT(${m})>${m}×</button>`).join('')}<button class="btn ${T!=3&&T!=7?'on':''}" onclick=repC()>${T!=3&&T!=7?T+'×':'Custom'}</button><button class="btn p" id=rc onclick=repTap() style="min-width:84px">${n} / ${T}</button><button class=btn onclick=repReset() aria-label=Reset>${IC.r}</button></div>
-<div class=row style="align-items:center;gap:18px"><button class=btn onclick=duaGo(-1)>${IC.l}</button><span class=mu>${o.indexOf(duaI)+1} / ${D.length}</span><button class=btn onclick=duaGo(1)>${IC.rr}</button></div>`};
+<div class=row style="align-items:center;gap:18px"><button class=btn onclick=duaGo(-1)>${IC.l}</button><span class=mu>${o.indexOf(duaI)+1} / ${o.length}</span><button class=btn onclick=duaGo(1)>${IC.rr}</button></div>`};
 function acc(){if(!fb)return FC.apiKey.startsWith('YOUR')?'<span class=mu>Add your Firebase config in index.html to enable sync. Data is saved on this device meanwhile.</span>':'<span class=mu>Loading…</span>';
  if(user)return `<p>Signed in: <b>${user.email.split('@')[0]}</b></p><div class=mu style="margin:-6px 0 10px">${S.ls?'Last synced: '+new Date(S.ls).toLocaleString():'Not synced yet'}</div><div class=row style="justify-content:flex-start"><button class="btn p syb" onclick=syncNow()>${IC.sy} Sync now</button><button class=btn onclick="fb.Au.signOut(fb.auth)">Sign out</button></div>`;
  return `<div style="display:grid;gap:8px"><input id=em placeholder=Username autocapitalize=none autocomplete=username><input id=pw type=password placeholder=Password><div class=row><button class="btn p" onclick="auth(0)">Sign in</button><button class=btn onclick="auth(1)">Sign up</button></div></div>`}
@@ -624,6 +624,46 @@ function qRead(){const n=qO,c=QC[n],s=S.set,tot=QV[n-1];
 V.q=()=>qO?qRead():qList();
 // remember where the reader is when they scroll
 let qSt=0;addEventListener('scroll',()=>{if(tab!=='q'||!qO||qSt||scrollY<200)return;qSt=setTimeout(()=>{qSt=0;for(const e of document.querySelectorAll('.qv'))if(e.getBoundingClientRect().bottom>90){const a=+e.dataset.a;if(!S.qr||S.qr.s!=qO||S.qr.a!=a){S.qr={s:qO,a,t:Date.now()};persist(1)}break}},700)},{passive:true});
+// ===== More duas (UmmahAPI) =====
+// API duas are added to the same list as yours (marked src:'x'), so favourites, repeat counts, copy and cards all work. Yours win on duplicates.
+let xS='',xRaw='',duaSrc='',duaCat='',duaCats=[];
+const xs=x=>Array.isArray(x)?x.map(xs).filter(Boolean).join(', '):String(x==null?'':typeof x=='object'?(x.text||x.translation||x.en||x.english||x.name||x.title||''):x).replace(/<[^>]*>/g,'').replace(/[<>]/g,'').trim();
+const xa=s=>qNorm(s||'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[^\u0600-\u06ff]/g,'');
+const xp=c=>String(c).replace(/[_-]+/g,' ').replace(/\b[a-z]/g,m=>m.toUpperCase());
+const duaOk=x=>(!duaSrc||(duaSrc=='x'?x.src=='x':x.src!='x'))&&(!duaCat||x.cat==duaCat);
+function xNorm(j){const d=j&&j.data!==undefined?j.data:j;let a=[];
+ if(Array.isArray(d))a=d;
+ else if(d&&typeof d=='object'){const vals=Object.values(d),keys=Object.keys(d),cs=d.categories;
+  if(Array.isArray(cs)&&cs.some(c=>c&&Array.isArray(c.duas)))cs.forEach(c=>(c.duas||[]).forEach(x=>a.push(Object.assign({category:c.name||c.title||c.id},x))));
+  else{const k=['duas','items','results'].find(k=>Array.isArray(d[k]));
+   if(k)a=d[k];
+   else if(vals.length&&vals.every(Array.isArray))vals.forEach((v,i)=>v.forEach(x=>a.push(Object.assign({category:keys[i]},x))));
+   else{const f=vals.find(v=>Array.isArray(v)&&v.length&&typeof v[0]=='object');if(f)a=f}}}
+ return a.filter(r=>r&&typeof r=='object').map((r,i)=>{const id=r.id??r.dua_id??r.number??(i+1),sr=xs(r.source!==undefined?r.source:r.sources!==undefined?r.sources:r.reference!==undefined?r.reference:r.ref);
+  return{id:'x'+id,src:'x',name:xs(r.title??r.name??r.dua_title??r.heading)||('Dua '+(i+1)),arabic:xs(r.arabic??r.arabic_text??r.text_arabic??r.dua??r.text),transliteration:xs(r.transliteration??r.transliteration_text),
+   en:xs(r.translation??r.english??r.en??r.meaning??r.translation_en),note:sr?'Source: '+sr:'',cat:xs(r.category??r.category_id??r.categoryId??r.category_name??r.type)}}).filter(x=>x.arabic)}
+function xMerge(l){const loc=D.filter(x=>x.src!='x'),seen=new Set(loc.map(x=>xa(x.arabic)).filter(Boolean));D=loc.concat(l.filter(x=>!seen.has(xa(x.arabic))))}
+async function loadX(force){if(xS=='load'||!D)return;xS='load';
+ try{let c=null;try{c=await qdb.get('duas')}catch(e){}
+  const fresh=c&&Date.now()-c.t<2592e6;
+  if(c)xMerge(c.list);
+  if(!c||force||!fresh){
+   if(navigator.onLine){try{const j=await qGet('/api/duas'),l=xNorm(j);
+     if(!l.length){xRaw=JSON.stringify(j,null,1).slice(0,900);throw new Error('shape')}
+     try{await qdb.set('duas',{list:l,t:Date.now()})}catch(e){}xMerge(l)}catch(e){if(!c)throw e}}
+   else if(!c)throw new Error('offline')}
+  xS='ok'}catch(e){xS='err'}
+ if(tab=='d')render()}
+function duaSet(s,ci){duaSrc=s;duaCat=ci===''?'':(duaCats[ci]||'');render()}
+function duaChips(){duaCats=[...new Set(D.filter(x=>x.src=='x'&&x.cat).map(x=>x.cat))];
+ return `<div class="chips qc"><button class="chip ${!duaSrc?'on':''}" onclick="duaSet('','')">All</button><button class="chip ${duaSrc=='m'?'on':''}" onclick="duaSet('m','')">My duas</button><button class="chip ${duaSrc=='x'?'on':''}" onclick="duaSet('x','')">More duas</button></div>`
+ +(duaSrc=='x'&&duaCats.length?`<div class=chips><button class="chip ${!duaCat?'on':''}" onclick="duaSet('x','')">All categories</button>${duaCats.map((c,i)=>`<button class="chip ${duaCat==c?'on':''}" onclick="duaSet('x',${i})">${xp(c)}</button>`).join('')}</div>`:'')}
+function xDbg(){modal(`<pre style="white-space:pre-wrap;word-break:break-all;user-select:text;max-height:50vh;overflow:auto;font-size:.75rem">${qe(xRaw||'(no response captured)')}</pre><div class=row><button class=btn onclick=closeM()>Close</button></div>`)}
+function duaStatus(){if(duaSrc=='m')return '';
+ if(xS=='load')return duaSrc=='x'?'<p class=mu style="text-align:center">Loading more duas…</p>':'';
+ if(xS=='err')return duaSrc=='x'?`<div class=card><p class=mu>Couldn't load more duas.</p><div class=row><button class="btn p" onclick="loadX(1)">Retry</button>${xRaw?'<button class=btn onclick=xDbg()>Details</button>':''}</div></div>`:'';
+ return duaSrc=='x'&&xS=='ok'?'<div class=mu style="text-align:center;font-size:.8rem;margin-top:6px">More duas: <a href="https://ummahapi.com" target=_blank rel=noopener>UmmahAPI</a></div>':''}
+Object.assign(BD,{'My duas':'আমার দোয়া','More duas':'আরও দোয়া','All categories':'সব বিভাগ','Loading more duas…':'আরও দোয়া লোড হচ্ছে…',"Couldn't load more duas.":'আরও দোয়া লোড করা যায়নি।','More duas:':'আরও দোয়া:'});
 let qTx=0,qTy=0,qTk=0;addEventListener('touchstart',e=>{qTk=!e.target.closest('.chips,input,select,.mo,nav');qTx=e.touches[0].clientX;qTy=e.touches[0].clientY},{passive:true});
 addEventListener('touchend',e=>{if(!qTk||tab!=='q'||!qO||!S.set.qvm||$('#mo'))return;const t=e.changedTouches[0],dx=t.clientX-qTx,dy=t.clientY-qTy;if(Math.abs(dx)>70&&Math.abs(dy)<45)qGo(dx<0?1:-1)},{passive:true});
 addEventListener('keydown',e=>{if(tab!=='q'||!qO||!S.set.qvm||$('#mo')||/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName))return;if(e.key=='ArrowRight')qGo(1);else if(e.key=='ArrowLeft')qGo(-1)});
