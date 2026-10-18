@@ -381,3 +381,8 @@ html[lang=bn] .pn>.mu.bn,html[lang=bn] .xpt>.mu.bn,html[lang=bn] .ptn>.bn,html[l
 .sec:first-of-type{margin-top:4px}
 .sws{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:10px;justify-items:center}
 .sws .sw{margin:0;width:42px;height:42px}
+
+/* Stats: spacing for the range / metric switchers above the chart */
+.card>.row[style*="space-between"]{gap:12px 10px;margin:2px 0 20px;justify-content:flex-start!important}
+.card>.row[style*="space-between"]>span{display:flex;gap:8px;flex-wrap:wrap}
+.card>.row[style*="space-between"]+svg{margin-top:4px}
