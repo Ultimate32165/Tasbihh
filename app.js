@@ -285,18 +285,27 @@ async function makeCard(sp){
  const bg=cv('--bg')||'#eef5f0',cd=cv('--cd')||'#fff',ac=cv('--ac')||'#1f7a5c',tx=cv('--tx')||'#173a2f',mu=cv('--mu')||'#6b8a7e';
  const af=AF[S.set.arf]||AF.amiri,bn="'Noto Sans Bengali','Hind Siliguri',sans-serif",uf=UF[S.set.uf||'nunito']||'Nunito',uf2=uf+','+bn;
  try{await Promise.all(['40px '+af,'40px '+bn,'40px '+uf].map(f=>document.fonts.load(f,'ابAঅ')))}catch(e){}
+ const mix=(al)=>{x.globalAlpha=al};
  x.fillStyle=bg;x.fillRect(0,0,W,H);
- let g=x.createRadialGradient(150,100,0,150,100,700);g.addColorStop(0,ac);g.addColorStop(1,'transparent');x.globalAlpha=.28;x.fillStyle=g;x.fillRect(0,0,W,H);
- g=x.createRadialGradient(1000,1150,0,1000,1150,600);g.addColorStop(0,ac);g.addColorStop(1,'transparent');x.globalAlpha=.2;x.fillStyle=g;x.fillRect(0,0,W,H);
- x.globalAlpha=.78;x.fillStyle=cd;x.beginPath();x.roundRect?x.roundRect(60,60,W-120,H-120,56):x.rect(60,60,W-120,H-120);x.fill();
- x.globalAlpha=.25;x.strokeStyle=ac;x.lineWidth=2;x.stroke();x.globalAlpha=1;
+ let g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,ac);g.addColorStop(.55,bg);g.addColorStop(1,ac);x.globalAlpha=.32;x.fillStyle=g;x.fillRect(0,0,W,H);
+ g=x.createRadialGradient(W/2,-60,0,W/2,-60,900);g.addColorStop(0,'#fff');g.addColorStop(1,'transparent');x.globalAlpha=.16;x.fillStyle=g;x.fillRect(0,0,W,H);x.globalAlpha=1;
+ const IX=64,IY=64,IW=W-128,IH=H-128;
+ x.save();x.shadowColor='#0000002e';x.shadowBlur=60;x.shadowOffsetY=24;x.fillStyle=cd;rrect(x,IX,IY,IW,IH,64);x.fill();x.restore();
+ x.save();rrect(x,IX,IY,IW,IH,64);x.clip();
+ g=x.createLinearGradient(0,IY,0,IY+560);g.addColorStop(0,ac);g.addColorStop(1,'transparent');x.globalAlpha=.13;x.fillStyle=g;x.fillRect(IX,IY,IW,560);
+ x.globalAlpha=.07;x.strokeStyle=ac;x.lineWidth=2;
+ for(let gx=IX;gx<IX+IW+120;gx+=120)for(let gy=IY;gy<IY+IH+120;gy+=120){x.save();x.translate(gx,gy);x.strokeRect(-34,-34,68,68);x.rotate(Math.PI/4);x.strokeRect(-34,-34,68,68);x.restore()}
+ x.globalAlpha=1;x.restore();
+ g=x.createLinearGradient(IX,IY,IX+IW,IY+IH);g.addColorStop(0,ac);g.addColorStop(.5,'transparent');g.addColorStop(1,ac);
+ x.globalAlpha=.55;x.strokeStyle=g;x.lineWidth=3;rrect(x,IX,IY,IW,IH,64);x.stroke();x.globalAlpha=.25;rrect(x,IX+18,IY+18,IW-36,IH-36,50);x.stroke();x.globalAlpha=1;
  x.textAlign='center';x.textBaseline='middle';x.direction='ltr';
  let ts=46;do{x.font=`700 ${ts}px ${uf2}`;ts-=2}while(x.measureText(sp.title).width>800&&ts>24);
  let tl=[sp.title];
  if(x.measureText(sp.title).width>800){ts=34;x.font=`700 ${ts}px ${uf2}`;tl=wrapT(x,sp.title,800);if(tl.length>2){ts=26;x.font=`700 ${ts}px ${uf2}`;tl=wrapT(x,sp.title,800).slice(0,3)}}
+ if(sp.tag){x.save();try{x.letterSpacing='8px'}catch(e){}x.font=`800 24px ${uf2}`;x.fillStyle=ac;x.globalAlpha=.7;x.fillText(sp.tag.toUpperCase(),W/2+4,112);x.restore()}
  x.fillStyle=ac;tl.forEach((t,i)=>x.fillText(t,W/2,175+(i-(tl.length-1)/2)*ts*1.22));
- x.strokeStyle=ac;x.fillStyle=ac;x.lineWidth=3;x.globalAlpha=.75;x.beginPath();x.moveTo(380,232);x.lineTo(510,232);x.moveTo(570,232);x.lineTo(700,232);x.stroke();
- x.beginPath();x.moveTo(540,220);x.lineTo(552,232);x.lineTo(540,244);x.lineTo(528,232);x.closePath();x.fill();x.globalAlpha=1;
+ x.strokeStyle=ac;x.fillStyle=ac;x.lineWidth=3;x.globalAlpha=.7;x.beginPath();x.moveTo(340,248);x.lineTo(490,248);x.moveTo(590,248);x.lineTo(740,248);x.stroke();
+ [[540,248,13],[505,248,5],[575,248,5]].forEach(([cx,cy,r])=>{x.beginPath();x.moveTo(cx,cy-r);x.lineTo(cx+r,cy);x.lineTo(cx,cy+r);x.lineTo(cx-r,cy);x.closePath();x.fill()});x.globalAlpha=1;
  const mk=k=>{const o=[],add=(t,fs,fam,col,lh,st)=>{x.direction='ltr';x.font=`${st||''} ${fs*k}px ${fam}`;o.push({L:wrapT(x,t,800),f:x.font,col,lh:fs*k*lh,rtl:fam===af})};
   if(sp.ar)add(sp.ar,84,af,tx,1.9);for(const l of sp.lines)add(l.t,34,l.k=='bn'?bn:uf2,l.k=='tl'?ac:mu,1.55,l.k=='tl'?'italic':'');return o};
  const ht=(B,k)=>B.length?B.reduce((a,b)=>a+b.L.length*b.lh,0)+36*k*(B.length-1):0;
@@ -304,7 +313,9 @@ async function makeCard(sp){
  if(sp.mk&&ht(B,k)>AV-20)throw new Error('toolong');
  let y=290+(AV-ht(B,k))/2;
  B.forEach((b,i)=>{x.font=b.f;x.fillStyle=b.col;x.direction=b.rtl?'rtl':'ltr';b.L.forEach(l=>{x.fillText(l,W/2,y+b.lh/2);y+=b.lh});y+=36*k});
- x.direction='ltr';sp.post&&sp.post(x,{W,y:290+AV,ac,bg,tx,mu,uf2});x.direction='ltr';x.font=`700 30px ${uf2}`;x.fillStyle=ac;x.globalAlpha=.8;x.fillText('Tasbih',W/2,1235);x.globalAlpha=1;
+ x.direction='ltr';sp.post&&sp.post(x,{W,y:290+AV,ac,bg,tx,mu,uf2});x.direction='ltr';{x.font=`800 30px ${uf2}`;const bw=x.measureText('Tasbih').width+110;x.globalAlpha=.14;x.fillStyle=ac;rrect(x,W/2-bw/2,1196,bw,58,29);x.fill();x.globalAlpha=1;x.fillStyle=ac;x.fillText('Tasbih',W/2,1226);
+  [[W/2-bw/2+30],[W/2+bw/2-30]].forEach(([cx])=>{x.beginPath();x.moveTo(cx,1226-7);x.lineTo(cx+7,1226);x.lineTo(cx,1226+7);x.lineTo(cx-7,1226);x.closePath();x.fill()});
+  x.font=`600 22px ${uf2}`;x.fillStyle=mu;x.fillText(new Date().toLocaleDateString(LC(),{day:'numeric',month:'long',year:'numeric'}),W/2,1272)}
  return c}
 let CB=null;
 async function cardShow(sp){toast('Making card…');
@@ -316,11 +327,11 @@ function cardShare(){if(navigator.canShare&&navigator.canShare({files:[CB.f]}))n
 function cardSave(){const a=document.createElement('a');a.href=CB.u;a.download='tasbih-card-'+dk()+'.png';document.body.append(a);a.click();a.remove()}
 function cardClose(){CB&&URL.revokeObjectURL(CB.u);CB=null;closeM()}
 const cl=(s,t,k)=>s&&t?{t,k}:null;
-function cardD(){const d=D[duaI],s=S.set;cardShow({title:d.name,ar:d.arabic,lines:[cl(s.tl,d.transliteration,'tl'),cl(s.en,d.en,'tr'),cl(s.bn,d.bn,'bn')].filter(Boolean)})}
-function cardN(){const d=NM[nmI],s=S.set;cardShow({title:(d.n?d.n+' · ':'')+d.name,ar:d.arabic,lines:[cl(s.en,d.en,'tr'),cl(s.bn,d.bn,'bn')].filter(Boolean)})}
+function cardD(){const d=D[duaI],s=S.set;cardShow({tag:'Dua',title:d.name,ar:d.arabic,lines:[cl(s.tl,d.transliteration,'tl'),cl(s.en,d.en,'tr'),cl(s.bn,d.bn,'bn')].filter(Boolean)})}
+function cardN(){const d=NM[nmI],s=S.set;cardShow({tag:'99 Names of Allah',title:(d.n?d.n+' · ':'')+d.name,ar:d.arabic,lines:[cl(s.en,d.en,'tr'),cl(s.bn,d.bn,'bn')].filter(Boolean)})}
 const rrect=(x,a,b,w,h,r)=>{x.beginPath();x.roundRect?x.roundRect(a,b,w,h,r):x.rect(a,b,w,h)};
 function cardC(){const t=cur(),s=S.set,p=pg(t),T=tg(t),td=dt(dk());
- cardShow({title:t.n,ar:t.ar,res:430,lines:[cl(s.en,t.en,'tr'),cl(s.bn,t.bn,'bn')].filter(Boolean),post:(x,o)=>{
+ cardShow({tag:'Dhikr',title:t.n,ar:t.ar,res:430,lines:[cl(s.en,t.en,'tr'),cl(s.bn,t.bn,'bn')].filter(Boolean),post:(x,o)=>{
   const cx=o.W/2,cy=o.y+190,r=140;x.lineWidth=26;x.lineCap='round';
   x.strokeStyle=o.bg;x.beginPath();x.arc(cx,cy,r,0,7);x.stroke();
   if(p){x.strokeStyle=o.ac;x.beginPath();x.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+2*Math.PI*p/T);x.stroke()}
@@ -330,7 +341,7 @@ function cardC(){const t=cur(),s=S.set,p=pg(t),T=tg(t),td=dt(dk());
 function cardS(){const x0=stats(),d=series(),m=Math.max(1,...d.map(v=>v.v)),tot=d.reduce((a,b)=>a+b.v,0);
  const cells=[['Today',dt(dk())],['Total tasbih',x0.tot],['Streak',x0.st+' d'],['Best day',x0.best]];
  const RN={w:'This week',m:'Last 30 days',y:'This year'}[rg],MN={t:'Tasbih',p:'Prayers',x:'Extras'}[mt];
- cardShow({title:'My stats',res:880,lines:[],post:(x,o)=>{
+ cardShow({tag:'Progress',title:'My stats',res:880,lines:[],post:(x,o)=>{
   cells.forEach((c,i)=>{const a=140+(i%2)*410,b=o.y+Math.floor(i/2)*150;x.globalAlpha=.14;x.fillStyle=o.ac;rrect(x,a,b,390,130,28);x.fill();x.globalAlpha=1;
    x.fillStyle=o.ac;x.font=`800 54px ${o.uf2}`;x.fillText(c[1],a+195,b+50);x.fillStyle=o.mu;x.font=`600 26px ${o.uf2}`;x.fillText(c[0],a+195,b+101)});
   x.fillStyle=o.mu;x.font=`600 28px ${o.uf2}`;x.fillText(MN+' · '+RN,o.W/2,o.y+345);
@@ -341,7 +352,7 @@ const PE=['🌅','☀️','🌤️','🌇','🌙'];
 const pMsg=n=>n>=5?'All five done, Alhamdulillah 🎉':n==4?'So close, just one more 💫':n>=2?'Mashallah, keep going ✨':n==1?'A lovely start 🌸':'Bismillah, let us begin 🤍';
 function cardP(){const l=day(),n=dp(dk()),t=ptToday(),X=l.x||{},bnf="'Noto Sans Bengali','Hind Siliguri',sans-serif",on=cv('--on')||'#fff',
  date=new Date().toLocaleDateString(LC(),{weekday:'long',day:'numeric',month:'long',year:'numeric'})+(t&&t.hj?' · '+t.hj+' AH':'');
- cardShow({title:'Daily prayers',res:880,lines:[],post:(x,o)=>{const y0=o.y,W=o.W;
+ cardShow({tag:'Salah',title:'Daily prayers',res:880,lines:[],post:(x,o)=>{const y0=o.y,W=o.W;
   x.textAlign='center';x.fillStyle=o.mu;x.font=`600 28px ${o.uf2}`;x.fillText(date,W/2,y0+10);
   x.fillStyle=o.ac;x.font=`800 120px ${o.uf2}`;x.fillText(n+' / 5',W/2,y0+95);
   for(let i=0;i<5;i++){x.globalAlpha=l.p[i].v?1:.2;x.fillStyle=l.p[i].v==2?'#e0a030':o.ac;rrect(x,287+i*104,y0+172,90,22,11);x.fill()}x.globalAlpha=1;
@@ -424,7 +435,7 @@ function cardPT(){const t=ptToday();if(!t){toast('Prayer times not loaded yet');
  R=[['Fajr','ফজর',0,'🌅'],['Sunrise','সূর্যোদয়',-1,'🌄'],['Dhuhr','যোহর',1,'☀️'],['Asr','আসর',2,'🌤️'],['Maghrib','মাগরিব',3,'🌇'],['Isha','এশা',4,'🌙']],
  mth=((PM.find(m=>m[0]==S.set.pm)||['',''])[1]).split(' (')[0]+' · '+(S.set.ps==1?'Hanafi Asr':"Shafi'i Asr");
  closeM();
- cardShow({title:'Prayer times',res:880,lines:[],post:(x,o)=>{const y0=o.y,W=o.W;
+ cardShow({tag:'Salah times',title:'Prayer times',res:880,lines:[],post:(x,o)=>{const y0=o.y,W=o.W;
   x.textAlign='center';x.fillStyle=o.mu;x.font=`600 28px ${o.uf2}`;x.fillText(date,W/2,y0+10);
   x.fillStyle=o.ac;x.font=`700 32px ${o.uf2}`;x.fillText('📍 '+l.n,W/2,y0+60);
   let by=y0+112;
@@ -615,7 +626,7 @@ const qVs=a=>QC[qO]&&QC[qO].v.find(x=>x.n==a);
 function qCp(a){const v=qVs(a),s=S.set;if(!v)return;copyTxt([`${QN[qO-1]} (${qO}:${a})`,qA(qO,v),s.qtl&&v.tl,s.qen&&v.en,s.qbn&&v.bn].filter(Boolean).join('\n\n')).then(ok=>toast(ok?'Copied':'Copy failed'))}
 function qCard(a){const v=qVs(a),s=S.set;if(!v)return;let L=[cl(s.qtl,v.tl,'tl'),cl(s.qen,v.en,'tr'),cl(s.qbn,v.bn,'bn')].filter(Boolean);
  if(qA(qO,v).length>260){const t=L.filter(l=>l.k!='tl');L=t.length?[t.find(l=>l.k=='bn')||t[0]]:[]}
- cardShow({title:`${QN[qO-1]} ${qO}:${a}`,ar:qA(qO,v),lines:L,mk:.4})}
+ cardShow({tag:'Quran',title:`${QN[qO-1]} ${qO}:${a}`,ar:qA(qO,v),lines:L,mk:.4})}
 function qDbg(){modal(`<h3>${qe(qErr?qErr.m:'')}</h3><pre style="white-space:pre-wrap;word-break:break-all;user-select:text;max-height:50vh;overflow:auto;font-size:.75rem">${qe(qRaw||'(no response captured)')}</pre><div class=row><button class=btn onclick=closeM()>Close</button></div>`)}
 function qFav(a,s){const k=(s||qO)+':'+a,on=!S.qb[k];if(on)S.qb[k]=Date.now();else delete S.qb[k];persist(1);toast(on?'Added to favourites':'Removed from favourites');
  const b=!s&&!S.set.qvm&&document.querySelector('#qv'+a+' .qa .btn');if(b){b.classList.toggle('on',on);b.innerHTML=star(on)}else render()}
