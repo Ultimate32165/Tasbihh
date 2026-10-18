@@ -313,9 +313,9 @@ async function makeCard(sp){
  if(sp.mk&&ht(B,k)>AV-20)throw new Error('toolong');
  let y=290+(AV-ht(B,k))/2;
  B.forEach((b,i)=>{x.font=b.f;x.fillStyle=b.col;x.direction=b.rtl?'rtl':'ltr';b.L.forEach(l=>{x.fillText(l,W/2,y+b.lh/2);y+=b.lh});y+=36*k});
- x.direction='ltr';sp.post&&sp.post(x,{W,y:290+AV,ac,bg,tx,mu,uf2});x.direction='ltr';{x.font=`800 30px ${uf2}`;const bw=x.measureText('Tasbih').width+110;x.globalAlpha=.14;x.fillStyle=ac;rrect(x,W/2-bw/2,1196,bw,58,29);x.fill();x.globalAlpha=1;x.fillStyle=ac;x.fillText('Tasbih',W/2,1226);
-  [[W/2-bw/2+30],[W/2+bw/2-30]].forEach(([cx])=>{x.beginPath();x.moveTo(cx,1226-7);x.lineTo(cx+7,1226);x.lineTo(cx,1226+7);x.lineTo(cx-7,1226);x.closePath();x.fill()});
-  x.font=`600 22px ${uf2}`;x.fillStyle=mu;x.fillText(new Date().toLocaleDateString(LC(),{day:'numeric',month:'long',year:'numeric'}),W/2,1272)}
+ x.direction='ltr';sp.post&&sp.post(x,{W,y:290+AV,ac,bg,tx,mu,uf2});x.direction='ltr';{x.font=`800 30px ${uf2}`;const bw=x.measureText('Tasbih').width+110;x.globalAlpha=.14;x.fillStyle=ac;rrect(x,W/2-bw/2,1170,bw,52,26);x.fill();x.globalAlpha=1;x.fillStyle=ac;x.fillText('Tasbih',W/2,1197);
+  [[W/2-bw/2+30],[W/2+bw/2-30]].forEach(([cx])=>{x.beginPath();x.moveTo(cx,1197-7);x.lineTo(cx+7,1197);x.lineTo(cx,1197+7);x.lineTo(cx-7,1197);x.closePath();x.fill()});
+  x.font=`600 22px ${uf2}`;x.fillStyle=mu;x.fillText(new Date().toLocaleDateString(LC(),{day:'numeric',month:'long',year:'numeric'}),W/2,1243)}
  return c}
 let CB=null;
 async function cardShow(sp){toast('Making card…');

@@ -1,4 +1,4 @@
-const C='tasbih-v28',A=['./','index.html','style.css','app.js','firebase-config.js','duas.json','tasbih.json','names.json','indopak.json','manifest.json','icon.svg'];
+const C='tasbih-v29',A=['./','index.html','style.css','app.js','firebase-config.js','duas.json','tasbih.json','names.json','indopak.json','manifest.json','icon.svg'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(c=>c.addAll(A)))});
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim())));
 // stale-while-revalidate: answer instantly from cache, refresh the cache in the background
