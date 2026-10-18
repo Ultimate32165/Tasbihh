@@ -294,7 +294,7 @@ async function makeCard(sp){
  x.save();rrect(x,IX,IY,IW,IH,64);x.clip();
  g=x.createLinearGradient(0,IY,0,IY+560);g.addColorStop(0,ac);g.addColorStop(1,'transparent');x.globalAlpha=.13;x.fillStyle=g;x.fillRect(IX,IY,IW,560);
  x.globalAlpha=.07;x.strokeStyle=ac;x.lineWidth=2;
- for(let gx=IX;gx<IX+IW+120;gx+=120)for(let gy=IY;gy<IY+IH+120;gy+=120){x.save();x.translate(gx,gy);x.strokeRect(-34,-34,68,68);x.rotate(Math.PI/4);x.strokeRect(-34,-34,68,68);x.restore()}
+ x.lineWidth=2;for(let gx=IX-40;gx<IX+IW+80;gx+=80)for(let gy=IY-40;gy<IY+IH+80;gy+=80){x.beginPath();x.arc(gx,gy,56,0,7);x.stroke();x.beginPath();x.arc(gx+40,gy+40,56,0,7);x.stroke()}
  x.globalAlpha=1;x.restore();
  g=x.createLinearGradient(IX,IY,IX+IW,IY+IH);g.addColorStop(0,ac);g.addColorStop(.5,'transparent');g.addColorStop(1,ac);
  x.globalAlpha=.55;x.strokeStyle=g;x.lineWidth=3;rrect(x,IX,IY,IW,IH,64);x.stroke();x.globalAlpha=.25;rrect(x,IX+18,IY+18,IW-36,IH-36,50);x.stroke();x.globalAlpha=1;
