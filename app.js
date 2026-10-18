@@ -217,7 +217,7 @@ function acc(){if(!fb)return FC.apiKey.startsWith('YOUR')?'<span class=mu>Add yo
  return `<div style="display:grid;gap:8px"><input id=em placeholder=Username autocapitalize=none autocomplete=username><input id=pw type=password placeholder=Password><div class=row><button class="btn p" onclick="auth(0)">Sign in</button><button class=btn onclick="auth(1)">Sign up</button></div></div>`}
 function auth(n){const a=fb.Au,e=$('#em').value.trim().toLowerCase().replace(/\s+/g,'')+'@tasbih-app.com',p=$('#pw').value;(n?a.createUserWithEmailAndPassword:a.signInWithEmailAndPassword)(fb.auth,e,p).catch(x=>alert(x.message))}
 
-function render(){if(LIB.includes(tab))libLast=tab;document.body.dataset.theme=S.set.theme;document.documentElement.lang=isBn()?'bn':'en';const r=document.documentElement.style;r.setProperty('--sz',S.set.size);r.setProperty('--arf',AF[S.set.arf]);r.setProperty('--uf',UF[S.set.uf||'nunito']);
+function render(){if(LIB.includes(tab))libLast=tab;document.body.dataset.theme=S.set.theme;{const m=document.querySelector('meta[name=theme-color]');if(m)m.content=getComputedStyle(document.body).getPropertyValue('--bg').trim()||m.content}document.documentElement.lang=isBn()?'bn':'en';const r=document.documentElement.style;r.setProperty('--sz',S.set.size);r.setProperty('--arf',AF[S.set.arf]);r.setProperty('--uf',UF[S.set.uf||'nunito']);
  $('#v').innerHTML=V[tab]();
  $('#nav').innerHTML=[['c','','Count'],['p','','Prayers'],['lib','','Library'],['s','','Stats'],['g','','Settings']].map(a=>{const lb=a[0]=='lib';return `<button class="${(lb?LIB.includes(tab):tab==a[0])?'on':''}" onclick="tab=${lb?'libLast':`'${a[0]}'`};render()">${IC[a[0]]}${a[2]}</button>`}).join('')}
 
