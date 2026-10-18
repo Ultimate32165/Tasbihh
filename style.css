@@ -386,3 +386,11 @@ html[lang=bn] .pn>.mu.bn,html[lang=bn] .xpt>.mu.bn,html[lang=bn] .ptn>.bn,html[l
 .card>.row[style*="space-between"]{gap:12px 10px;margin:2px 0 20px;justify-content:flex-start!important}
 .card>.row[style*="space-between"]>span{display:flex;gap:8px;flex-wrap:wrap}
 .card>.row[style*="space-between"]+svg{margin-top:4px}
+
+/* Stats: vertical rhythm */
+.g{margin-bottom:14px}
+#v>.row:first-child{margin:0 0 14px!important;align-items:center;flex-wrap:nowrap}
+#v>.row:first-child h2{margin:0}
+.shero{margin-bottom:12px}
+.card>svg{display:block;margin-top:6px}
+.card>svg+.mu{margin-top:12px}
